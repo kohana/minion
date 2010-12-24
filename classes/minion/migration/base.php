@@ -13,12 +13,14 @@ abstract class Minion_Migration_Base {
 	/**
 	 * Runs any SQL queries necessary to bring the database up a migration version
 	 *
+	 * @param Kohana_Database The database connection to perform actions on
 	 */
-	abstract public function up();
+	abstract public function up(Kohana_Database $db);
 
 	/**
 	 * Runs any SQL queries necessary to bring the database schema down a version
 	 *
+	 * @param Kohana_Database The database connection to perform actions on
 	 */
-	abstract public function down();
+	abstract public function down(Kohana_Database $db);
 }
