@@ -36,4 +36,9 @@ as documentation on the cli.
 
 ## Testing
 
-This module is unittested using the [unittest module](http://github.com/kohana/unittest)
+This module is unittested using the [unittest module](http://github.com/kohana/unittest).  You can use the `minion` group to only run
+minion tests.
+
+i.e.
+
+	phpunit --group minion
