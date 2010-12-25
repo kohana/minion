@@ -99,7 +99,10 @@ class Model_Minion_Migration extends Model
 		// Basically we need to get a list of migrations that need to be performed, but 
 		// the ordering of the migrations varies depending on whether we're wanting to 
 		// migrate up or migrate down.  As such, we can't just apply a generic "order by x"
-		// condition
+		// condition, we have to run an individual query for each module
+		//
+		// Again, icky, but this appears to be the only "sane" way of doing it with multiple
+		// modules
 		//
 		// If you have a better way of doing this, please let me know :)
 
