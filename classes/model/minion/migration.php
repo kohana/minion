@@ -139,15 +139,16 @@ class Model_Minion_Migration extends Model
 				elseif($timestamp > $current_timestamp)
 				{
 					$query
-						->and_where('timestamp', '>',  $current_timestamp)
-						->and_where('timestamp', '<=', $timestamp);
+						->and_where('timestamp', '<=', $timestamp)
+						->and_where('applied',    '=',  0);
 				}
 				// If we want to roll back
 				elseif($timestamp < $current_timestamp)
 				{
 					$query
-						->and_where('timestamp', '<', $current_timestamp)
-						->and_where('timestamp', '>=', $timestamp);
+						->and_where('timestamp',  '<', $current_timestamp)
+						->and_where('timestamp', '>=', $timestamp)
+						->and_where('applied',    '=', 1);
 				}
 				
 				foreach($query->execute($this->_db) as $row)
