@@ -105,7 +105,11 @@ class Model_Minion_Migration extends Model
 
 		foreach($modules as $module => $target)
 		{
-			$query = $this->_select()->or_where('module', '=', $module);
+			// By default all migrations go "up"
+			$migrations_to_apply[$module]['direction']  = 1;
+			$migrations_to_apply[$module]['migrations'] = array();
+			
+			$query = $this->_select()->and_where('module', '=', $module);
 
 			// one of these conditions occurs if 
 			// a) the user specified they want to bring this module up to date
@@ -114,7 +118,12 @@ class Model_Minion_Migration extends Model
 			//
 			// Basically this checks that the user hasn't explicitly specified a version
 			// to migrate to
-			if($target !== NULL AND $target !== $module)
+			if($target === NULL OR $target === $module)
+			{
+				$query->order_by('timestamp', 'ASC');
+			}
+			// Else if the user explicitly specified a target version of some kind
+			else
 			{
 				list($timestamp, $description) = explode('_', $target, 2);
 
@@ -133,14 +142,16 @@ class Model_Minion_Migration extends Model
 				if($current_timestamp === NULL)
 				{
 					$query
-						->and_where('timestamp', '<=', $timestamp);
+						->and_where('timestamp', '<=', $timestamp)
+						->order_by('timestamp', 'ASC');
 				}
 				// If we need to move forward
 				elseif($timestamp > $current_timestamp)
 				{
 					$query
 						->and_where('timestamp', '<=', $timestamp)
-						->and_where('applied',    '=',  0);
+						->and_where('applied',    '=',  0)
+						->order_by('timestamp', 'ASC');
 				}
 				// If we want to roll back
 				elseif($timestamp < $current_timestamp)
@@ -148,13 +159,16 @@ class Model_Minion_Migration extends Model
 					$query
 						->and_where('timestamp',  '<', $current_timestamp)
 						->and_where('timestamp', '>=', $timestamp)
-						->and_where('applied',    '=', 1);
+						->and_where('applied',    '=', 1)
+						->order_by('timestamp', 'DESC');
+
+					$migrations_to_apply[$module]['direction'] = -1;
 				}
-				
-				foreach($query->execute($this->_db) as $row)
-				{
-					$migrations_to_apply[$module][] = $row;
-				}
+			}
+
+			foreach($query->execute($this->_db) as $row)
+			{
+				$migrations_to_apply[$module]['migrations'][] = $row;
 			}
 
 			unset($query);
