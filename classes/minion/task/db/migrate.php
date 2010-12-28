@@ -7,10 +7,20 @@
  *
  * Available config options are:
  *
- * db:migrate:version=version
+ * db:migration:versions=[location:]version
  *
- *  The version to which the database should be migrated.  If this is NULL then 
- *  it will be updated to the latest available version
+ *  Used to specify the version to migrate the database to.  The location prefix 
+ *  is used to specify the target version of an individual location. Version
+ *  specifies the target version, which can be either:
+ *
+ *     * A migration id (migrates up/down to that version)
+ *     * TRUE (runs all migrations to get to the latest version)
+ *     * FALSE (undoes all appled migrations)
+ *
+ *  An example of a migration ID is 1293506456_add-index-to-orders
+ *
+ *  If you specify TRUE / FALSE without a location then the default migration 
+ *  direction for locations without a specified version will be up / down respectively
  *
  * db:migrate:locations=location[,location2[,location3...]]
  *
@@ -22,6 +32,13 @@
  */
 class Minion_Task_Db_Migrate extends Minion_Task
 {
+
+	/*
+	 * The default direction for migrations, TRUE = up, FALSE = down
+	 * @var boolean
+	 */
+	protected $_default_direction = TRUE;
+
 	/**
 	 * Get a set of config options that migrations will accept
 	 *
@@ -30,7 +47,7 @@ class Minion_Task_Db_Migrate extends Minion_Task
 	public function get_config_options()
 	{
 		return array(
-			'version',
+			'versions',
 			'locations',
 		);
 	}
@@ -44,9 +61,101 @@ class Minion_Task_Db_Migrate extends Minion_Task
 	{
 		$k_config = Kohana::config('minion/task/migrations');
 
-		// Default is upgrade to latest
-		$version = Arr::get($config, 'version', NULL);
+		// Grab user input, using sensible defaults
+		$environment         = Arr::get($config, 'environment', 'development');
+		$specified_locations = Arr::get($config, 'locations',   NULL);
+		$versions            = Arr::get($config, 'versions',    NULL);
 		
-		// Do fancy migration stuff here
+		$targets   = $this->_parse_target_versions($versions);
+		$locations = $this->_parse_locations($specified_locations);
+
+		$db = Database::instance($k_config['db_connection'][$environment]);
+
+		$manager = new Minion_Migration_Manager($db);
+
+		return $manager
+			// Sync the available migrations with those in the db
+			->sync_migration_files()
+			->run_migration($locations, $targets, $this->_default_direction);
 	}
+
+	/**
+	 * Parses a comma delimted set of locations and returns an array of them
+	 *
+	 * @param  string Comma delimited string of locations
+	 * @return array  Locations
+	 */
+	protected function _parse_locations($location)
+	{
+		$locations = array();
+		$location  = trim($location, ',');
+
+		if( ! empty($location))
+		{
+			foreach($location as $a_location)
+			{
+				$locations[] = trim($a_location, '/');
+			}
+		}
+
+		return $locations;
+	}
+
+	/**
+	 * Parses a set of target versions from user input
+	 *
+	 * Valid input formats for targets are:
+	 *
+	 *    TRUE
+	 *
+	 *    FALSE
+	 *
+	 *    {location}:(TRUE|FALSE|{migration_id})
+	 *
+	 * @param  string Target version(s) specified by user
+	 * @return array  Versions
+	 */
+	protected function _parse_target_versions($versions)
+	{
+		$targets = array();
+
+		if( ! empty($versions) AND $versions = explode(',', $versions))
+		{
+			foreach($versions as $version)
+			{
+				$target = $this->_parse_version($version);
+
+				if(is_array($target))
+				{
+					list($location, $version) = $target;
+
+					$targets[$location] = $version;
+				}
+				else
+				{
+					$this->_default_direction = $target;
+				}
+			}
+		}
+
+		return $targets;
+	}
+
+	/*
+	 * Helper function for parsing target versions in user input
+	 *
+	 * @param  string         Input migration target
+	 * @return boolean|string The parsed target
+	 */
+	protected function _parse_version($version)
+	{
+		if($version === 'TRUE' OR $version == FALSE)
+			return $version === 'TRUE';
+
+		if(strpos(':', $version) !== FALSE)
+			return explode(':', $version);
+
+		throw new Kohana_Exception('Invalid target version :version', array(':version' => $version));
+	}
+
 }
