@@ -61,10 +61,16 @@ class Model_Minion_Migration extends Model
 	 */
 	public function fetch_current_versions()
 	{
-		return $this->_select()
-			->where('applied', '>', 0)
+		// Little hack needed to do an order by before a group by
+		return DB::select()
+			->from(array(
+				$this->_select()
+				->where('applied', '>', 0)
+				->order_by('timestamp', 'DESC'),
+				'temp_table'
+			))
 			->group_by('location')
-			->execute();
+			->execute($this->_db);
 	}
 
 	/**
