@@ -30,7 +30,7 @@ class Minion_Migration_Util {
 			{
 				$migration = Minion_Migration_Util::extract_migration_info_from_filename($file);
 
-				$migrations[$migration['id']] = array('file' => $file, 'module' => $migration['module']);
+				$migrations[$migration['id']] = array('file' => $file, 'location' => $migration['location']);
 			}
 		}
 
@@ -43,9 +43,9 @@ class Minion_Migration_Util {
 	 * Returns an array like:
 	 *
 	 *     array(
-	 *        'module'      => 'mymodule',
+	 *        'location'      => 'mylocation',
 	 *        'id'          => '1293214439_initial-setup',
-	 *        'file'        => 'migrations/mymodule/1293214439_initial-setup.php',
+	 *        'file'        => 'migrations/mylocation/1293214439_initial-setup.php',
 	 *        'timestamp'   => '1293214439',
 	 *        'description' => 'initial-setup',
 	 *     );
@@ -58,9 +58,9 @@ class Minion_Migration_Util {
 		$migration = array();
 
 		// Get rid of the file's "migrations/" prefix, the file extension and then 
-		// the filename itself.  The "module" is essentially a slash delimited 
+		// the filename itself.  The "location" is essentially a slash delimited 
 		// path from the migrations folder to the migration file
-		$migration['module'] = dirname(substr($file, 11, -strlen(EXT)));
+		$migration['location'] = dirname(substr($file, 11, -strlen(EXT)));
 		$migration['id']     = basename($file, EXT);
 		$migration['file']   = $file;
 
@@ -71,21 +71,21 @@ class Minion_Migration_Util {
 	}
 
 	/**
-	 * Gets a migration file from its timestamp, description and module
+	 * Gets a migration file from its timestamp, description and location
 	 *
 	 * @param  integer|array The migration's ID or an array of timestamp, description
-	 * @param  string        The migration module
+	 * @param  string        The migration location
 	 * @return string        Path to the migration file
 	 */
-	public static function convert_migration_to_filename($migration, $module)
+	public static function convert_migration_to_filename($migration, $location)
 	{
 		if(is_array($migration))
 		{
 			$migration = implode('_', $migration);
 		}
 
-		$module = ! empty($module) ? rtrim($module, '/').'/' : '';
+		$location = ! empty($location) ? rtrim($location, '/').'/' : '';
 
-		return 'migrations/'.$module.$migration.EXT;
+		return 'migrations/'.$location.$migration.EXT;
 	}
 }

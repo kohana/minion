@@ -47,7 +47,7 @@ class Minion_Migration_Manager {
 	 *
 	 *   migration_id => array(
 	 *   	'file'   => migration_file, 
-	 *   	'module' => migration_module
+	 *   	'location' => migration_location
 	 *   );
 	 *
 	 * @param return array

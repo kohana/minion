@@ -17,15 +17,15 @@ class Minion_Migration_UtilTest extends Kohana_Unittest_TestCase {
 		return array(
 			array(
 				array(
-					'015151051_setup' => array('file' => 'migrations/myapp/015151051_setup.php', 'module' => 'myapp'),
-					'015161051_add-comments' => array('file' => 'migrations/myapp/015161051_add-comments.php', 'module' => 'myapp'),
+					'015151051_setup' => array('file' => 'migrations/myapp/015151051_setup.php', 'location' => 'myapp'),
+					'015161051_add-comments' => array('file' => 'migrations/myapp/015161051_add-comments.php', 'location' => 'myapp'),
 				),
 				array(
 					'migrations/myapp' => array(
 						'migrations/myapp/015151051_setup.php' 
-							=> '/var/www/app/modules/myapp/migrations/myapp/015151051_setup.php',
+							=> '/var/www/app/locations/myapp/migrations/myapp/015151051_setup.php',
 						'migrations/myapp/015161051_add-comments.php' 
-							=> '/var/www/app/modules/myapp/migrations/myapp/015161051_add-comments.php',
+							=> '/var/www/app/locations/myapp/migrations/myapp/015161051_add-comments.php',
   					),
 				)
 			),
@@ -60,7 +60,7 @@ class Minion_Migration_UtilTest extends Kohana_Unittest_TestCase {
 		return array(
 			array(
 				array(
-					'module'      => 'myapp',
+					'location'      => 'myapp',
 					'id'          => '1293214439_initial-setup',
 					'file'        => 'migrations/myapp/1293214439_initial-setup.php',
 					'description' => 'initial-setup',
@@ -114,13 +114,13 @@ class Minion_Migration_UtilTest extends Kohana_Unittest_TestCase {
 	 * @dataProvider provider_convert_migration_to_filename
 	 * @param  string  Expected output
 	 * @param  mixed   Migration id
-	 * @param  mixed   Module
+	 * @param  mixed   location
 	 */
-	public function test_convert_migration_to_filename($expected, $migration, $module)
+	public function test_convert_migration_to_filename($expected, $migration, $location)
 	{
 		$this->assertSame(
 			$expected, 
-			Minion_Migration_Util::convert_migration_to_filename($migration, $module)
+			Minion_Migration_Util::convert_migration_to_filename($migration, $location)
 		);
 	}
 }

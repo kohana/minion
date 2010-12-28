@@ -52,9 +52,9 @@ class Model_Minion_Migration extends Model
 	}
 
 	/**
-	 * Fetches the latest version for all installed modules
+	 * Fetches the latest version for all installed locations
 	 *
-	 * If a module does not have any applied migrations then no result will be 
+	 * If a location does not have any applied migrations then no result will be 
 	 * returned for it
 	 *
 	 * @return Kohana_Database_Result
@@ -63,7 +63,7 @@ class Model_Minion_Migration extends Model
 	{
 		return $this->_select()
 			->where('applied', '>', 0)
-			->group_by('module')
+			->group_by('location')
 			->execute();
 	}
 
@@ -71,25 +71,25 @@ class Model_Minion_Migration extends Model
 	 * Fetch a list of migrations that need to be applied in order to reach the 
 	 * required version
 	 *
-	 * @param string Migration's Module
+	 * @param string Migration's location
 	 * @param string Target migration id
 	 */
-	public function fetch_required_migrations($modules = NULL, $target = NULL)
+	public function fetch_required_migrations($locations = NULL, $target = NULL)
 	{
-		if( ! empty($modules) AND ! is_array($modules))
+		if( ! empty($locations) AND ! is_array($locations))
 		{
-			$modules = array($modules => $target);
+			$locations = array($locations => $target);
 		}
 
-		// Get an array of the latest migrations, with the module name as the 
+		// Get an array of the latest migrations, with the location name as the 
 		// array key
-		$migrations = $this->fetch_current_versions()->as_array('module');
+		$migrations = $this->fetch_current_versions()->as_array('location');
 
-		if(empty($modules))
+		if(empty($locations))
 		{
 			$keys = array_keys($migrations);
 
-			$modules = array_combine($keys, $keys);
+			$locations = array_combine($keys, $keys);
 		}
 
 		$migrations_to_apply = array();
@@ -99,29 +99,29 @@ class Model_Minion_Migration extends Model
 		// Basically we need to get a list of migrations that need to be performed, but 
 		// the ordering of the migrations varies depending on whether we're wanting to 
 		// migrate up or migrate down.  As such, we can't just apply a generic "order by x"
-		// condition, we have to run an individual query for each module
+		// condition, we have to run an individual query for each location
 		//
 		// Again, icky, but this appears to be the only "sane" way of doing it with multiple
-		// modules
+		// locations
 		//
 		// If you have a better way of doing this, please let me know :)
 
-		foreach($modules as $module => $target)
+		foreach($locations as $location => $target)
 		{
 			// By default all migrations go "up"
-			$migrations_to_apply[$module]['direction']  = 1;
-			$migrations_to_apply[$module]['migrations'] = array();
+			$migrations_to_apply[$location]['direction']  = 1;
+			$migrations_to_apply[$location]['migrations'] = array();
 			
-			$query = $this->_select()->and_where('module', '=', $module);
+			$query = $this->_select()->and_where('location', '=', $location);
 
 			// one of these conditions occurs if 
-			// a) the user specified they want to bring this module up to date
+			// a) the user specified they want to bring this location up to date
 			// or
-			// b) if they just want to bring all modules up to date
+			// b) if they just want to bring all locations up to date
 			//
 			// Basically this checks that the user hasn't explicitly specified a version
 			// to migrate to
-			if($target === NULL OR $target === $module)
+			if($target === NULL OR $target === $location)
 			{
 				$query->order_by('timestamp', 'ASC');
 			}
@@ -130,7 +130,7 @@ class Model_Minion_Migration extends Model
 			{
 				list($timestamp, $description) = explode('_', $target, 2);
 
-				$current_timestamp = isset($migrations[$module]) ? $migrations[$module]['timestamp'] : NULL;
+				$current_timestamp = isset($migrations[$location]) ? $migrations[$location]['timestamp'] : NULL;
 
 				// If the current version is the requested version then nothing needs to be done
 				if($current_timestamp === $timestamp)
@@ -138,9 +138,9 @@ class Model_Minion_Migration extends Model
 					continue;
 				}
 
-				$query->and_where('module', '=', $module);
+				$query->and_where('location', '=', $location);
 
-				// If they haven't applied any migrations for this module
+				// If they haven't applied any migrations for this location
 				// yet and are just wanting to apply all migrations (i.e. roll forward)
 				if($current_timestamp === NULL)
 				{
@@ -165,13 +165,13 @@ class Model_Minion_Migration extends Model
 						->and_where('applied',    '=', 1)
 						->order_by('timestamp', 'DESC');
 
-					$migrations_to_apply[$module]['direction'] = -1;
+					$migrations_to_apply[$location]['direction'] = -1;
 				}
 			}
 
 			foreach($query->execute($this->_db) as $row)
 			{
-				$migrations_to_apply[$module]['migrations'][] = $row;
+				$migrations_to_apply[$location]['migrations'][] = $row;
 			}
 
 			unset($query);
