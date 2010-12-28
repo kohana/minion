@@ -81,12 +81,14 @@ class Model_Minion_Migration extends Model
 	 * @param string  Target migration id
 	 * @param boolean Default direction of versionless migrations 
 	 */
-	public function fetch_required_migrations($locations = NULL, $target = TRUE, $default_direction = TRUE)
+	public function fetch_required_migrations($locations = NULL, $target_version = TRUE, $default_direction = TRUE)
 	{
 		if( ! empty($locations) AND ! is_array($locations))
 		{
 			$locations = array(
-				$locations => is_array($target) ? $default_direction : $target
+				$locations => is_array($target_version) 
+								? $default_direction 
+								: $target_version
 			);
 		}
 
@@ -103,9 +105,9 @@ class Model_Minion_Migration extends Model
 		}
 
 		// Merge locations with specified target versions 
-		if( ! empty($target) AND is_array($target))
+		if( ! empty($target_version) AND is_array($target_version))
 		{
-			$locations = $target + $locations;
+			$locations = $target_version + $locations;
 		}
 
 		$migrations_to_apply = array();
@@ -134,7 +136,9 @@ class Model_Minion_Migration extends Model
 			// default migration direction
 			if($target === $location)
 			{
-				$target = (bool) $default_direction;
+				$target = is_bool($target_version) 
+					? $target_version 
+					: (bool) $default_direction;
 			}
 
 			// If the user is rolling this location to either extreme up or 

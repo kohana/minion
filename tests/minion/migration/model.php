@@ -134,8 +134,27 @@ class Minion_Migration_ModelTest extends Kohana_Unittest_Database_TestCase
 							),
 						)
 					),
+					'dblogger' => array(
+						'direction'  => FALSE,
+						'migrations' => array(
+							array(
+								'timestamp'   => '1293544858',
+								'description' => 'remove-unique-index',
+								'location'    => 'dblogger',
+								'applied'     => '1',
+								'id'          => '1293544858_remove-unique-index',
+							),
+							array(
+								'timestamp'   => '1293543858',
+								'description' => 'create-table',
+								'location'    => 'dblogger',
+								'applied'     => '1',
+								'id'          => '1293543858_create-table',
+							),
+						)
+					),
 				),
-				'app',
+				NULL,
 				FALSE,
 				TRUE
 			),
