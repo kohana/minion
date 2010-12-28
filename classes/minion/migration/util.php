@@ -28,9 +28,12 @@ class Minion_Migration_Util {
 			}
 			else
 			{
-				$migration = Minion_Migration_Util::extract_migration_info_from_filename($file);
+				$migration = Minion_Migration_Util::get_migration_from_filename($file);
 
-				$migrations[$migration['id']] = array('file' => $file, 'location' => $migration['location']);
+				$migrations[$migration['id']] = array(
+					'file'     => $file, 
+					'location' => $migration['location']
+				);
 			}
 		}
 
@@ -53,7 +56,7 @@ class Minion_Migration_Util {
 	 * @param  string The migration's filename
 	 * @return array  Array of components about the migration
 	 */
-	public static function extract_migration_info_from_filename($file)
+	public static function get_migration_from_filename($file)
 	{
 		$migration = array();
 
@@ -77,15 +80,16 @@ class Minion_Migration_Util {
 	 * @param  string        The migration location
 	 * @return string        Path to the migration file
 	 */
-	public static function convert_migration_to_filename($migration, $location)
+	public static function get_filename_from_migration($migration, $location)
 	{
 		if(is_array($migration))
 		{
-			$migration = implode('_', $migration);
+			$location  = $migration['location'];
+			$migration = $migration['id'];
 		}
 
 		$location = ! empty($location) ? rtrim($location, '/').'/' : '';
 
-		return 'migrations/'.$location.$migration.EXT;
+		return $location.$migration.EXT;
 	}
 }

@@ -55,7 +55,7 @@ class Minion_Migration_UtilTest extends Kohana_Unittest_TestCase {
 	 *
 	 * @return array Test Data
 	 */
-	public function provider_extract_migration_info_from_filename()
+	public function provider_get_migration_from_filename()
 	{
 		return array(
 			array(
@@ -72,20 +72,20 @@ class Minion_Migration_UtilTest extends Kohana_Unittest_TestCase {
 	}
 
 	/**
-	 * Tests that Minion_Migration_Util::extract_migration_info_from_filename()
+	 * Tests that Minion_Migration_Util::get_migration_info_from_filename()
 	 * correctly extracts information about the migration from its filename
 	 *
 	 * @test
 	 * @covers Minion_Migration_Util::extract_migration_info_from_filename
-	 * @dataProvider provider_extract_migration_info_from_filename
+	 * @dataProvider provider_convert_file_to_migration_info
 	 * @param array Expected output
 	 * @param string Input filename
 	 */
-	public function test_extract_migration_info_from_filename($expected, $file)
+	public function test_get_migration_from_filename($expected, $file)
 	{
 		$this->assertSame(
 			$expected, 
-			Minion_Migration_Util::extract_migration_info_from_filename($file)
+			Minion_Migration_Util::get_migration_from_filename($file)
 		);
 	}
 
@@ -94,11 +94,11 @@ class Minion_Migration_UtilTest extends Kohana_Unittest_TestCase {
 	 *
 	 * @return array Test Data
 	 */
-	public function provider_convert_migration_to_filename()
+	public function provider_get_filename_from_migration()
 	{
 		return array(
 			array(
-				'migrations/myapp/1293214439_initial-setup.php',
+				'myapp/1293214439_initial-setup.php',
 				'1293214439_initial-setup',
 				'myapp',
 			),
@@ -106,7 +106,7 @@ class Minion_Migration_UtilTest extends Kohana_Unittest_TestCase {
 	}
 
 	/**
-	 * Tests that Minion_Migration_Util::convert_migration_to_filename generates 
+	 * Tests that Minion_Migration_Util::get_filename_from_migration generates 
 	 * accurate filenames when given a variety of migration information
 	 *
 	 * @test
@@ -116,11 +116,11 @@ class Minion_Migration_UtilTest extends Kohana_Unittest_TestCase {
 	 * @param  mixed   Migration id
 	 * @param  mixed   location
 	 */
-	public function test_convert_migration_to_filename($expected, $migration, $location)
+	public function test_get_filename_from_migration($expected, $migration, $location)
 	{
 		$this->assertSame(
 			$expected, 
-			Minion_Migration_Util::convert_migration_to_filename($migration, $location)
+			Minion_Migration_Util::get_filename_from_migration($migration, $location)
 		);
 	}
 }
