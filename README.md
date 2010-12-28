@@ -2,6 +2,11 @@
 
 Minion is a module for the Kohana framework which allows you to run various tasks from the cli.
 
+The main purpose of minion is to run database migrations, but it exposes a useful framework for creating
+additional tasks.
+
+The system is inspired by ruckusing, which was in turn inspired by rake.
+
 ## Getting Started
 
 First off, download and enable the module in your bootstrap
@@ -42,3 +47,21 @@ minion tests.
 i.e.
 
 	phpunit --group minion
+
+## License
+
+This is licensed under the [same license as kohana](http://kohanaframework.org/license)
+
+## FAQ
+
+### Can't I just create my own controllers instead of creating "tasks"
+
+Yes, controllers offer just as much control as tasks, however there are a number of advantages to tasks:
+
+* They can only be run via command line or through code (see note about http)
+* All the groundwork for interacting with the user on the command line is already in place, you 
+  just need to take advantage of it
+* It provides a uniform way to access and perform tasks on the command line, rather than creating an elaborate
+  collection of controllers while trying to restrict access to them.  If you create a module that requires command
+  line interaction then you just ship a minion task with it and users will be able to start using it with minimal
+  setup & configuration
