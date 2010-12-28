@@ -16,13 +16,26 @@ class Minion_Migration_Manager {
 	protected $_db;
 
 	/**
+	 * Model used to interact with the migrations table in the database
+	 * @var Model_Minion_Migration
+	 */
+	protected $_model;
+
+	/**
 	 * Constructs the object, allows injection of a Database connection
 	 *
-	 * @param Kohana_Database The database connection that the manager should use
+	 * @param Kohana_Database        The database connection that should be passed to migrations
+	 * @param Model_Minion_Migration Inject an instance of the minion model into the manager
 	 */
-	public function __construct(Kohana_Database $db)
+	public function __construct(Kohana_Database $db, Model_Minion_Migration $model = NULL)
 	{
-		$this->_db = $db;
+		if($model === NULL)
+		{
+			$model = new Model_Minion_Migration($db);
+		}
+
+		$this->_db    = $db;
+		$this->_model = $model;
 	}
 
 	/**
@@ -73,9 +86,7 @@ class Minion_Migration_Manager {
 	 */
 	public function sync_migration_files()
 	{
-		$model = new Model_Minion_Migration($this->_db);
-
-		$installed = $model->fetch_all();
+		$installed = $this->_model->fetch_all();
 
 		$available = $this->scan_for_migrations();
 	}
