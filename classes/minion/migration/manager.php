@@ -75,7 +75,46 @@ class Minion_Migration_Manager {
 	 */
 	public function run_migration(array $locations = array(), $versions = array(), $default_direction = TRUE)
 	{
-		
+		$migrations = $this->_model->fetch_required_migrations($locations, $versions, $default_direction);
+
+		foreach($migrations as $location)
+		{
+			$method = $location['direction'] ? 'up' : 'down';
+
+			foreach($location['migrations'] as $migration)
+			{
+				$file  = Minion_Migration_Util::get_migration_from_filename(
+					$migration['id'], 
+					$migration['location']
+				);
+
+				if( ! ($file  = Kohana::find_file('migrations', $file)))
+				{
+					throw new Kohana_Exception('Cannot load migration :migration', array(':migration' => $migration['id']));
+				}
+
+				$class = str_replace('-', '_', $migration['id']);
+
+				$this->_db->query(NULL, 'START TRANSACTION');
+
+				try
+				{
+					include_once $file;
+
+					$instance = new $class;
+
+					$instance->$method($this->_db);
+				}
+				catch(Exception $e)
+				{
+					$this->_db->query(NULL, 'ROLLBACK');
+
+					throw $e;
+				}
+
+				$this->_db->query('COMMIT');
+			}
+		}
 	}
 
 	/**
@@ -86,9 +125,11 @@ class Minion_Migration_Manager {
 	 */
 	public function sync_migration_files()
 	{
-		$installed = $this->_model->fetch_all();
+		$installed = $this->_model->fetch_all()->as_array('id');
 
 		$available = $this->scan_for_migrations();
+
+
 	}
 
 	/**
