@@ -74,7 +74,7 @@ class Model_Minion_Migration extends Model
 	 * @param string Migration's location
 	 * @param string Target migration id
 	 */
-	public function fetch_required_migrations($locations = NULL, $target = NULL)
+	public function fetch_required_migrations($locations = NULL, $target = TRUE)
 	{
 		if( ! empty($locations) AND ! is_array($locations))
 		{
@@ -112,7 +112,7 @@ class Model_Minion_Migration extends Model
 			$migrations_to_apply[$location]['direction']  = 1;
 			$migrations_to_apply[$location]['migrations'] = array();
 			
-			$query = $this->_select()->and_where('location', '=', $location);
+			$query = $this->_select()->where('location', '=', $location);
 
 			// one of these conditions occurs if 
 			// a) the user specified they want to bring this location up to date
@@ -121,9 +121,24 @@ class Model_Minion_Migration extends Model
 			//
 			// Basically this checks that the user hasn't explicitly specified a version
 			// to migrate to
-			if($target === NULL OR $target === $location)
+			if(is_bool($target) OR $target === $location)
 			{
-				$query->order_by('timestamp', 'ASC');
+				// We're "undoing" all applied migrations, i.e. rolling back
+				if($target === FALSE)
+				{
+					$migrations_to_apply[$location]['direction'] = -1;
+					
+					$query
+						->where('applied', '=', 1)
+						->order_by('timestamp', 'DESC');
+				}
+				// We're rolling forward
+				else
+				{
+					$query
+						->where('applied', '=', 0)
+						->order_by('timestamp', 'ASC');
+				}
 			}
 			// Else if the user explicitly specified a target version of some kind
 			else
@@ -138,10 +153,10 @@ class Model_Minion_Migration extends Model
 					continue;
 				}
 
-				$query->and_where('location', '=', $location);
+				$query->where('location', '=', $location);
 
 				// If they haven't applied any migrations for this location
-				// yet and are just wanting to apply all migrations (i.e. roll forward)
+				// yet and are justwhere wanting to apply all migrations (i.e. roll forward)
 				if($current_timestamp === NULL)
 				{
 					$query
@@ -152,7 +167,7 @@ class Model_Minion_Migration extends Model
 				elseif($timestamp > $current_timestamp)
 				{
 					$query
-						->and_where('timestamp', '<=', $timestamp)
+						->and_where('timestamp',  '<=', $timestamp)
 						->and_where('applied',    '=',  0)
 						->order_by('timestamp', 'ASC');
 				}
@@ -161,7 +176,7 @@ class Model_Minion_Migration extends Model
 				{
 					$query
 						->and_where('timestamp',  '<', $current_timestamp)
-						->and_where('timestamp', '>=', $timestamp)
+						->and_where('timestamp',  '>', $timestamp)
 						->and_where('applied',    '=', 1)
 						->order_by('timestamp', 'DESC');
 
