@@ -71,25 +71,35 @@ class Model_Minion_Migration extends Model
 	 * Fetch a list of migrations that need to be applied in order to reach the 
 	 * required version
 	 *
-	 * @param string Migration's location
-	 * @param string Target migration id
+	 * @param string  Migration's location
+	 * @param string  Target migration id
+	 * @param boolean Default direction of versionless migrations 
 	 */
-	public function fetch_required_migrations($locations = NULL, $target = TRUE)
+	public function fetch_required_migrations($locations = NULL, $target = TRUE, $default_direction = TRUE)
 	{
 		if( ! empty($locations) AND ! is_array($locations))
 		{
-			$locations = array($locations => $target);
+			$locations = array(
+				$locations => is_array($target) ? $default_direction : $target
+			);
 		}
 
 		// Get an array of the latest migrations, with the location name as the 
 		// array key
 		$migrations = $this->fetch_current_versions()->as_array('location');
 
+		// The user wants to run all available migrations
 		if(empty($locations))
 		{
 			$keys = array_keys($migrations);
 
 			$locations = array_combine($keys, $keys);
+		}
+
+		// Merge locations with specified target versions 
+		if( ! empty($target) AND is_array($target))
+		{
+			$locations = $target + $locations;
 		}
 
 		$migrations_to_apply = array();
@@ -109,24 +119,26 @@ class Model_Minion_Migration extends Model
 		foreach($locations as $location => $target)
 		{
 			// By default all migrations go "up"
-			$migrations_to_apply[$location]['direction']  = 1;
+			$migrations_to_apply[$location]['direction']  = TRUE;
 			$migrations_to_apply[$location]['migrations'] = array();
 			
 			$query = $this->_select()->where('location', '=', $location);
 
-			// one of these conditions occurs if 
-			// a) the user specified they want to bring this location up to date
-			// or
-			// b) if they just want to bring all locations up to date
-			//
-			// Basically this checks that the user hasn't explicitly specified a version
-			// to migrate to
-			if(is_bool($target) OR $target === $location)
+			// If this migration was auto-selected from the db then use the 
+			// default migration direction
+			if($target === $location)
+			{
+				$target = (bool) $default_direction;
+			}
+
+			// If the user is rolling this location to either extreme up or 
+			// extreme down
+			if(is_bool($target))
 			{
 				// We're "undoing" all applied migrations, i.e. rolling back
 				if($target === FALSE)
 				{
-					$migrations_to_apply[$location]['direction'] = -1;
+					$migrations_to_apply[$location]['direction'] = FALSE;
 					
 					$query
 						->where('applied', '=', 1)
@@ -145,9 +157,13 @@ class Model_Minion_Migration extends Model
 			{
 				list($timestamp, $description) = explode('_', $target, 2);
 
-				$current_timestamp = isset($migrations[$location]) ? $migrations[$location]['timestamp'] : NULL;
+				$current_timestamp = 
+					isset($migrations[$location]) 
+					? $migrations[$location]['timestamp'] 
+					: NULL;
 
-				// If the current version is the requested version then nothing needs to be done
+				// If the current version is the requested version then nothing 
+				// needs to be done
 				if($current_timestamp === $timestamp)
 				{
 					continue;
@@ -156,7 +172,8 @@ class Model_Minion_Migration extends Model
 				$query->where('location', '=', $location);
 
 				// If they haven't applied any migrations for this location
-				// yet and are justwhere wanting to apply all migrations (i.e. roll forward)
+				// yet and are justwhere wanting to apply all migrations 
+				// (i.e. roll forward)
 				if($current_timestamp === NULL)
 				{
 					$query
@@ -180,14 +197,11 @@ class Model_Minion_Migration extends Model
 						->and_where('applied',    '=', 1)
 						->order_by('timestamp', 'DESC');
 
-					$migrations_to_apply[$location]['direction'] = -1;
+					$migrations_to_apply[$location]['direction'] = FALSE;
 				}
 			}
 
-			foreach($query->execute($this->_db) as $row)
-			{
-				$migrations_to_apply[$location]['migrations'][] = $row;
-			}
+			$migrations_to_apply[$location]['migrations'] = $query->execute($this->_db)->as_array();
 
 			unset($query);
 		}
