@@ -125,11 +125,10 @@ class Minion_Migration_Manager {
 	 */
 	public function sync_migration_files()
 	{
-		$installed = $this->_model->fetch_all()->as_array('id');
+		// Get array of installed migrations with the id as key
+		$installed = $this->_model->fetch_all('id');
 
 		$available = $this->scan_for_migrations();
-
-
 	}
 
 	/**

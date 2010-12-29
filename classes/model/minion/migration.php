@@ -45,10 +45,11 @@ class Model_Minion_Migration extends Model
 	 *
 	 * @return Kohana_Database_Result
 	 */
-	public function fetch_all()
+	public function fetch_all($key = NULL, $value = NULL)
 	{
 		return $this->_select()
-			->execute($this->_db);
+			->execute($this->_db)
+			->as_array($key, $value);
 	}
 
 	/**
@@ -59,7 +60,7 @@ class Model_Minion_Migration extends Model
 	 *
 	 * @return Kohana_Database_Result
 	 */
-	public function fetch_current_versions()
+	public function fetch_current_versions($key = 'location', $value = NULL)
 	{
 		// Little hack needed to do an order by before a group by
 		return DB::select()
@@ -70,7 +71,8 @@ class Model_Minion_Migration extends Model
 				'temp_table'
 			))
 			->group_by('location')
-			->execute($this->_db);
+			->execute($this->_db)
+			->as_array($key, $value);
 	}
 
 	/**
@@ -94,7 +96,7 @@ class Model_Minion_Migration extends Model
 
 		// Get an array of the latest migrations, with the location name as the 
 		// array key
-		$migrations = $this->fetch_current_versions()->as_array('location');
+		$migrations = $this->fetch_current_versions('location');
 
 		// The user wants to run all available migrations
 		if(empty($locations))

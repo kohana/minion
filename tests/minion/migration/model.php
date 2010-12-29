@@ -54,8 +54,7 @@ class Minion_Migration_ModelTest extends Kohana_Unittest_Database_TestCase
 	public function test_fetch_current_versions()
 	{
 		$versions = $this->getModel()
-			->fetch_current_versions()
-			->as_array('location', 'id');
+			->fetch_current_versions('location', 'id');
 
 		$this->assertSame(
 			array (
