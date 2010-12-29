@@ -75,18 +75,32 @@ class Minion_Task_Db_Migrate extends Minion_Task
 		$environment         = Arr::get($config, 'environment', 'development');
 		$specified_locations = Arr::get($config, 'locations',   NULL);
 		$versions            = Arr::get($config, 'versions',    NULL);
-		
+		$dry_run             = isset($config['dry-run']);
+
 		$targets   = $this->_parse_target_versions($versions);
 		$locations = $this->_parse_locations($specified_locations);
 
+
 		$db = Database::instance($k_config['db_connections'][$environment]);
 
-		$manager = new Minion_Migration_Manager($db);
+		if($dry_run)
+		{
+			$manager = new Minion_Migration_Manager(
+				Minion_Migration_Database::instance($k_config['db_connections'][$environment]),
+				new Model_Minion_Migration($db)
+			);
+		}
+		else
+		{
+			$manager = new Minion_Migration_Manager($db);
+		}
 
 		$results = $manager
 			// Sync the available migrations with those in the db
 			->sync_migration_files()
-			->run_migration($locations, $targets, $this->_default_direction);
+			// Run migrations for specified locations & versions, and if it's 
+			// a dry run don't log results to DB
+			->run_migration($locations, $targets, $this->_default_direction, ! $dry_run);
 	}
 
 	/**

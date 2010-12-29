@@ -97,9 +97,10 @@ class Minion_Migration_Manager {
 	 * @param  array   Set of locations to update, empty array means all
 	 * @param  array   Versions for specified locations
 	 * @param  boolean The default direction (up/down) for migrations without a specific version
-	 * @return boolean Whether
+	 * @param  boolean Whether successful migrations should be recorded
+	 * @return array   Array of all migrations that were successfully applied
 	 */
-	public function run_migration(array $locations = array(), $versions = array(), $default_direction = TRUE)
+	public function run_migration(array $locations = array(), $versions = array(), $default_direction = TRUE, $record_success = TRUE)
 	{
 		$migrations = $this->_model->fetch_required_migrations($locations, $versions, $default_direction);
 
@@ -109,17 +110,14 @@ class Minion_Migration_Manager {
 
 			foreach($location['migrations'] as $migration)
 			{
-				$file  = Minion_Migration_Util::get_migration_from_filename(
-					$migration['id'], 
-					$migration['location']
-				);
+				$file  = Minion_Migration_Util::get_filename_from_migration($migration);
 
 				if( ! ($file  = Kohana::find_file('migrations', $file)))
 				{
 					throw new Kohana_Exception('Cannot load migration :migration', array(':migration' => $migration['id']));
 				}
 
-				$class = str_replace('-', '_', $migration['id']);
+				$class = Minion_Migration_Util::get_class_from_migration($migration);
 
 				$this->_db->query(NULL, 'START TRANSACTION');
 
@@ -137,8 +135,13 @@ class Minion_Migration_Manager {
 
 					throw $e;
 				}
-
+				
 				$this->_db->query('COMMIT');
+
+				if($record_success)
+				{
+					$this->_model->mark_migration($migration, $location['direction']);
+				}
 			}
 		}
 	}
