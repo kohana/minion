@@ -28,29 +28,31 @@
  *  filesystem) that will be used to source migration files.  By default 
  *  migrations will be loaded from all available locations
  *
+ * db:migrate:dry-run
+ *
+ *  No value taken, if this is specified then instead of executing the SQL it 
+ *  will be printed to the console
+ *
  * @author Matt Button <matthew@sigswitch.com>
  */
 class Minion_Task_Db_Migrate extends Minion_Task
 {
 
 	/*
-	 * The default direction for migrations, TRUE = up, FALSE = down
+	 * Th' default direction for migrations, TRUE = up, FALSE = down
 	 * @var boolean
 	 */
 	protected $_default_direction = TRUE;
 
 	/**
-	 * Get a set of config options that migrations will accept
-	 *
-	 * @return array
+	 * A set of config options that this task accepts
+	 * @var array
 	 */
-	public function get_config_options()
-	{
-		return array(
-			'versions',
-			'locations',
-		);
-	}
+	protected $_config = array(
+		'versions',
+		'locations',
+		'dry-run'
+	);
 
 	/**
 	 * Migrates the database to the version specified
@@ -73,7 +75,7 @@ class Minion_Task_Db_Migrate extends Minion_Task
 
 		$manager = new Minion_Migration_Manager($db);
 
-		return $manager
+		$results = $manager
 			// Sync the available migrations with those in the db
 			->sync_migration_files()
 			->run_migration($locations, $targets, $this->_default_direction);

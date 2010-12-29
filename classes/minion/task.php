@@ -7,6 +7,12 @@
 abstract class Minion_Task {
 
 	/**
+	 * A set of config options that the task accepts on the command line
+	 * @var array
+	 */
+	protected $_config = array();
+
+	/**
 	 * Gets the task name for the task
 	 * 
 	 * @return string
@@ -28,7 +34,10 @@ abstract class Minion_Task {
 	 *
 	 * @return array
 	 */
-	abstract public function get_config_options();
+	public function get_config_options()
+	{
+		return $this->_config;
+	}
 
 	/**
 	 * Execute the task with the specified set of config
