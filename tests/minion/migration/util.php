@@ -17,8 +17,8 @@ class Minion_Migration_UtilTest extends Kohana_Unittest_TestCase {
 		return array(
 			array(
 				array(
-					'015151051_setup' => array('file' => 'migrations/myapp/015151051_setup.php', 'location' => 'myapp'),
-					'015161051_add-comments' => array('file' => 'migrations/myapp/015161051_add-comments.php', 'location' => 'myapp'),
+					'myapp:015151051' => array('location' => 'myapp', 'description' => 'setup',        'timestamp' => '015151051', 'id' => 'myapp:015151051'),
+					'myapp:015161051' => array('location' => 'myapp', 'description' => 'add-comments', 'timestamp' => '015161051', 'id' => 'myapp:015161051'),
 				),
 				array(
 					'migrations/myapp' => array(
@@ -60,9 +60,7 @@ class Minion_Migration_UtilTest extends Kohana_Unittest_TestCase {
 		return array(
 			array(
 				array(
-					'location'      => 'myapp',
-					'id'          => '1293214439_initial-setup',
-					'file'        => 'migrations/myapp/1293214439_initial-setup.php',
+					'location'    => 'myapp',
 					'description' => 'initial-setup',
 					'timestamp'   => '1293214439',
 				),
@@ -99,7 +97,12 @@ class Minion_Migration_UtilTest extends Kohana_Unittest_TestCase {
 		return array(
 			array(
 				'myapp/1293214439_initial-setup.php',
-				'1293214439_initial-setup',
+				array(
+					'location'    => 'myapp',
+					'timestamp'   => '1293214439',
+					'description' => 'initial-setup',
+					'id'          => 'myapp:1293214439'
+				),
 				'myapp',
 			),
 		);
@@ -111,7 +114,7 @@ class Minion_Migration_UtilTest extends Kohana_Unittest_TestCase {
 	 *
 	 * @test
 	 * @covers Minion_Migration_Util::convert_migration_to_filename
-	 * @dataProvider provider_convert_migration_to_filename
+	 * @dataProvider   provider_get_filename_from_migration
 	 * @param  string  Expected output
 	 * @param  mixed   Migration id
 	 * @param  mixed   location
@@ -121,6 +124,43 @@ class Minion_Migration_UtilTest extends Kohana_Unittest_TestCase {
 		$this->assertSame(
 			$expected, 
 			Minion_Migration_Util::get_filename_from_migration($migration, $location)
+		);
+	}
+
+	/**
+	 * Provides test data for test_get_class_from_migration
+	 *
+	 * @return array Test Data
+	 */
+	public function provider_get_class_from_migration()
+	{
+		return array(
+			array(
+				'Migration_Kohana_201012290258',
+				'kohana:201012290258',
+			),
+			array(
+				'Migration_Kohana_201012290258',
+				array('location' => 'kohana', 'timestamp' => '201012290258'),
+			),
+		);
+	}
+
+	/**
+	 * Tests that Minion_Migration_Util::get_class_from_migration can generate 
+	 * a class name from information about a migration
+	 *
+	 * @test
+	 * @covers Minion_Migration_Util::get_class_from_migration
+	 * @dataProvider provider_get_class_from_migration
+	 * @param string Expected output
+	 * @param string|array Migration info
+	 */
+	public function test_get_class_from_migration($expected, $migration)
+	{
+		$this->assertSame(
+			$expected,
+			Minion_Migration_Util::get_class_from_migration($migration)
 		);
 	}
 }

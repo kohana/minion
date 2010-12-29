@@ -54,12 +54,12 @@ class Minion_Migration_ModelTest extends Kohana_Unittest_Database_TestCase
 	public function test_fetch_current_versions()
 	{
 		$versions = $this->getModel()
-			->fetch_current_versions('location', 'id');
+			->fetch_current_versions('location', 'timestamp');
 
 		$this->assertSame(
 			array (
-				'app'      => '1293543858_remove-password-salt-column',
-				'dblogger' => '1293544858_remove-unique-index',
+				'app'      => '1293543858',
+				'dblogger' => '1293544858',
 			),
 			$versions
 		);
@@ -80,18 +80,18 @@ class Minion_Migration_ModelTest extends Kohana_Unittest_Database_TestCase
 						'direction' => true,
 						'migrations' => array(
 							array (
-								'timestamp' => '1293543800',
+								'timestamp'   => '1293543800',
 								'description' => 'add-name-column-to-members',
-								'location' => 'app',
-								'applied' => '0',
-								'id' => '1293543800_add-name-column-to-members',
+								'location'    => 'app',
+								'applied'     => '0',
+								'id'          => 'app:1293543800'
 							),
 							array (
-								'timestamp' => '1293543828',
+								'timestamp'   => '1293543828',
 								'description' => 'add-index-on-name',
-								'location' => 'app',
-								'applied' => '0',
-								'id' => '1293543828_add-index-on-name',
+								'location'    => 'app',
+								'applied'     => '0',
+								'id'          => 'app:1293543828'
 							),
 						),
 					),
@@ -99,11 +99,11 @@ class Minion_Migration_ModelTest extends Kohana_Unittest_Database_TestCase
 						'direction' => true,
 						'migrations' => array(
 							array (
-							'timestamp' => '1293544908',
+							'timestamp'   => '1293544908',
 							'description' => 'add-pk',
-							'location' => 'dblogger',
-							'applied' => '0',
-							'id' => '1293544908_add-pk',
+							'location'    => 'dblogger',
+							'applied'     => '0',
+							'id'          => 'dblogger:1293544908'
 							),
 						),
 					),
@@ -122,14 +122,14 @@ class Minion_Migration_ModelTest extends Kohana_Unittest_Database_TestCase
 								'description' => 'remove-password-salt-column',
 								'location'    => 'app',
 								'applied'     => '1',
-								'id'          => '1293543858_remove-password-salt-column'
+								'id'          => 'app:1293543858'
 							),
 							array(
 								'timestamp'   => '1293543728',
 								'description' => 'create-tables',
 								'location'    => 'app',
 								'applied'     => '1',
-								'id'          => '1293543728_create-tables',
+								'id'          => 'app:1293543728'
 							),
 						)
 					),
@@ -141,14 +141,14 @@ class Minion_Migration_ModelTest extends Kohana_Unittest_Database_TestCase
 								'description' => 'remove-unique-index',
 								'location'    => 'dblogger',
 								'applied'     => '1',
-								'id'          => '1293544858_remove-unique-index',
+								'id'          => 'dblogger:1293544858'
 							),
 							array(
 								'timestamp'   => '1293543858',
 								'description' => 'create-table',
 								'location'    => 'dblogger',
 								'applied'     => '1',
-								'id'          => '1293543858_create-table',
+								'id'          => 'dblogger:1293543858'
 							),
 						)
 					),

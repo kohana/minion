@@ -30,10 +30,7 @@ class Minion_Migration_Util {
 			{
 				$migration = Minion_Migration_Util::get_migration_from_filename($file);
 
-				$migrations[$migration['id']] = array(
-					'file'     => $file, 
-					'location' => $migration['location']
-				);
+				$migrations[$migration['location'].':'.$migration['timestamp']] = $migration;
 			}
 		}
 
@@ -46,11 +43,10 @@ class Minion_Migration_Util {
 	 * Returns an array like:
 	 *
 	 *     array(
-	 *        'location'      => 'mylocation',
-	 *        'id'          => '1293214439_initial-setup',
-	 *        'file'        => 'migrations/mylocation/1293214439_initial-setup.php',
+	 *        'location'    => 'mylocation',
 	 *        'timestamp'   => '1293214439',
 	 *        'description' => 'initial-setup',
+	 *        'id'          => 'mylocation:1293214439'
 	 *     );
 	 *
 	 * @param  string The migration's filename
@@ -64,11 +60,11 @@ class Minion_Migration_Util {
 		// the filename itself.  The "location" is essentially a slash delimited 
 		// path from the migrations folder to the migration file
 		$migration['location'] = dirname(substr($file, 11, -strlen(EXT)));
-		$migration['id']     = basename($file, EXT);
-		$migration['file']   = $file;
 
 		list($migration['timestamp'], $migration['description']) 
-			= explode('_', $migration['id'], 2);
+			= explode('_', basename($file, EXT), 2);
+
+		$migration['id'] = $migration['location'].':'.$migration['timestamp'];
 
 		return $migration;
 	}
@@ -80,16 +76,34 @@ class Minion_Migration_Util {
 	 * @param  string        The migration location
 	 * @return string        Path to the migration file
 	 */
-	public static function get_filename_from_migration($migration, $location)
+	public static function get_filename_from_migration(array $migration)
 	{
-		if(is_array($migration))
-		{
-			$location  = $migration['location'];
-			$migration = $migration['id'];
-		}
+		$location  = $migration['location'];
+		$migration = $migration['timestamp'].'_'.$migration['description'];
 
 		$location = ! empty($location) ? rtrim($location, '/').'/' : '';
 
 		return $location.$migration.EXT;
+	}
+
+	/**
+	 * Allows you to work out the class name from either an array of migration 
+	 * info, or from a migration id
+	 *
+	 * @param  string|array The migration's ID or array of migration data
+	 * @return string       The migration class name
+	 */
+	public static function get_class_from_migration($migration)
+	{
+		if(is_string($migration))
+		{
+			$migration = str_replace(array(':', '/'), ' ', $migration);
+		}
+		else
+		{
+			$migration = str_replace('/', ' ', $migration['location']).'_'.$migration['timestamp'];
+		}
+
+		return 'Migration_'.str_replace(' ', '_', ucwords($migration));
 	}
 }

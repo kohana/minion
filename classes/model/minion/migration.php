@@ -37,7 +37,7 @@ class Model_Minion_Migration extends Model
 	 */
 	protected function _select()
 	{
-		return DB::select('*', DB::expr('CONCAT(CAST(`timestamp` AS CHAR), "_", `description`) AS `id`'))->from($this->_table);
+		return DB::select('*', DB::expr('CONCAT(`location`, ":", CAST(`timestamp` AS CHAR)) AS `id`'))->from($this->_table);
 	}
 
 	/**
@@ -167,10 +167,8 @@ class Model_Minion_Migration extends Model
 			// Else if the user explicitly specified a target version of some kind
 			else
 			{
-				list($timestamp, $description) = explode('_', $target, 2);
-
-				$current_timestamp = 
-					isset($migrations[$location]) 
+				$timestamp         = $target;
+				$current_timestamp = isset($migrations[$location]) 
 					? $migrations[$location]['timestamp'] 
 					: NULL;
 

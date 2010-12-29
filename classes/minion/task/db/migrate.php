@@ -18,14 +18,16 @@
  *  is used to specify the target version of an individual location. Version
  *  specifies the target version, which can be either:
  *
- *     * A migration id (migrates up/down to that version)
+ *     * A migration version (migrates up/down to that version)
  *     * TRUE (runs all migrations to get to the latest version)
  *     * FALSE (undoes all appled migrations)
  *
- *  An example of a migration ID is 1293506456_add-index-to-orders
+ *  An example of a migration version is 20101229015800
  *
  *  If you specify TRUE / FALSE without a location then the default migration 
- *  direction for locations without a specified version will be up / down respectively
+ *  direction for locations without a specified version will be up / down respectively.
+ *
+ *  If you're only specifying a migration version then you *must* specify a location
  *
  * --locations=location[,location2[,location3...]]
  *
@@ -176,5 +178,4 @@ class Minion_Task_Db_Migrate extends Minion_Task
 
 		throw new Kohana_Exception('Invalid target version :version', array(':version' => $version));
 	}
-
 }
