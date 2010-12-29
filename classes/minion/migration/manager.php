@@ -147,6 +147,6 @@ class Minion_Migration_Manager {
 	{
 		$files = Kohana::list_files('migrations');
 
-		return Minion_Migration_Util::parse_migrations_from_files($files);
+		return Minion_Migration_Util::compile_migrations_from_files($files);
 	}
 }
