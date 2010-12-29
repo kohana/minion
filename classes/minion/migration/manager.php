@@ -155,6 +155,36 @@ class Minion_Migration_Manager {
 		$installed = $this->_model->fetch_all('id');
 
 		$available = $this->scan_for_migrations();
+
+		$all_migrations = array_keys($installed) + array_keys($available);
+
+		foreach($all_migrations as $migration)
+		{
+			// If this migration has since been deleted
+			if(isset($installed[$migration]) AND ! isset($available[$migration]))
+			{
+				// We should only delete a record of this migration if it does 
+				// not exist in the "real world"
+				if($installed[$migration]['applied'] === '0')
+				{
+					$this->_model->delete_migration($installed[$migration]);
+				}
+			}
+			// If the migration has not yet been installed :D
+			elseif( ! isset($installed[$migration]) AND isset($available[$migration]))
+			{
+				$this->_model->add_migration($available[$migration]);
+			}
+			// Somebody changed the description of the migration, make sure we 
+			// update it in the db as we use this to build the filename!
+			elseif($installed[$migration]['description'] !== $available[$migration]['description'])
+			{
+				$this->_model->update_migration($installed[$migration], $available[$migration]);
+			}
+		}
+		
+
+		return $this;
 	}
 
 	/**

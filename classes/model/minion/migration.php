@@ -41,6 +41,78 @@ class Model_Minion_Migration extends Model
 	}
 
 	/**
+	 * Inserts a migration into the database
+	 *
+	 * @param array Migration data
+	 * @return Model_Minion_Migration $this
+	 */
+	public function add_migration(array $migration)
+	{
+		DB::insert($this->_table, array('timestamp', 'location', 'description'))
+			->values(array($migration['timestamp'], $migration['location'], $migration['description']))
+			->execute($this->_db);
+
+		return $this;
+	}
+
+	/**
+	 * Deletes a migration from the database
+	 *
+	 * @param string|array Migration id / info
+	 * @return Model_Minion_Migration $this
+	 */
+	public function delete_migration($migration)
+	{
+		if(is_array($migration))
+		{
+			$timestamp = $migration['timestamp'];
+			$location  = $migration['location'];
+		}
+		else
+		{
+			list($timestamp, $location) = explode(':', $migration);
+		}
+
+		DB::delete($this->_table)
+			->where('timestamp', '=', $timestamp)
+			->where('location',  '=', $location)
+			->execute($this->_db);
+
+		return $this;
+	}
+
+	/**
+	 * Update an existing migration record to reflect a new one
+	 *
+	 * @param array The current migration
+	 * @param array The new migration
+	 * @return Model_Minion_Migration $this
+	 */
+	public function update_migration(array $current, array $new)
+	{
+		$set = array();
+		
+		foreach($new as $key => $value)
+		{
+			if($key !== 'id' AND $current[$key] !== $value)
+			{
+				$set[$key] = $value;
+			}
+		}
+
+		if(count($set))
+		{
+			DB::update($this->_table)
+				->set($set)
+				->where('timestamp', '=', $current['timestamp'])
+				->where('location', '=', $current['location'])
+				->execute($this->_db);
+		}
+
+		return $this;
+	}
+
+	/**
 	 * Selects all migrations from the migratinos table
 	 *
 	 * @return Kohana_Database_Result
