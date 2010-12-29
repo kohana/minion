@@ -7,7 +7,7 @@
  *
  * Available config options are:
  *
- * db:migration:versions=[location:]version
+ * --versions=[location:]version
  *
  *  Used to specify the version to migrate the database to.  The location prefix 
  *  is used to specify the target version of an individual location. Version
@@ -22,13 +22,13 @@
  *  If you specify TRUE / FALSE without a location then the default migration 
  *  direction for locations without a specified version will be up / down respectively
  *
- * db:migrate:locations=location[,location2[,location3...]]
+ * --locations=location[,location2[,location3...]]
  *
  *  A list of locations (under the migrations folder in the cascading 
  *  filesystem) that will be used to source migration files.  By default 
  *  migrations will be loaded from all available locations
  *
- * db:migrate:dry-run
+ * --dry-run
  *
  *  No value taken, if this is specified then instead of executing the SQL it 
  *  will be printed to the console

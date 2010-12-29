@@ -69,46 +69,27 @@ class Controller_Minion extends Controller
 	 */
 	public function action_execute()
 	{
-		$tasks = trim($this->request->param('task'));
+		$task = trim($this->request->param('task'));
 
-		if(empty($tasks))
+		if(empty($task))
 			return $this->action_help();
 
-		$tasks = explode(',', $tasks);
-
-		$master = new Minion_Master;
-
-		$options = $master->load($tasks)->get_config_options();
-
-		$config = array();
-
-		// Allow the user to specify config for each task, namespacing each 
-		// config option with the name of the task that "owns" it
-		foreach($options as $task_name => $task_options)
+		try 
 		{
-			$namespace = $task_name.Minion_Util::$task_separator;
+			$task = Minion_Task::factory($task);
+		}
+		catch(Exception $e)
+		{
+			echo View::factory('minion/help/error')
+				->set('error', 'Task "'.$task.'" does not exist');
 
-			// Namespace each config option
-			foreach($task_options as $i => $task_option)
-			{
-				$task_options[$i] = $namespace.$task_option;
-			}
-
-			// Get any config options the user's passed
-			$task_config = call_user_func_array(array('CLI', 'options'), $task_options);
-
-			if( ! empty($task_config))
-			{
-				$namespace_length = strlen($namespace);
-
-				// Strip the namespace off all the config options
-				foreach($task_config as $key => $value)
-				{
-					$config[$task_name][substr($key, $namespace_length)] = $value;
-				}
-			}
+			exit(1);
 		}
 
-		$master->execute($config);
+		$options = $task->get_config_options();
+
+		$config = call_user_func_array(array('CLI', 'options'), $options);
+
+		$task->execute($config);
 	}
 }

@@ -7,6 +7,32 @@
 abstract class Minion_Task {
 
 	/**
+	 * Factory for loading minion tasks
+	 *
+	 * @throws Kohana_Exception
+	 * @param  string The task to load
+	 * @return Minion_Task The Minion task
+	 */
+	public static function factory($task)
+	{
+		if(is_string($task))
+		{
+			$class = Minion_Util::convert_task_to_class_name($task);
+
+			$task = new $class;
+		}
+
+		if( ! $task instanceof Minion_Task)
+		{
+			throw new Kohana_Exception(
+				"Task ':task' is not a valid minion task", 
+				array(':task' => get_class($task))
+			);
+		}
+
+		return $task;
+	}
+	/**
 	 * A set of config options that the task accepts on the command line
 	 * @var array
 	 */
