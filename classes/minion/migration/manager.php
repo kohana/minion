@@ -39,6 +39,32 @@ class Minion_Migration_Manager {
 	}
 
 	/**
+	 * Set the database connection to be used
+	 * 
+	 * @param Kohana_Database Database connection
+	 * @return Minion_Migration_Manager
+	 */
+	public function set_db(Kohana_Database $db)
+	{
+		$this->_db = $db;
+
+		return $this;
+	}
+
+	/**
+	 * Set the model to be used in the rest of the app
+	 *
+	 * @param Model_Minion_Migration Model instance
+	 * @return Minion_Migration_Manager
+	 */
+	public function set_model(Model_Minion_Migration $model)
+	{
+		$this->_model = $model;
+
+		return $this;
+	}
+
+	/**
 	 * Run migrations in the specified locations so as to reach specified targets
 	 *
 	 * There are three methods for specifying target versions:
