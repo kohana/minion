@@ -95,6 +95,9 @@ class Minion_Task_Db_Migrate extends Minion_Task
 	 */
 	protected function _parse_locations($location)
 	{
+		if(is_array($location))
+			return $location;
+
 		$locations = array();
 		$location  = trim($location, ',');
 
@@ -125,24 +128,29 @@ class Minion_Task_Db_Migrate extends Minion_Task
 	 */
 	protected function _parse_target_versions($versions)
 	{
+		if(empty($versions))
+			return array();
+
 		$targets = array();
 
-		if( ! empty($versions) AND $versions = explode(',', $versions))
+		if( ! is_array($versions))
 		{
-			foreach($versions as $version)
+			$versions = explode(',', trim($versions));
+		}
+
+		foreach($versions as $version)
+		{
+			$target = $this->_parse_version($version);
+
+			if(is_array($target))
 			{
-				$target = $this->_parse_version($version);
+				list($location, $version) = $target;
 
-				if(is_array($target))
-				{
-					list($location, $version) = $target;
-
-					$targets[$location] = $version;
-				}
-				else
-				{
-					$this->_default_direction = $target;
-				}
+				$targets[$location] = $version;
+			}
+			else
+			{
+				$this->_default_direction = $target;
 			}
 		}
 
@@ -157,6 +165,9 @@ class Minion_Task_Db_Migrate extends Minion_Task
 	 */
 	protected function _parse_version($version)
 	{
+		if(is_bool($version))
+			return $version;
+
 		if($version === 'TRUE' OR $version == FALSE)
 			return $version === 'TRUE';
 
