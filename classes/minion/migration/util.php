@@ -104,6 +104,6 @@ class Minion_Migration_Util {
 			$migration = str_replace('/', ' ', $migration['location']).'_'.$migration['timestamp'];
 		}
 
-		return 'Migration_'.str_replace(' ', '_', ucwords($migration));
+		return 'Migration_'.str_replace(array(' ', '-'), '_', ucwords($migration));
 	}
 }

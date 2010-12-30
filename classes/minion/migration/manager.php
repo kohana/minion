@@ -110,11 +110,17 @@ class Minion_Migration_Manager {
 
 			foreach($location['migrations'] as $migration)
 			{
-				$file  = Minion_Migration_Util::get_filename_from_migration($migration);
+				$filename  = Minion_Migration_Util::get_filename_from_migration($migration);
 
-				if( ! ($file  = Kohana::find_file('migrations', $file)))
+				if( ! ($file  = Kohana::find_file('migrations', $filename, FALSE)))
 				{
-					throw new Kohana_Exception('Cannot load migration :migration', array(':migration' => $migration['id']));
+					throw new Kohana_Exception(
+						'Cannot load migration :migration (:file)', 
+						array(
+							':migration' => $migration['id'], 
+							':file'      => $filename
+						)
+					);
 				}
 
 				$class = Minion_Migration_Util::get_class_from_migration($migration);
