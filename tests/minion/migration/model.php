@@ -27,9 +27,7 @@ class Minion_Migration_ModelTest extends Kohana_Unittest_Database_TestCase
 	 */
 	public function getModel()
 	{
-		$db = Database::instance(Kohana::config('unittest')->db_connection);
-
-		return new Model_Minion_Migration($db);
+		return new Model_Minion_Migration($this->getKohanaConnection());
 	}
 
 	/**
@@ -58,8 +56,8 @@ class Minion_Migration_ModelTest extends Kohana_Unittest_Database_TestCase
 
 		$this->assertSame(
 			array (
-				'app'      => '1293543858',
-				'dblogger' => '1293544858',
+				'app'      => '20101216080000',
+				'dblogger' => '20101225000000',
 			),
 			$versions
 		);
@@ -80,18 +78,18 @@ class Minion_Migration_ModelTest extends Kohana_Unittest_Database_TestCase
 						'direction' => true,
 						'migrations' => array(
 							array (
-								'timestamp'   => '1293543800',
+								'timestamp'   => '20101215165000',
 								'description' => 'add-name-column-to-members',
 								'location'    => 'app',
 								'applied'     => '0',
-								'id'          => 'app:1293543800'
+								'id'          => 'app:20101215165000'
 							),
 							array (
-								'timestamp'   => '1293543828',
+								'timestamp'   => '20101216000000',
 								'description' => 'add-index-on-name',
 								'location'    => 'app',
 								'applied'     => '0',
-								'id'          => 'app:1293543828'
+								'id'          => 'app:20101216000000'
 							),
 						),
 					),
@@ -99,11 +97,11 @@ class Minion_Migration_ModelTest extends Kohana_Unittest_Database_TestCase
 						'direction' => true,
 						'migrations' => array(
 							array (
-							'timestamp'   => '1293544908',
+							'timestamp'   => '20101226112100',
 							'description' => 'add-pk',
 							'location'    => 'dblogger',
 							'applied'     => '0',
-							'id'          => 'dblogger:1293544908'
+							'id'          => 'dblogger:20101226112100'
 							),
 						),
 					),
@@ -118,18 +116,18 @@ class Minion_Migration_ModelTest extends Kohana_Unittest_Database_TestCase
 						'direction'  => FALSE,
 						'migrations' => array(
 							array(
-								'timestamp'   => '1293543858',
+								'timestamp'   => '20101216080000',
 								'description' => 'remove-password-salt-column',
 								'location'    => 'app',
 								'applied'     => '1',
-								'id'          => 'app:1293543858'
+								'id'          => 'app:20101216080000'
 							),
 							array(
-								'timestamp'   => '1293543728',
+								'timestamp'   => '20101215164400',
 								'description' => 'create-tables',
 								'location'    => 'app',
 								'applied'     => '1',
-								'id'          => 'app:1293543728'
+								'id'          => 'app:20101215164400'
 							),
 						)
 					),
@@ -137,18 +135,18 @@ class Minion_Migration_ModelTest extends Kohana_Unittest_Database_TestCase
 						'direction'  => FALSE,
 						'migrations' => array(
 							array(
-								'timestamp'   => '1293544858',
+								'timestamp'   => '20101225000000',
 								'description' => 'remove-unique-index',
 								'location'    => 'dblogger',
 								'applied'     => '1',
-								'id'          => 'dblogger:1293544858'
+								'id'          => 'dblogger:20101225000000'
 							),
 							array(
-								'timestamp'   => '1293543858',
+								'timestamp'   => '20101215164500',
 								'description' => 'create-table',
 								'location'    => 'dblogger',
 								'applied'     => '1',
-								'id'          => 'dblogger:1293543858'
+								'id'          => 'dblogger:20101215164500'
 							),
 						)
 					),
@@ -178,5 +176,137 @@ class Minion_Migration_ModelTest extends Kohana_Unittest_Database_TestCase
 				->fetch_required_migrations($locations, $target, $default_direction);
 
 		$this->assertSame($expected, $results);
+	}
+
+	/**
+	 * Provides test data for test_get_migration
+	 *
+	 * @return array
+	 */
+	public function provider_get_migration()
+	{
+		return array(
+			array(
+				array(
+					'timestamp'    => '20101215164400',
+					'description'  => 'create-tables',
+					'location'     => 'app',
+					'applied'      => '1',
+					'id'           => 'app:20101215164400'
+				),
+				'app',
+				'20101215164400',
+			)
+		);
+	}
+
+	/**
+	 * Tests that Model_Minion_Migration::get_migration can get a migration from 
+	 * the database
+	 *
+	 * @test
+	 * @covers Model_Minion_Migration::get_migration
+	 * @dataProvider provider_get_migration
+	 * @param array  Expected migration
+	 * @param string The migration's location
+	 * @param string The migration's timestamp
+	 */
+	public function test_get_migration($expected, $location, $timestamp)
+	{
+		$this->assertSame(
+			$expected,
+			$this->getModel()->get_migration($location, $timestamp)
+		);
+	}
+
+	/**
+	 * Provides test data for test_get_migration_throws_exception_on_invalid_input
+	 *
+	 * @return array
+	 */
+	public function provider_get_migration_throws_exception_on_invalid_input()
+	{
+		return array(
+			array(NULL,  NULL),
+			array('app', NULL),
+		);
+	}
+
+	/**
+	 * If invalid input is passed to get_migration then it should throw an 
+	 * exception
+	 *
+	 * @test
+	 * @covers Model_Minion_Migration::get_migration
+	 * @dataProvider provider_get_migration_throws_exception_on_invalid_input
+	 * @expectedException Kohana_Exception
+	 */
+	public function test_get_migration_throws_exception_on_invalid_input($location, $timestamp)
+	{
+		$this->getModel()->get_migration($location, $timestamp);
+	}
+
+	/**
+	 * Provides test data for test_mark_migration
+	 *
+	 * @return array
+	 */
+	public function provider_mark_migration()
+	{
+		return array(
+			array(
+				array(
+					'timestamp'   => '20101215165000',
+					'description' => 'add-name-column-to-members',
+					'location'    => 'app',
+					'applied'     => '1',
+					'id'          => 'app:20101215165000',
+				),
+				array(
+					'timestamp'   => '20101215165000',
+					'location'    => 'app',
+					'description' => 'add-name-column-to-members',
+				),
+				TRUE
+			),
+			array(
+				array(
+					'timestamp'   => '20101215165000',
+					'description' => 'add-name-column-to-members',
+					'location'    => 'app',
+					'applied'     => '0',
+					'id'          => 'app:20101215165000',
+				),
+				array(
+					'timestamp'   => '20101215165000',
+					'location'    => 'app',
+					'description' => 'add-name-column-to-members',
+				),
+				FALSE
+			),
+		);
+	}
+
+	/**
+	 * Tests that Model_Minion_Migration::mark_migration() changes the applied 
+	 * status of a migration
+	 *
+	 * @test
+	 * @covers Model_Minion_Migration::mark_migration
+	 * @dataProvider provider_mark_migration
+	 * @param array What the DB record should look like after migration is marked
+	 * @param array The migration to update
+	 * @param bool  Whether the migration should be applied
+	 */
+	public function test_mark_migration($expected, $migration, $applied)
+	{
+		$model = $this->getModel();
+
+		$model->mark_migration($migration, $applied);
+
+		$this->assertSame(
+			$expected,
+			$model->get_migration($migration['location'], $migration['timestamp'])
+		);
 	}
 }

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <dataset>
-	<migrations timestamp="1293543728" description="create-tables"               location="app"      applied="1" />
-	<migrations timestamp="1293543800" description="add-name-column-to-members"  location="app"      applied="0" />
-	<migrations timestamp="1293543828" description="add-index-on-name"           location="app"      applied="0" />
-	<migrations timestamp="1293543858" description="remove-password-salt-column" location="app"      applied="1" />
+	<migrations timestamp="20101215164400" description="create-tables"               location="app"      applied="1" />
+	<migrations timestamp="20101215165000" description="add-name-column-to-members"  location="app"      applied="0" />
+	<migrations timestamp="20101216000000" description="add-index-on-name"           location="app"      applied="0" />
+	<migrations timestamp="20101216080000" description="remove-password-salt-column" location="app"      applied="1" />
 
-	<migrations timestamp="1293543858" description="create-table"                location="dblogger" applied="1" />
-	<migrations timestamp="1293544858" description="remove-unique-index"         location="dblogger" applied="1" />
-	<migrations timestamp="1293544908" description="add-pk"                      location="dblogger" applied="0" />
+	<migrations timestamp="20101215164500" description="create-table"                location="dblogger" applied="1" />
+	<migrations timestamp="20101225000000" description="remove-unique-index"         location="dblogger" applied="1" />
+	<migrations timestamp="20101226112100" description="add-pk"                      location="dblogger" applied="0" />
 </dataset>

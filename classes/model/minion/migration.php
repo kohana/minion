@@ -56,6 +56,31 @@ class Model_Minion_Migration extends Model
 	}
 
 	/**
+	 * Get a migration by its id
+	 *
+	 * @param  string Migration ID
+	 * @return array  Migration info
+	 */
+	public function get_migration($location, $timestamp = NULL)
+	{
+		if($timestamp === NULL)
+		{
+			if(empty($location) OR strpos(':', $location) === FALSE)
+			{
+				throw new Kohana_Exception('Invalid migration id :id', array(':id' => $location));
+			}
+
+			list($location, $timestamp) = explode(':', $location);
+		}
+
+		return $this->_select()
+			->where('timestamp', '=', (string) $timestamp)
+			->where('location',  '=', (string) $location)
+			->execute($this->_db)
+			->current();
+	}
+
+	/**
 	 * Deletes a migration from the database
 	 *
 	 * @param string|array Migration id / info
