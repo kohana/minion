@@ -11,9 +11,19 @@ class Minion_Migration_Database extends Database_MySQL {
 	 * @param array Config for the underlying DB connection
 	 * @return Minion_Migration_Database
 	 */
-	public static function instance(array $config)
+	public static function faux_instance($db_group = NULL, array $config = NULL)
 	{
-		return new Minion_Migration_Database('_minion_faux', $config);
+		if($config === NULL)
+		{
+			if($db_group === NULL)
+			{
+				$db_group = Database::$default;
+			}
+
+			$config = Kohana::config('database')->$db_group;
+		}
+
+		return new Minion_Migration_Database('__minion_faux', $config);
 	}
 
 	/**
@@ -24,6 +34,7 @@ class Minion_Migration_Database extends Database_MySQL {
 
 	/**
 	 * Gets the stack of queries that have been executed
+	 *
 	 * @return array
 	 */
 	public function get_query_stack()
@@ -32,14 +43,17 @@ class Minion_Migration_Database extends Database_MySQL {
 	}
 
 	/**
-	 * Resets the query stack to an empty state
-	 * @return Minion_Migration_Database $this
+	 * Resets the query stack to an empty state and returns the queries
+	 *
+	 * @return array Array of SQL queries that would've been executed
 	 */
 	public function reset_query_stack()
 	{
+		$queries = $this->_queries;
+
 		$this->_queries = array();
 
-		return $this;
+		return $queries;
 	}
 
 	/**
