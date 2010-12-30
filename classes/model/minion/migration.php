@@ -173,9 +173,16 @@ class Model_Minion_Migration extends Model
 		// The user wants to run all available migrations
 		if(empty($locations))
 		{
-			$keys = array_keys($migrations);
+			if(count($migrations))
+			{
+				$keys = array_keys($migrations);
 
-			$locations = array_combine($keys, $keys);
+				$locations = array_combine($keys, $keys);
+			}
+			else
+			{
+				$locations = $this->fetch_all('location', 'location');
+			}
 		}
 
 		// Merge locations with specified target versions 
