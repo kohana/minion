@@ -184,6 +184,20 @@ class Model_Minion_Migration extends Model
 				$locations = $this->fetch_all('location', 'location');
 			}
 		}
+		// If the calling script has been lazy and given us a numerically 
+		// indexed array of locations then we need to convert it to a mirrored 
+		// array
+		//
+		// We will decide the target version for these within the loop below
+		elseif( ! Arr::is_assoc($locations))
+		{
+			foreach($locations as $_pos => $location)
+			{
+				unset($locations[$_pos]);
+
+				$locations[$location] = $location;
+			}
+		}
 
 		// Merge locations with specified target versions 
 		if( ! empty($target_version) AND is_array($target_version))
