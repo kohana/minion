@@ -122,7 +122,7 @@ class Minion_Task_Db_Migrate extends Minion_Task
 			return $location;
 
 		$locations = array();
-		$location  = trim($location, ',');
+		$location  = explode(',', trim($location, ','));
 
 		if( ! empty($location))
 		{
