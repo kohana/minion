@@ -107,7 +107,7 @@ class Minion_Task_Db_Migrate extends Minion_Task
 			->set('quiet', $quiet)
 			->set('dry_run_sql', $manager->get_dry_run_sql());
 
-		echo $view;
+		return $view;
 	}
 
 	/**

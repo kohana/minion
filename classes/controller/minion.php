@@ -90,6 +90,6 @@ class Controller_Minion extends Controller
 
 		$config = call_user_func_array(array('CLI', 'options'), $options);
 
-		$task->execute($config);
+		echo $task->execute($config);
 	}
 }
