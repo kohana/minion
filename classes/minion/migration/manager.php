@@ -22,6 +22,24 @@ class Minion_Migration_Manager {
 	protected $_model;
 
 	/**
+	 * Whether this is a dry run migration
+	 * @var boolean
+	 */
+	protected $_dry_run = FALSE;
+
+	/**
+	 * A set of SQL queries that were generated on the dry run
+	 * @var array
+	 */
+	protected $_dry_run_sql = array();
+
+	/**
+	 * Set of migrations that were executed
+	 */
+	protected $_executed_migrations = array();
+
+
+	/**
 	 * Constructs the object, allows injection of a Database connection
 	 *
 	 * @param Kohana_Database        The database connection that should be passed to migrations
@@ -65,6 +83,30 @@ class Minion_Migration_Manager {
 	}
 
 	/**
+	 * Set whether the manager should execute a dry run instead of a real run
+	 *
+	 * @param boolean Whether we should do a dry run
+	 * @return Minion_Migration_Manager
+	 */
+	public function set_dry_run($dry_run)
+	{
+		$this->_dry_run = (bool) $dry_run;
+
+		return $this;
+	}
+
+	/**
+	 * Ruturns a set of queries that would've been executed had dry run not been 
+	 * enabled.  If dry run was not enabled, this returns an empty array
+	 *
+	 * @return array SQL Queries
+	 */
+	public function get_dry_run_sql()
+	{
+		return $this->_dry_run_sql;
+	}
+
+	/**
 	 * Run migrations in the specified locations so as to reach specified targets
 	 *
 	 * There are three methods for specifying target versions:
@@ -97,14 +139,14 @@ class Minion_Migration_Manager {
 	 * @param  array   Set of locations to update, empty array means all
 	 * @param  array   Versions for specified locations
 	 * @param  boolean The default direction (up/down) for migrations without a specific version
-	 * @param  boolean Whether successful migrations should be recorded
 	 * @return array   Array of all migrations that were successfully applied
 	 */
-	public function run_migration(array $locations = array(), $versions = array(), $default_direction = TRUE, $record_success = TRUE)
+	public function run_migration(array $locations = array(), $versions = array(), $default_direction = TRUE)
 	{
 		$migrations = $this->_model->fetch_required_migrations($locations, $versions, $default_direction);
+		$db         = $this->_get_db_instance();
 
-		foreach($migrations as $location)
+		foreach($migrations as $path => $location)
 		{
 			$method = $location['direction'] ? 'up' : 'down';
 
@@ -125,7 +167,7 @@ class Minion_Migration_Manager {
 
 				$class = Minion_Migration_Util::get_class_from_migration($migration);
 
-				$this->_db->query(NULL, 'START TRANSACTION');
+				$db->query(NULL, 'START TRANSACTION');
 
 				try
 				{
@@ -133,18 +175,22 @@ class Minion_Migration_Manager {
 
 					$instance = new $class;
 
-					$instance->$method($this->_db);
+					$instance->$method($db);
 				}
 				catch(Exception $e)
 				{
-					$this->_db->query(NULL, 'ROLLBACK');
+					$db->query(NULL, 'ROLLBACK');
 
 					throw $e;
 				}
 				
-				$this->_db->query('COMMIT');
+				$db->query(NULL, 'COMMIT');
 
-				if($record_success)
+				if($this->_dry_run)
+				{
+					$this->_dry_run_sql[$path][$migration['timestamp']] = $db->reset_query_stack();
+				}
+				else
 				{
 					$this->_model->mark_migration($migration, $location['direction']);
 				}
@@ -213,5 +259,21 @@ class Minion_Migration_Manager {
 		$files = Kohana::list_files('migrations');
 
 		return Minion_Migration_Util::compile_migrations_from_files($files);
+	}
+
+	/**
+	 * Gets a database connection for running the migrations
+	 *
+	 * @return Kohana_Database Database connection
+	 */
+	protected function _get_db_instance()
+	{
+		// If this isn't a dry run then just use the normal database connection
+		if( ! $this->_dry_run)
+			return $this->_db;
+
+		$db_group = array_search($this->_db, Database::$instances);
+
+		return Minion_Migration_Database::faux_instance($db_group);
 	}
 }

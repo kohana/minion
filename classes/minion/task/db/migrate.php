@@ -40,6 +40,11 @@
  *  No value taken, if this is specified then instead of executing the SQL it 
  *  will be printed to the console
  *
+ * --quiet
+ *
+ *  Suppress all unnessacery output.  If --dry-run is enabled then only dry run 
+ *  SQL will be output
+ *
  * @author Matt Button <matthew@sigswitch.com>
  */
 class Minion_Task_Db_Migrate extends Minion_Task
@@ -59,7 +64,8 @@ class Minion_Task_Db_Migrate extends Minion_Task
 		'environment',
 		'versions',
 		'locations',
-		'dry-run'
+		'dry-run',
+		'quiet'
 	);
 
 	/**
@@ -75,32 +81,33 @@ class Minion_Task_Db_Migrate extends Minion_Task
 		$environment         = Arr::get($config, 'environment', 'development');
 		$specified_locations = Arr::get($config, 'locations',   NULL);
 		$versions            = Arr::get($config, 'versions',    NULL);
-		$dry_run             = isset($config['dry-run']);
+		$dry_run             = array_key_exists('dry-run', $config);
+		$quiet               = array_key_exists('quiet', $config);
 
 		$targets   = $this->_parse_target_versions($versions);
 		$locations = $this->_parse_locations($specified_locations);
 
+		$db_group  = $k_config['db_connections'][$environment];
+		$db        = Database::instance($db_group);
+		$model     = new Model_Minion_Migration($db);
 
-		$db = Database::instance($k_config['db_connections'][$environment]);
+		$manager = new Minion_Migration_Manager($db, $model);
 
-		if($dry_run)
-		{
-			$manager = new Minion_Migration_Manager(
-				Minion_Migration_Database::instance($k_config['db_connections'][$environment]),
-				new Model_Minion_Migration($db)
-			);
-		}
-		else
-		{
-			$manager = new Minion_Migration_Manager($db);
-		}
-
-		$results = $manager
+		$manager
 			// Sync the available migrations with those in the db
 			->sync_migration_files()
-			// Run migrations for specified locations & versions, and if it's 
-			// a dry run don't log results to DB
-			->run_migration($locations, $targets, $this->_default_direction, ! $dry_run);
+
+			->set_dry_run($dry_run)
+
+			// Run migrations for specified locations & versions
+			->run_migration($locations, $targets, $this->_default_direction);
+
+		$view = View::factory('minion/task/db/migrate')
+			->set('dry_run', $dry_run)
+			->set('quiet', $quiet)
+			->set('dry_run_sql', $manager->get_dry_run_sql());
+
+		echo $view;
 	}
 
 	/**
