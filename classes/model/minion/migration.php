@@ -258,8 +258,6 @@ class Model_Minion_Migration extends Model
 					continue;
 				}
 
-				$query->where('location', '=', $location);
-
 				// If they haven't applied any migrations for this location
 				// yet and are justwhere wanting to apply all migrations 
 				// (i.e. roll forward)
