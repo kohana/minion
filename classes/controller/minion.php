@@ -14,7 +14,7 @@ class Controller_Minion extends Controller
 	{
 		if( ! Kohana::$is_cli)
 		{
-			throw new Request_Exception("Minion can only be ran from the cli");
+			throw new Kohana_Exception("Minion can only be ran from the cli");
 		}
 
 		return parent::before();
