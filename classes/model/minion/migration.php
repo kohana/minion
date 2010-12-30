@@ -113,6 +113,24 @@ class Model_Minion_Migration extends Model
 	}
 
 	/**
+	 * Change the applied status for a migration
+	 *
+	 * @param  array Migration information
+	 * @param  bool  Whether this migration has been applied or unapplied
+	 * @return Model_Minion_Migration
+	 */
+	public function mark_migration(array $migration, $applied)
+	{
+		DB::update($this->_table)
+			->set(array('applied' => (int) $applied))
+			->where('timestamp', '=', $migration['timestamp'])
+			->where('location',  '=', $migration['location'])
+			->execute($this->_db);
+
+		return $this;
+	}
+
+	/**
 	 * Selects all migrations from the migratinos table
 	 *
 	 * @return Kohana_Database_Result
