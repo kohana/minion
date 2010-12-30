@@ -191,7 +191,7 @@ class Minion_Task_Db_Migrate extends Minion_Task
 		if(is_bool($version))
 			return $version;
 
-		if($version === 'TRUE' OR $version == FALSE)
+		if($version === 'TRUE' OR $version == 'FALSE')
 			return $version === 'TRUE';
 
 		if(strpos(':', $version) !== FALSE)
