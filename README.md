@@ -7,6 +7,14 @@ from multiple locations (i.e. different modules).
 
 The system is inspired by ruckusing, which had a nice system for defining tasks but lacked the desired flexibility.
 
+## Requirements
+
+* [kohana-database](https://github.com/kohana/database)
+
+## Compatability
+
+Minion should be compatible with both Kohana 3.0.x and 3.1.x
+
 ## Getting Started
 
 First off, download and enable the module in your bootstrap
@@ -70,3 +78,17 @@ Yes, controllers offer just as much control as tasks, however there are a number
   collection of controllers while trying to restrict access to them.  If you create a module that requires command
   line interaction then you just ship a minion task with it and users will be able to start using it with minimal
   setup &amp; configuration
+
+### Eeew why aren't you using ORM xyz?
+
+In order to prevent conflicts across installations Minion aims to have as few dependencies as possible.
+
+### This is awesome! How can I contribute?
+
+Thanks for wanting to help out, just fork, commit, push, and send a pull request :)
+
+### UR DOIN IT WRONG
+
+Sorry you feel that way, it'd be useful if you could create an issue outlining what you think should be changed.
+
+Please don't PM me with support / feature requests.
