@@ -121,6 +121,11 @@ class Minion_Task_Db_Migrate extends Minion_Task
 		if(is_array($location))
 			return $location;
 
+		$location = trim($location);
+
+		if(empty($location))
+			return array();
+
 		$locations = array();
 		$location  = explode(',', trim($location, ','));
 
