@@ -1,0 +1,27 @@
+
+
+/**
+ * <?php echo $description.PHP_EOL; ?>
+ */
+class <?php echo $class; ?> extends Minion_Task {
+
+	/**
+	 * Run queries needed to apply this migration
+	 *
+	 * @param Kohana_Database Database connection
+	 */
+	public function up(Kohana_Database $db)
+	{
+		// $db->query(NULL, 'CREATE TABLE ... ');
+	}
+
+	/**
+	 * Run queries need to remove this migration
+	 *
+	 * @param Kohana_Database Database connection
+	 */
+	public function down(Kohana_Database $db)
+	{
+		// $db->query(NULL, 'DROP TABLE ... ');
+	}
+}
