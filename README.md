@@ -1,5 +1,7 @@
 # Minion
 
+*NOTE: Minion is currently in a beta state, please report any issues in the issue tracker*
+
 Minion is a module for the Kohana framework which makes it easier to run various tasks from the cli.
 
 The original "need" behind Minion was the lack of a good db migrations system, capable of selecting migrations
