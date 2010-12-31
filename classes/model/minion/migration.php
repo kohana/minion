@@ -191,6 +191,20 @@ class Model_Minion_Migration extends Model
 	}
 
 	/**
+	 * Fetches a list of locations
+	 *
+	 * @return array 
+	 */
+	public function fetch_locations($location_as_key = FALSE)
+	{
+		return DB::select()
+			->from($this->_table)
+			->group_by('location')
+			->execute($this->_db)
+			->as_array($location_as_key ? 'location' : NULL, 'location');
+	}
+
+	/**
 	 * Fetch a list of migrations that need to be applied in order to reach the 
 	 * required version
 	 *
@@ -216,16 +230,8 @@ class Model_Minion_Migration extends Model
 		// The user wants to run all available migrations
 		if(empty($locations))
 		{
-			if(count($migrations))
-			{
-				$keys = array_keys($migrations);
-
-				$locations = array_combine($keys, $keys);
-			}
-			else
-			{
-				$locations = $this->fetch_all('location', 'location');
-			}
+			// Fetch a mirrored array of locations => locations
+			$locations = $this->fetch_locations(TRUE);
 		}
 		// If the calling script has been lazy and given us a numerically 
 		// indexed array of locations then we need to convert it to a mirrored 
