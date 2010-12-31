@@ -105,7 +105,9 @@ class Minion_Task_Db_Migrate extends Minion_Task
 		$view = View::factory('minion/task/db/migrate')
 			->set('dry_run', $dry_run)
 			->set('quiet', $quiet)
-			->set('dry_run_sql', $manager->get_dry_run_sql());
+			->set('dry_run_sql', $manager->get_dry_run_sql())
+			->set('executed_migrations', $manager->get_executed_migrations())
+			->set('location_versions', $model->fetch_current_versions());
 
 		return $view;
 	}

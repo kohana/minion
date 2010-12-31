@@ -107,6 +107,15 @@ class Minion_Migration_Manager {
 	}
 
 	/**
+	 * Returns a set of executed migrations
+	 * @return array
+	 */
+	public function get_executed_migrations()
+	{
+		return $this->_executed_migrations;
+	}
+
+	/**
 	 * Run migrations in the specified locations so as to reach specified targets
 	 *
 	 * There are three methods for specifying target versions:
@@ -194,6 +203,8 @@ class Minion_Migration_Manager {
 				{
 					$this->_model->mark_migration($migration, $location['direction']);
 				}
+
+				$this->_executed_migrations[] = $migration;
 			}
 		}
 	}
