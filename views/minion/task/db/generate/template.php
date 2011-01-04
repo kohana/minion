@@ -3,7 +3,7 @@
 /**
  * <?php echo $description.PHP_EOL; ?>
  */
-class <?php echo $class; ?> extends Minion_Task {
+class <?php echo $class; ?> extends Minion_Migration_Base {
 
 	/**
 	 * Run queries needed to apply this migration
