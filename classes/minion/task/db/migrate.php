@@ -201,7 +201,7 @@ class Minion_Task_Db_Migrate extends Minion_Task
 		if($version === 'TRUE' OR $version == 'FALSE')
 			return $version === 'TRUE';
 
-		if(strpos(':', $version) !== FALSE)
+		if(strpos($version, ':') !== FALSE)
 			return explode(':', $version);
 
 		throw new Kohana_Exception('Invalid target version :version', array(':version' => $version));
