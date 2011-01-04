@@ -55,7 +55,7 @@ class Minion_Task_Db_Generate extends Minion_Task
 		$description = $config['description'];
 
 		// {year}{month}{day}{hour}{minute}{second}
-		$time  = date('YmdGis');
+		$time  = date('YmdHis');
 		$class = $this->_generate_classname($location, $time);
 		$file  = $this->_generate_filename($location, $time, $description);
 
