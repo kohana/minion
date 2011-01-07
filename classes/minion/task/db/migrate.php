@@ -42,7 +42,7 @@
  *
  * --quiet
  *
- *  Suppress all unnessacery output.  If --dry-run is enabled then only dry run 
+ *  Suppress all unnecessary output.  If --dry-run is enabled then only dry run 
  *  SQL will be output
  *
  * @author Matt Button <matthew@sigswitch.com>
@@ -51,7 +51,7 @@ class Minion_Task_Db_Migrate extends Minion_Task
 {
 
 	/*
-	 * Th' default direction for migrations, TRUE = up, FALSE = down
+	 * The default direction for migrations, TRUE = up, FALSE = down
 	 * @var boolean
 	 */
 	protected $_default_direction = TRUE;
@@ -113,7 +113,7 @@ class Minion_Task_Db_Migrate extends Minion_Task
 	}
 
 	/**
-	 * Parses a comma delimted set of locations and returns an array of them
+	 * Parses a comma delimited set of locations and returns an array of them
 	 *
 	 * @param  string Comma delimited string of locations
 	 * @return array  Locations
