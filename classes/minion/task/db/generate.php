@@ -84,7 +84,16 @@ class Minion_Task_Db_Generate extends Minion_Task
 
 		$class = ucwords(str_replace('/', ' ', $location));
 
-		return 'Migration_'.preg_replace('~[^a-zA-Z0-9]+~', '_', $class.'_'.$time);
+		// If location is empty then we want to avoid double underscore in the 
+		// class name
+		if( ! empty($class))
+		{
+			$class .= '_';
+		}
+
+		$class .= $time;
+
+		return 'Migration_'.preg_replace('~[^a-zA-Z0-9]+~', '_', $class);
 	}
 
 	/**
