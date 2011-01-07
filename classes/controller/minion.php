@@ -88,7 +88,9 @@ class Controller_Minion extends Controller
 
 		$options = $task->get_config_options();
 
-		$config = call_user_func_array(array('CLI', 'options'), $options);
+		$config = count($options)
+			? call_user_func_array(array('CLI', 'options'), $options)
+			: array();
 
 		echo $task->execute($config);
 	}
