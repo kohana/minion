@@ -1,4 +1,4 @@
-<? if( ! $quiet): ?>
+<?php if( ! $quiet): ?>
 Executed <?php echo count($executed_migrations); ?> migrations
 
 Current versions of locations:

@@ -16,7 +16,7 @@ class <?php echo $class; ?> extends Minion_Migration_Base {
 	}
 
 	/**
-	 * Run queries need to remove this migration
+	 * Run queries needed to remove this migration
 	 *
 	 * @param Kohana_Database Database connection
 	 */
