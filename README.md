@@ -21,7 +21,8 @@ Minion should be compatible with both Kohana 3.0.x and 3.1.x
 
 First off, download and enable the module in your bootstrap
 
-Then copy the binary `minion` into your webroot (i.e. the folder where index.php is, edit the binary if you want to store it in a different location)
+Then copy the bash script `minion` alongside your index.php (most likely the webroot).
+If you'd rather the executable be in a different location to index.php then simply modify the bash script to point to index.php.
 
 You can then run minion like so:
 
