@@ -20,4 +20,4 @@ then
 	shift 1
 fi
 
-php index.php $TASK $@
+php index.php --uri=minion $TASK $@
