@@ -21,3 +21,6 @@ then
 fi
 
 php index.php --uri=minion $TASK $@
+
+# Pass the exit code back out
+exit $?
