@@ -29,7 +29,7 @@ You can then run minion like so:
 
 To view a list of minion tasks, run minion without any parameters, or with the `--help` option
 
-	./minon
+	./minion
 	./minion --help
 
 To view help for a specific minion task run
