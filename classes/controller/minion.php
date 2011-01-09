@@ -8,6 +8,12 @@
 class Controller_Minion extends Controller
 {
 	/**
+	 * The task to be executed 
+	 * @var string
+	 */
+	protected $_task = NULL;
+
+	/**
 	 * Prevent Minion from being run over http
 	 */
 	public function before()
@@ -15,6 +21,20 @@ class Controller_Minion extends Controller
 		if( ! Kohana::$is_cli)
 		{
 			throw new Kohana_Exception("Minion can only be ran from the cli");
+		}
+
+		$this->_task = $this->request->param('task');
+
+		$options = CLI::options('help', 'task');
+
+		if(array_key_exists('help', $options))
+		{
+			$this->request->action = 'help';
+		}
+
+		if( ! empty($options['task']))
+		{
+			$this->_task = $options['task'];
 		}
 
 		return parent::before();
@@ -27,10 +47,9 @@ class Controller_Minion extends Controller
 	public function action_help()
 	{
 		$tasks = Minion_Util::compile_task_list(Kohana::list_files('classes/minion/task'));
-		$task  = $this->request->param('task');
 		$view  = NULL;
 
-		if(empty($task))
+		if(empty($this->_task))
 		{
 			$view = new View('minion/help/list');
 
@@ -38,13 +57,13 @@ class Controller_Minion extends Controller
 		}
 		else
 		{
-			$class = Minion_Util::convert_task_to_class_name($task);
+			$class = Minion_Util::convert_task_to_class_name($this->_task);
 
 			if( ! class_exists($class))
 			{
 				echo View::factory('minion/help/error')
 					->set('error', 'Task "'.$task.'" does not exist');
-
+				
 				exit(1);
 			}
 
@@ -55,7 +74,7 @@ class Controller_Minion extends Controller
 			$view = View::factory('minion/help/task')
 				->set('description', $description)
 				->set('tags', (array) $tags)
-				->set('task', $task);
+				->set('task', $this->_task);
 		}
 
 		echo $view;
@@ -69,28 +88,28 @@ class Controller_Minion extends Controller
 	 */
 	public function action_execute()
 	{
-		$task = trim($this->request->param('task'));
-
-		if(empty($task))
+		if(empty($this->_task))
+		{
 			return $this->action_help();
+		}
 
 		try 
 		{
-			$task = Minion_Task::factory($task);
+			$task = Minion_Task::factory($this->_task);
 		}
 		catch(Exception $e)
 		{
 			echo View::factory('minion/help/error')
-				->set('error', 'Task "'.$task.'" does not exist');
+				->set('error', 'Task "'.$this->_task.'" does not exist');
 
 			exit(1);
 		}
 
-		$options = $task->get_config_options();
+		$options = (array) $task->get_config_options();
 
-		$config = count($options)
-			? call_user_func_array(array('CLI', 'options'), $options)
-			: array();
+		$options = empty($options) ? array() : $task->get_config_options();
+
+		$config = call_user_func_array(array('CLI', 'options'), $options);
 
 		echo $task->execute($config);
 	}
