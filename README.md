@@ -11,7 +11,7 @@ The system is inspired by ruckusing, which had a nice system for defining tasks 
 
 ## Requirements
 
-* [kohana-database](https://github.com/kohana/database)
+* [kohana-database](https://github.com/kohana/database) is required by the migration tasks
 
 ## Compatibility
 
@@ -21,20 +21,28 @@ Minion should be compatible with both Kohana 3.0.x and 3.1.x
 
 First off, download and enable the module in your bootstrap
 
-Then you can run minion like so:
+Then copy the binary `minion` into your webroot (i.e. the folder where index.php is, edit the binary if you want to store it in a different location)
 
-	php index.php --uri=minion/{task}
+You can then run minion like so:
 
-To view a list of minion tasks, run 
+	./minion {task}
 
-	php index.php --uri=minion/help
+To view a list of minion tasks, run minion without any parameters, or with the `--help` option
+
+	./minon
+	./minion --help
 
 To view help for a specific minion task run
 
-	php index.php --uri=minion/help/{task}
+	./minion {task} --help
 
 For security reasons Minion will only run from the cli.  Attempting to access it over http will cause
 a `Kohana_Exception` to be thrown.
+
+If you're unable to use the binary file for whatever reason then simply replace `./minion {task}` in the above 
+examples with 
+
+	php index.php --uri=minion --task={task}
 
 ## Writing your own tasks
 

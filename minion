@@ -1,0 +1,23 @@
+#!/bin/bash
+# 
+# Usage: ./minion [task:name] [--option1=optval1 --option2=optval2]
+#
+# And so on.
+#
+# To get help, pass in --help
+#
+# # Minion general help
+# ./minion --help
+# ./minion
+#
+# # Task specific help
+# ./minion task:name --help
+#
+
+if [[ $# > 1 && $1 != --* ]]
+then
+	TASK="--task=$1"
+	shift 1
+fi
+
+php index.php $TASK $@
