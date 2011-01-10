@@ -27,7 +27,9 @@ class Minion_Migration_ModelTest extends Kohana_Unittest_Database_TestCase
 	 */
 	public function getModel()
 	{
-		return new Model_Minion_Migration($this->getKohanaConnection());
+		$model = new Model_Minion_Migration($this->getKohanaConnection());
+
+		return $model->table('test_minion_migrations');
 	}
 
 	/**
