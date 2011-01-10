@@ -20,7 +20,7 @@ then
 	shift 1
 fi
 
-php index.php --uri=minion $TASK $@
+php index.php --uri=minion "$TASK" "$@"
 
 # Pass the exit code back out
 exit $?
