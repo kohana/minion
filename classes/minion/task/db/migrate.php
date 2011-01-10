@@ -7,11 +7,6 @@
  *
  * Available config options are:
  *
- * --environment=environment
- *
- *  Specify the "environment" that you're currently in.  You can change the 
- *  environment => db config group mapping in the minion/migration config file.
- *
  * --versions=[location:]version
  *
  *  Used to specify the version to migrate the database to.  The location prefix 
@@ -61,7 +56,6 @@ class Minion_Task_Db_Migrate extends Minion_Task
 	 * @var array
 	 */
 	protected $_config = array(
-		'environment',
 		'versions',
 		'locations',
 		'dry-run',
@@ -78,7 +72,6 @@ class Minion_Task_Db_Migrate extends Minion_Task
 		$k_config = Kohana::config('minion/migration');
 
 		// Grab user input, using sensible defaults
-		$environment         = Arr::get($config, 'environment', 'development');
 		$specified_locations = Arr::get($config, 'locations',   NULL);
 		$versions            = Arr::get($config, 'versions',    NULL);
 		$dry_run             = array_key_exists('dry-run', $config);
@@ -87,8 +80,7 @@ class Minion_Task_Db_Migrate extends Minion_Task
 		$targets   = $this->_parse_target_versions($versions);
 		$locations = $this->_parse_locations($specified_locations);
 
-		$db_group  = $k_config['db_connections'][$environment];
-		$db        = Database::instance($db_group);
+		$db        = Database::instance();
 		$model     = new Model_Minion_Migration($db);
 
 		$manager = new Minion_Migration_Manager($db, $model);
