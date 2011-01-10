@@ -153,7 +153,6 @@ class Minion_Migration_Manager {
 	public function run_migration(array $locations = array(), $versions = array(), $default_direction = TRUE)
 	{
 		$migrations = $this->_model->fetch_required_migrations($locations, $versions, $default_direction);
-		$db         = $this->_get_db_instance();
 
 		foreach($migrations as $path => $location)
 		{
@@ -176,24 +175,14 @@ class Minion_Migration_Manager {
 
 				$class = Minion_Migration_Util::get_class_from_migration($migration);
 
-				$db->query(NULL, 'START TRANSACTION');
-
-				try
-				{
-					include_once $file;
-
-					$instance = new $class;
-
-					$instance->$method($db);
-				}
-				catch(Exception $e)
-				{
-					$db->query(NULL, 'ROLLBACK');
-
-					throw $e;
-				}
 				
-				$db->query(NULL, 'COMMIT');
+				include_once $file;
+
+				$instance = new $class($migration);
+
+				$db = $this->_get_db_instance($instance->get_database_connection());
+
+				$instance->$method($db);
 
 				if($this->_dry_run)
 				{
@@ -275,15 +264,14 @@ class Minion_Migration_Manager {
 	/**
 	 * Gets a database connection for running the migrations
 	 *
+	 * @param  string Database connection group name
 	 * @return Kohana_Database Database connection
 	 */
-	protected function _get_db_instance()
+	protected function _get_db_instance($db_group)
 	{
-		// If this isn't a dry run then just use the normal database connection
+		// If this isn't a dry run then just use a normal database connection
 		if( ! $this->_dry_run)
-			return $this->_db;
-
-		$db_group = array_search($this->_db, Database::$instances);
+			return Database::instance($db_group);
 
 		return Minion_Migration_Database::faux_instance($db_group);
 	}

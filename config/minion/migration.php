@@ -2,10 +2,8 @@
 
 
 return array(
-
-	// Allows you to map an environment to a specific database config group
-	'db_connections' => array(
-		'development' => 'default',
-		'unittest'    => 'unittest'
+	// A mapping of location_connections => db_connection to use
+	'location_connection' => array(
+		
 	),
 );
