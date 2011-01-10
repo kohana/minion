@@ -29,6 +29,24 @@ class Model_Minion_Migration extends Model
 	}
 
 	/**
+	 * Get or Set the table to use to store migrations
+	 *
+	 * Should only really be used during testing
+	 *
+	 * @param string Table name
+	 * @return string|Model_Minion_Migration Get table name or return $this on set
+	 */
+	public function table($table = NULL)
+	{
+		if($table === NULL)
+			return $this->_table;
+
+		$this->_table = $table;
+
+		return $this;
+	}
+
+	/**
 	 * Creates a new select query which includes all fields in the migrations 
 	 * table plus a `id` field which is a combination of the timestamp and the 
 	 * description
