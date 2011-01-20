@@ -15,7 +15,7 @@ class Model_Minion_Migration extends Model
 	 * The table that's used to store the migrations
 	 * @var string
 	 */
-	protected $_table = 'migrations';
+	protected $_table = 'minion_migrations';
 
 	/**
 	 * Constructs the model, taking a Database connection as the first and only 
