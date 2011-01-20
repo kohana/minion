@@ -209,7 +209,7 @@ class Minion_Migration_Manager {
 		// Get array of installed migrations with the id as key
 		$installed = $this->_model->fetch_all('id');
 
-		$available = $this->scan_for_migrations();
+		$available = $this->_model->available_migrations();
 
 		$all_migrations = array_keys($installed) + array_keys($available);
 
@@ -240,25 +240,6 @@ class Minion_Migration_Manager {
 		
 
 		return $this;
-	}
-
-	/**
-	 * Scans all migration directories for available migration files
-	 *
-	 * Returns an array of 
-	 *
-	 *   migration_id => array(
-	 *   	'file'   => migration_file, 
-	 *   	'location' => migration_location
-	 *   );
-	 *
-	 * @param return array
-	 */
-	public function scan_for_migrations()
-	{
-		$files = Kohana::list_files('migrations');
-
-		return Minion_Migration_Util::compile_migrations_from_files($files);
 	}
 
 	/**

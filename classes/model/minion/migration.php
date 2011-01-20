@@ -29,6 +29,42 @@ class Model_Minion_Migration extends Model
 	}
 
 	/**
+	 * Returns a list of migrations that are available in the filesystem
+	 *
+	 * @return array
+	 */
+	public function available_migrations()
+	{
+		$files = Kohana::list_files('migrations');
+
+		return Minion_Migration_Util::compile_migrations_from_files($files);
+	}
+
+	/**
+	 * Gets the status of all locations, whether they're in the db or not.
+	 *
+	 * @return array
+	 */
+	public function get_location_statuses()
+	{
+		// Start out using all the installed locations
+		$locations = $this->fetch_current_versions('location', 'id');
+		$available = $this->available_migrations();
+
+		foreach($available as $migration)
+		{
+			if(array_key_exists($migration['id'], $locations))
+			{
+				continue;
+			}
+
+			$locations[$migration['location']] = NULL;
+		}
+
+		return $locations;
+	}
+
+	/**
 	 * Get or Set the table to use to store migrations
 	 *
 	 * Should only really be used during testing
