@@ -105,11 +105,14 @@ class Controller_Minion extends Controller
 			exit(1);
 		}
 
+		$config  = array();
 		$options = (array) $task->get_config_options();
 
-		$options = empty($options) ? array() : $task->get_config_options();
-
-		$config = call_user_func_array(array('CLI', 'options'), $options);
+		if( ! empty($options))
+		{
+			$options = $task->get_config_options();
+			$config = call_user_func_array(array('CLI', 'options'), $options);
+		}
 
 		echo $task->execute($config);
 	}
