@@ -41,6 +41,24 @@ class Model_Minion_Migration extends Model
 	}
 
 	/**
+	 * Checks to see if the minion migrations table exists and attempts to 
+	 * create it if it doesn't
+	 *
+	 * @return boolean
+	 */
+	public function ensure_table_exists()
+	{
+		$query = $this->_db->query(Database::SELECT, "SHOW TABLES like '".$this->_table."'");
+
+		if( ! count($query))
+		{
+			$sql = file_get_contents(Kohana::find_file('', 'minion_schema', 'sql'));
+
+			$this->_db->query(NULL, $sql);
+		}
+	}
+
+	/**
 	 * Gets the status of all locations, whether they're in the db or not.
 	 *
 	 * @return array
