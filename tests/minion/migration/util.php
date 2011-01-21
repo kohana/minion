@@ -63,6 +63,7 @@ class Minion_Migration_UtilTest extends Kohana_Unittest_TestCase {
 					'location'    => 'myapp',
 					'description' => 'initial-setup',
 					'timestamp'   => '1293214439',
+					'id'          => 'myapp:1293214439',
 				),
 				'migrations/myapp/1293214439_initial-setup.php',
 			),
@@ -75,7 +76,7 @@ class Minion_Migration_UtilTest extends Kohana_Unittest_TestCase {
 	 *
 	 * @test
 	 * @covers Minion_Migration_Util::extract_migration_info_from_filename
-	 * @dataProvider provider_convert_file_to_migration_info
+	 * @dataProvider provider_get_migration_from_filename
 	 * @param array Expected output
 	 * @param string Input filename
 	 */
