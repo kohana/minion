@@ -89,10 +89,20 @@ class Minion_Task_Db_Migrate extends Minion_Task
 			// Sync the available migrations with those in the db
 			->sync_migration_files()
 
-			->set_dry_run($dry_run)
+			->set_dry_run($dry_run);
 
+		try
+		{
 			// Run migrations for specified locations & versions
-			->run_migration($locations, $targets, $this->_default_direction);
+			$manager->run_migration($locations, $targets, $this->_default_direction);
+		}
+		catch(Minion_Migration_Exception $e)
+		{
+			return View::factory('minion/task/db/migrate/exception')
+				->set('migration', $e->get_migration())
+				->set('error',     $e->getMessage());
+		}
+
 
 		$view = View::factory('minion/task/db/migrate')
 			->set('dry_run', $dry_run)

@@ -182,7 +182,15 @@ class Minion_Migration_Manager {
 
 				$db = $this->_get_db_instance($instance->get_database_connection());
 
-				$instance->$method($db);
+				try 
+				{
+					$instance->$method($db);
+				}
+				catch(Database_Exception $e)
+				{
+					throw new Minion_Migration_Exception($e->getMessage(), $migration);
+				}
+
 
 				if($this->_dry_run)
 				{
