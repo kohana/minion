@@ -3,7 +3,7 @@
 /**
  * Interface that all minion tasks must implement
  */
-abstract class Minion_Task
+abstract class Kohana_Minion_Task
 {
 	/**
 	 * Factory for loading minion tasks

@@ -3,7 +3,7 @@
 /**
  * Create test_minion_migrations table
  */
-class Migration_Minion_20110110093709 extends Minion_Migration_Base {
+class Migration_Minion_20110110093709 extends Kohana_Minion_Migration_Base {
 
 	/**
 	 * Run queries needed to apply this migration

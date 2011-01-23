@@ -8,7 +8,7 @@
  *
  * @author Matt Button <matthew@sigswitch.com>
  */
-abstract class Minion_Migration_Base
+abstract class Kohana_Minion_Migration_Base
 {
 	/**
 	 * Array of information about this migration
