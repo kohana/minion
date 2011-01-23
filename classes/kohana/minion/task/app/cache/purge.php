@@ -5,7 +5,7 @@
  *
  * @author Matt Button <matthew@sigswitch.com>
  **/
-class Kohana_Minion_Task_Cache_Purge extends Minion_Task
+class Kohana_Minion_Task_App_Cache_Purge extends Minion_Task
 {
 	/**
 	 * Gets a set of config options this minion task accepts
