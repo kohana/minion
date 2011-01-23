@@ -1,10 +1,10 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 
 /**
  * A faux database connection for doing dry run migrations
  */
-class Minion_Migration_Database extends Database_MySQL {
-
+class Minion_Migration_Database extends Database_MySQL
+{
 	/**
 	 * Creates a disposable instance of the faux connection
 	 * 
@@ -13,9 +13,9 @@ class Minion_Migration_Database extends Database_MySQL {
 	 */
 	public static function faux_instance($db_group = NULL, array $config = NULL)
 	{
-		if($config === NULL)
+		if ($config === NULL)
 		{
-			if($db_group === NULL)
+			if ($db_group === NULL)
 			{
 				$db_group = Database::$default;
 			}

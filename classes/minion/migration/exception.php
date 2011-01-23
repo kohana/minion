@@ -1,10 +1,10 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 
 /**
  * Minion exception, thrown during a migration error
  */
-class Minion_Migration_Exception extends Kohana_Exception {
-
+class Minion_Migration_Exception extends Kohana_Exception
+{
 	protected $_migration = array();
 
 	/**
@@ -13,7 +13,7 @@ class Minion_Migration_Exception extends Kohana_Exception {
 	 */
 	public function __construct($message, array $migration, array $variables = array(), $code = 0)
 	{
-		$variables[':migration-id']       = $migration['id'];
+		$variables[':migration-id'] = $migration['id'];
 		$variables[':migration-location'] = $migration['location'];
 
 		$this->_migration = $migration;
@@ -30,4 +30,5 @@ class Minion_Migration_Exception extends Kohana_Exception {
 	{
 		return $this->_migration;
 	}
+
 }

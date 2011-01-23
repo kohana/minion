@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 
 /**
  * Displays the current status of migrations in all locations
@@ -7,8 +7,8 @@
  *
  * @author Matt Button <matthew@sigswitch.com>
  */
-class Minion_Task_Db_Status extends Minion_Task {
-
+class Minion_Task_Db_Status extends Minion_Task
+{
 	/**
 	 * Execute the task
 	 *
@@ -16,8 +16,8 @@ class Minion_Task_Db_Status extends Minion_Task {
 	 */
 	public function execute(array $config)
 	{
-		$db        = Database::instance();
-		$model     = new Model_Minion_Migration($db);
+		$db = Database::instance();
+		$model = new Model_Minion_Migration($db);
 
 		$view = new View('minion/task/db/status');
 
@@ -25,4 +25,5 @@ class Minion_Task_Db_Status extends Minion_Task {
 
 		echo $view;
 	}
+
 }

@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 
 /**
  * The generate task provides an easy way to create migration files
@@ -6,10 +6,10 @@
  * Available config options are:
  *
  * --location=path/to/migration/location
- *  
- *  This is a required config option, use it specify in which location the 
- *  migration should be stored.  Due to the nature of the cascading filesystem 
- *  minion doesn't automatically know where a migration is stored so make sure 
+ *
+ *  This is a required config option, use it specify in which location the
+ *  migration should be stored.  Due to the nature of the cascading filesystem
+ *  minion doesn't automatically know where a migration is stored so make sure
  *  you pass in the full path to your migrations folder, e.g.
  *
  *  # The location of the migrations folder is modules/myapp/migrations/myapp/
@@ -19,11 +19,11 @@
  *
  * --description="Description of migration here"
  *
- *  This is an arbitrary description of the migration, used to build the 
- *  filename.  It is required but can be changed manually later on without 
+ *  This is an arbitrary description of the migration, used to build the
+ *  filename.  It is required but can be changed manually later on without
  *  affecting the integrity of the migration.
  *
- *  The description will be 
+ *  The description will be
  *
  * @author Matt Button <matthew@sigswitch.com>
  */
@@ -33,7 +33,8 @@ class Minion_Task_Db_Generate extends Minion_Task
 	 * A set of config options that this task accepts
 	 * @var array
 	 */
-	protected $_config = array(
+	protected $_config = array
+	(
 		'location',
 		'description'
 	);
@@ -45,19 +46,18 @@ class Minion_Task_Db_Generate extends Minion_Task
 	 */
 	public function execute(array $config)
 	{
-		if(empty($config['location']) OR empty($config['description']))
+		if (empty($config['location']) OR empty($config['description']))
 		{
-			return 'Please provide --location and --description'.PHP_EOL.
-			       'See help for more info'.PHP_EOL;
+			return 'Please provide --location and --description'.PHP_EOL.'See help for more info'.PHP_EOL;
 		}
 
-		$location    = rtrim(realpath($config['location']), '/').'/';
+		$location = rtrim(realpath($config['location']), '/').'/';
 		$description = $config['description'];
 
 		// {year}{month}{day}{hour}{minute}{second}
-		$time  = date('YmdHis');
+		$time = date('YmdHis');
 		$class = $this->_generate_classname($location, $time);
-		$file  = $this->_generate_filename($location, $time, $description);
+		$file = $this->_generate_filename($location, $time, $description);
 
 
 		$data = Kohana::FILE_SECURITY.View::factory('minion/task/db/generate/template')
@@ -84,9 +84,9 @@ class Minion_Task_Db_Generate extends Minion_Task
 
 		$class = ucwords(str_replace('/', ' ', $location));
 
-		// If location is empty then we want to avoid double underscore in the 
+		// If location is empty then we want to avoid double underscore in the
 		// class name
-		if( ! empty($class))
+		if ( ! empty($class))
 		{
 			$class .= '_';
 		}
@@ -110,5 +110,4 @@ class Minion_Task_Db_Generate extends Minion_Task
 
 		return $location.$time.'_'.preg_replace('~[^a-z]+~', '-', $description).EXT;
 	}
-
 }

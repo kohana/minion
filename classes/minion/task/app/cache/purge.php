@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 
 /**
  * Purges the application file cache
@@ -7,7 +7,6 @@
  **/
 class Minion_Task_Cache_Purge extends Minion_Task
 {
-
 	/**
 	 * Gets a set of config options this minion task accepts
 	 *

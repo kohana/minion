@@ -1,11 +1,10 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 
 /**
  * Interface that all minion tasks must implement
- *
  */
-abstract class Minion_Task {
-
+abstract class Minion_Task
+{
 	/**
 	 * Factory for loading minion tasks
 	 *
@@ -15,23 +14,23 @@ abstract class Minion_Task {
 	 */
 	public static function factory($task)
 	{
-		if(is_string($task))
+		if (is_string($task))
 		{
 			$class = Minion_Util::convert_task_to_class_name($task);
 
 			$task = new $class;
 		}
 
-		if( ! $task instanceof Minion_Task)
+		if ( ! $task instanceof Minion_Task)
 		{
-			throw new Kohana_Exception(
-				"Task ':task' is not a valid minion task", 
+			throw new Kohana_Exception('Task ":task" is not a valid minion task',
 				array(':task' => get_class($task))
 			);
 		}
 
 		return $task;
 	}
+
 	/**
 	 * A set of config options that the task accepts on the command line
 	 * @var array
@@ -40,14 +39,14 @@ abstract class Minion_Task {
 
 	/**
 	 * Gets the task name for the task
-	 * 
+	 *
 	 * @return string
 	 */
 	public function __toString()
 	{
 		static $task_name = NULL;
 
-		if($task_name === NULL)
+		if ($task_name === NULL)
 		{
 			$task_name = Minion_Util::convert_class_to_task($this);
 		}

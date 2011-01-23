@@ -1,15 +1,15 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 
 /**
- * The Migrate task compares the current version of the database with the target 
- * version and then executes the necessary commands to bring the database up to 
+ * The Migrate task compares the current version of the database with the target
+ * version and then executes the necessary commands to bring the database up to
  * date
  *
  * Available config options are:
  *
  * --versions=[location:]version
  *
- *  Used to specify the version to migrate the database to.  The location prefix 
+ *  Used to specify the version to migrate the database to.  The location prefix
  *  is used to specify the target version of an individual location. Version
  *  specifies the target version, which can be either:
  *
@@ -19,32 +19,31 @@
  *
  *  An example of a migration version is 20101229015800
  *
- *  If you specify TRUE / FALSE without a location then the default migration 
+ *  If you specify TRUE / FALSE without a location then the default migration
  *  direction for locations without a specified version will be up / down respectively.
  *
  *  If you're only specifying a migration version then you *must* specify a location
  *
  * --locations=location[,location2[,location3...]]
  *
- *  A list of locations (under the migrations folder in the cascading 
- *  filesystem) that will be used to source migration files.  By default 
+ *  A list of locations (under the migrations folder in the cascading
+ *  filesystem) that will be used to source migration files.  By default
  *  migrations will be loaded from all available locations
  *
  * --dry-run
  *
- *  No value taken, if this is specified then instead of executing the SQL it 
+ *  No value taken, if this is specified then instead of executing the SQL it
  *  will be printed to the console
  *
  * --quiet
  *
- *  Suppress all unnecessary output.  If --dry-run is enabled then only dry run 
+ *  Suppress all unnecessary output.  If --dry-run is enabled then only dry run
  *  SQL will be output
  *
  * @author Matt Button <matthew@sigswitch.com>
  */
 class Minion_Task_Db_Migrate extends Minion_Task
 {
-
 	/*
 	 * The default direction for migrations, TRUE = up, FALSE = down
 	 * @var boolean
@@ -55,7 +54,8 @@ class Minion_Task_Db_Migrate extends Minion_Task
 	 * A set of config options that this task accepts
 	 * @var array
 	 */
-	protected $_config = array(
+	protected $_config = array
+	(
 		'versions',
 		'locations',
 		'dry-run',
@@ -72,26 +72,24 @@ class Minion_Task_Db_Migrate extends Minion_Task
 		$k_config = Kohana::config('minion/migration');
 
 		// Grab user input, using sensible defaults
-		$specified_locations = Arr::get($config, 'locations',   NULL);
-		$versions            = Arr::get($config, 'versions',    NULL);
-		$dry_run             = array_key_exists('dry-run', $config);
-		$quiet               = array_key_exists('quiet', $config);
+		$specified_locations = Arr::get($config, 'locations', NULL);
+		$versions = Arr::get($config, 'versions', NULL);
+		$dry_run = array_key_exists('dry-run', $config);
+		$quiet = array_key_exists('quiet', $config);
 
-		$targets   = $this->_parse_target_versions($versions);
+		$targets = $this->_parse_target_versions($versions);
 		$locations = $this->_parse_locations($specified_locations);
 
-		$db        = Database::instance();
-		$model     = new Model_Minion_Migration($db);
+		$db = Database::instance();
+		$model = new Model_Minion_Migration($db);
 
 
 		$model->ensure_table_exists();
 
 		$manager = new Minion_Migration_Manager($db, $model);
 
-		$manager
-			// Sync the available migrations with those in the db
-			->sync_migration_files()
-
+		// Sync the available migrations with those in the db
+		$manager->sync_migration_files()
 			->set_dry_run($dry_run);
 
 		try
@@ -103,7 +101,7 @@ class Minion_Task_Db_Migrate extends Minion_Task
 		{
 			return View::factory('minion/task/db/migrate/exception')
 				->set('migration', $e->get_migration())
-				->set('error',     $e->getMessage());
+				->set('error', $e->getMessage());
 		}
 
 
@@ -125,20 +123,18 @@ class Minion_Task_Db_Migrate extends Minion_Task
 	 */
 	protected function _parse_locations($location)
 	{
-		if(is_array($location))
-			return $location;
+		if (is_array($location)) return $location;
 
 		$location = trim($location);
 
-		if(empty($location))
-			return array();
+		if (empty($location)) return array();
 
 		$locations = array();
-		$location  = explode(',', trim($location, ','));
+		$location = explode(',', trim($location, ','));
 
-		if( ! empty($location))
+		if ( ! empty($location))
 		{
-			foreach($location as $a_location)
+			foreach ($location as $a_location)
 			{
 				$locations[] = trim($a_location, '/');
 			}
@@ -163,21 +159,20 @@ class Minion_Task_Db_Migrate extends Minion_Task
 	 */
 	protected function _parse_target_versions($versions)
 	{
-		if(empty($versions))
-			return array();
+		if (empty($versions)) return array();
 
 		$targets = array();
 
-		if( ! is_array($versions))
+		if ( ! is_array($versions))
 		{
 			$versions = explode(',', trim($versions));
 		}
 
-		foreach($versions as $version)
+		foreach ($versions as $version)
 		{
 			$target = $this->_parse_version($version);
 
-			if(is_array($target))
+			if (is_array($target))
 			{
 				list($location, $version) = $target;
 
@@ -198,16 +193,14 @@ class Minion_Task_Db_Migrate extends Minion_Task
 	 * @param  string         Input migration target
 	 * @return boolean|string The parsed target
 	 */
+
 	protected function _parse_version($version)
 	{
-		if(is_bool($version))
-			return $version;
+		if (is_bool($version)) return $version;
 
-		if($version === 'TRUE' OR $version == 'FALSE')
-			return $version === 'TRUE';
+		if ($version === 'TRUE' OR $version == 'FALSE') return $version === 'TRUE';
 
-		if(strpos($version, ':') !== FALSE)
-			return explode(':', $version);
+		if (strpos($version, ':') !== FALSE) return explode(':', $version);
 
 		throw new Kohana_Exception('Invalid target version :version', array(':version' => $version));
 	}

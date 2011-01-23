@@ -6,7 +6,7 @@ Usage
 
 Where {task} is one of the following:
 
-<?php foreach($tasks as $task): ?>
+<?php foreach ($tasks as $task): ?>
   * <?php echo $task; ?>
 
 <?php endforeach; ?>

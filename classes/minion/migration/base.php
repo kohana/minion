@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 
 /**
  * The base migration class, must be extended by all migration files
@@ -8,8 +8,8 @@
  *
  * @author Matt Button <matthew@sigswitch.com>
  */
-abstract class Minion_Migration_Base {
-
+abstract class Minion_Migration_Base
+{
 	/**
 	 * Array of information about this migration
 	 * @var array
@@ -33,10 +33,10 @@ abstract class Minion_Migration_Base {
 	 */
 	public function get_database_connection()
 	{
-		$config   = Kohana::config('minion/migration');
+		$config = Kohana::config('minion/migration');
 		$location = $this->_info['location'];
 
-		if(isset($config->location_connection[$location]))
+		if (isset($config->location_connection[$location]))
 		{
 			return $config->location_connection[$location];
 		}

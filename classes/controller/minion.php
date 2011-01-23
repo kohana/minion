@@ -1,10 +1,12 @@
 <?php
 
+defined('SYSPATH') or die('No direct script access.');
+
 /**
  * Controller for interacting with minion on the cli
  *
  * @author Matt Button <matthew@sigswitch.com>
- **/
+ * */
 class Controller_Minion extends Controller
 {
 	/**
@@ -18,7 +20,7 @@ class Controller_Minion extends Controller
 	 */
 	public function before()
 	{
-		if( ! Kohana::$is_cli)
+		if ( ! Kohana::$is_cli)
 		{
 			throw new Kohana_Exception("Minion can only be ran from the cli");
 		}
@@ -27,12 +29,12 @@ class Controller_Minion extends Controller
 
 		$options = CLI::options('help', 'task');
 
-		if(array_key_exists('help', $options))
+		if (array_key_exists('help', $options))
 		{
 			$this->request->action = 'help';
 		}
 
-		if( ! empty($options['task']))
+		if ( ! empty($options['task']))
 		{
 			$this->_task = $options['task'];
 		}
@@ -47,9 +49,9 @@ class Controller_Minion extends Controller
 	public function action_help()
 	{
 		$tasks = Minion_Util::compile_task_list(Kohana::list_files('classes/minion/task'));
-		$view  = NULL;
+		$view = NULL;
 
-		if(empty($this->_task))
+		if (empty($this->_task))
 		{
 			$view = new View('minion/help/list');
 
@@ -59,11 +61,11 @@ class Controller_Minion extends Controller
 		{
 			$class = Minion_Util::convert_task_to_class_name($this->_task);
 
-			if( ! class_exists($class))
+			if ( ! class_exists($class))
 			{
 				echo View::factory('minion/help/error')
 					->set('error', 'Task "'.$task.'" does not exist');
-				
+
 				exit(1);
 			}
 
@@ -88,16 +90,16 @@ class Controller_Minion extends Controller
 	 */
 	public function action_execute()
 	{
-		if(empty($this->_task))
+		if (empty($this->_task))
 		{
 			return $this->action_help();
 		}
 
-		try 
+		try
 		{
 			$task = Minion_Task::factory($this->_task);
 		}
-		catch(Exception $e)
+		catch (Exception $e)
 		{
 			echo View::factory('minion/help/error')
 				->set('error', 'Task "'.$this->_task.'" does not exist');
@@ -105,10 +107,10 @@ class Controller_Minion extends Controller
 			exit(1);
 		}
 
-		$config  = array();
+		$config = array();
 		$options = (array) $task->get_config_options();
 
-		if( ! empty($options))
+		if ( ! empty($options))
 		{
 			$options = $task->get_config_options();
 			$config = call_user_func_array(array('CLI', 'options'), $options);
