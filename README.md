@@ -9,6 +9,8 @@ from multiple locations (i.e. different modules).
 
 The system is inspired by ruckusing, which had a nice system for defining tasks but lacked the desired flexibility.
 
+**Please don't PM me with support / feature requests, instead create an issue in [the tracker](https://github.com/BRMatt/kohana-minion/issues).**
+
 ## Requirements
 
 * [kohana-database](https://github.com/kohana/database) is required by the migration tasks
@@ -101,5 +103,3 @@ Thanks for wanting to help out, just fork, commit, push, and send a pull request
 ### UR DOIN IT WRONG
 
 Sorry you feel that way, it'd be useful if you could create an issue outlining what you think should be changed.
-
-Please don't PM me with support / feature requests.
