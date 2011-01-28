@@ -219,7 +219,7 @@ class Minion_Migration_Manager {
 
 		$available = $this->_model->available_migrations();
 
-		$all_migrations = array_keys($installed) + array_keys($available);
+		$all_migrations = array_merge(array_keys($installed), array_keys($available));
 
 		foreach($all_migrations as $migration)
 		{
