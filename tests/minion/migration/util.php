@@ -8,11 +8,11 @@
 class Minion_Migration_UtilTest extends Kohana_Unittest_TestCase {
 
 	/**
-	 * Provides test data for test_parse_migrations_from_files()
+	 * Provides test data for test_compile_migrations_from_files()
 	 *
 	 * @return array
 	 */
-	public function provider_parse_migrations_from_files()
+	public function provider_compile_migrations_from_files()
 	{
 		return array(
 			array(
@@ -37,12 +37,12 @@ class Minion_Migration_UtilTest extends Kohana_Unittest_TestCase {
 	 * compiles a set of files down into a set of migration files
 	 *
 	 * @test
-	 * @covers Minion_Migration_Util::parse_migrations_from_files
-	 * @dataProvider provider_parse_migrations_from_files
+	 * @covers Minion_Migration_Util::compile_migrations_from_files
+	 * @dataProvider provider_compile_migrations_from_files
 	 * @param array Expected output
 	 * @param array Input Files
 	 */
-	public function test_parse_migrations_from_files($expected, array $files)
+	public function test_compile_migrations_from_files($expected, array $files)
 	{
 		$this->assertSame(
 			$expected, 
