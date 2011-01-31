@@ -1,9 +1,8 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 
 /**
  * Purges the application, requires at least one cache configuration group to be 
  * specified
- *
  *
  * Available config options: 
  *

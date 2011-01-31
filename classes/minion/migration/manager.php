@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 
 /**
  * The migration manager is responsible for locating migration files, syncing 
