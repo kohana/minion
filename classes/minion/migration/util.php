@@ -5,7 +5,7 @@
  * Provides a set of utility functions for managing migrations
  *
  * @author Matt Button <matthew@sigswitch.com>
- **/
+ */
 class Minion_Migration_Util {
 
 	/**
@@ -19,10 +19,10 @@ class Minion_Migration_Util {
 	{
 		$migrations = array();
 
-		foreach($files as $file => $path)
+		foreach ($files as $file => $path)
 		{
 			// If this is a directory we're dealing with
-			if(is_array($path))
+			if (is_array($path))
 			{
 				$migrations += Minion_Migration_Util::compile_migrations_from_files($path);
 			}
@@ -81,7 +81,7 @@ class Minion_Migration_Util {
 		$location  = $migration['location'];
 		$migration = $migration['timestamp'].'_'.$migration['description'];
 
-		$location = ! empty($location) ? rtrim($location, '/').'/' : '';
+		$location = ( ! empty($location)) ? (rtrim($location, '/').'/') : '';
 
 		return $location.$migration.EXT;
 	}
@@ -95,7 +95,7 @@ class Minion_Migration_Util {
 	 */
 	public static function get_class_from_migration($migration)
 	{
-		if(is_string($migration))
+		if (is_string($migration))
 		{
 			$migration = str_replace(array(':', '/'), ' ', $migration);
 		}

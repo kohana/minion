@@ -45,7 +45,7 @@ class Minion_Task_Db_Generate extends Minion_Task
 	 */
 	public function execute(array $config)
 	{
-		if(empty($config['location']) OR empty($config['description']))
+		if (empty($config['location']) OR empty($config['description']))
 		{
 			return 'Please provide --location and --description'.PHP_EOL.
 			       'See help for more info'.PHP_EOL;
@@ -86,7 +86,7 @@ class Minion_Task_Db_Generate extends Minion_Task
 
 		// If location is empty then we want to avoid double underscore in the 
 		// class name
-		if( ! empty($class))
+		if ( ! empty($class))
 		{
 			$class .= '_';
 		}

@@ -2,7 +2,6 @@
 
 /**
  * Interface that all minion tasks must implement
- *
  */
 abstract class Minion_Task {
 
@@ -15,14 +14,14 @@ abstract class Minion_Task {
 	 */
 	public static function factory($task)
 	{
-		if(is_string($task))
+		if (is_string($task))
 		{
 			$class = Minion_Util::convert_task_to_class_name($task);
 
 			$task = new $class;
 		}
 
-		if( ! $task instanceof Minion_Task)
+		if ( ! $task instanceof Minion_Task)
 		{
 			throw new Kohana_Exception(
 				"Task ':task' is not a valid minion task", 
@@ -47,7 +46,7 @@ abstract class Minion_Task {
 	{
 		static $task_name = NULL;
 
-		if($task_name === NULL)
+		if ($task_name === NULL)
 		{
 			$task_name = Minion_Util::convert_class_to_task($this);
 		}

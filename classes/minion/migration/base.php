@@ -36,7 +36,7 @@ abstract class Minion_Migration_Base {
 		$config   = Kohana::config('minion/migration');
 		$location = $this->_info['location'];
 
-		if(isset($config->location_connection[$location]))
+		if (isset($config->location_connection[$location]))
 		{
 			return $config->location_connection[$location];
 		}

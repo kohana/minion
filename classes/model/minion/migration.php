@@ -2,7 +2,7 @@
 
 /**
  * Model for managing migrations
- **/
+ */
 class Model_Minion_Migration extends Model
 {
 	/**
@@ -50,7 +50,7 @@ class Model_Minion_Migration extends Model
 	{
 		$query = $this->_db->query(Database::SELECT, "SHOW TABLES like '".$this->_table."'");
 
-		if( ! count($query))
+		if ( ! count($query))
 		{
 			$sql = file_get_contents(Kohana::find_file('', 'minion_schema', 'sql'));
 
@@ -69,9 +69,9 @@ class Model_Minion_Migration extends Model
 		$locations = $this->fetch_current_versions('location', 'id');
 		$available = $this->available_migrations();
 
-		foreach($available as $migration)
+		foreach ($available as $migration)
 		{
-			if(array_key_exists($migration['id'], $locations))
+			if (array_key_exists($migration['id'], $locations))
 			{
 				continue;
 			}
@@ -92,7 +92,7 @@ class Model_Minion_Migration extends Model
 	 */
 	public function table($table = NULL)
 	{
-		if($table === NULL)
+		if ($table === NULL)
 			return $this->_table;
 
 		$this->_table = $table;
@@ -135,9 +135,9 @@ class Model_Minion_Migration extends Model
 	 */
 	public function get_migration($location, $timestamp = NULL)
 	{
-		if($timestamp === NULL)
+		if ($timestamp === NULL)
 		{
-			if(empty($location) OR strpos(':', $location) === FALSE)
+			if (empty($location) OR strpos(':', $location) === FALSE)
 			{
 				throw new Kohana_Exception('Invalid migration id :id', array(':id' => $location));
 			}
@@ -160,7 +160,7 @@ class Model_Minion_Migration extends Model
 	 */
 	public function delete_migration($migration)
 	{
-		if(is_array($migration))
+		if (is_array($migration))
 		{
 			$timestamp = $migration['timestamp'];
 			$location  = $migration['location'];
@@ -189,15 +189,15 @@ class Model_Minion_Migration extends Model
 	{
 		$set = array();
 		
-		foreach($new as $key => $value)
+		foreach ($new as $key => $value)
 		{
-			if($key !== 'id' AND $current[$key] !== $value)
+			if ($key !== 'id' AND $current[$key] !== $value)
 			{
 				$set[$key] = $value;
 			}
 		}
 
-		if(count($set))
+		if (count($set))
 		{
 			DB::update($this->_table)
 				->set($set)
@@ -286,7 +286,7 @@ class Model_Minion_Migration extends Model
 	 */
 	public function fetch_required_migrations($locations = NULL, $target_version = TRUE, $default_direction = TRUE)
 	{
-		if( ! empty($locations) AND ! is_array($locations))
+		if ( ! empty($locations) AND ! is_array($locations))
 		{
 			$locations = array(
 				$locations => is_array($target_version) 
@@ -300,7 +300,7 @@ class Model_Minion_Migration extends Model
 		$migrations = $this->fetch_current_versions('location');
 
 		// The user wants to run all available migrations
-		if(empty($locations))
+		if (empty($locations))
 		{
 			// Fetch a mirrored array of locations => locations
 			$locations = $this->fetch_locations(TRUE);
@@ -308,11 +308,10 @@ class Model_Minion_Migration extends Model
 		// If the calling script has been lazy and given us a numerically 
 		// indexed array of locations then we need to convert it to a mirrored 
 		// array
-		//
 		// We will decide the target version for these within the loop below
-		elseif( ! Arr::is_assoc($locations))
+		elseif ( ! Arr::is_assoc($locations))
 		{
-			foreach($locations as $_pos => $location)
+			foreach ($locations as $_pos => $location)
 			{
 				unset($locations[$_pos]);
 
@@ -321,7 +320,7 @@ class Model_Minion_Migration extends Model
 		}
 
 		// Merge locations with specified target versions 
-		if( ! empty($target_version) AND is_array($target_version))
+		if ( ! empty($target_version) AND is_array($target_version))
 		{
 			$locations = $target_version + $locations;
 		}
@@ -329,18 +328,18 @@ class Model_Minion_Migration extends Model
 		$migrations_to_apply = array();
 
 		// What follows is a bit of icky code, but there aren't many "nice" ways around it
-		//
+
 		// Basically we need to get a list of migrations that need to be performed, but 
 		// the ordering of the migrations varies depending on whether we're wanting to 
 		// migrate up or migrate down.  As such, we can't just apply a generic "order by x"
 		// condition, we have to run an individual query for each location
-		//
+
 		// Again, icky, but this appears to be the only "sane" way of doing it with multiple
 		// locations
-		//
+
 		// If you have a better way of doing this, please let me know :)
 
-		foreach($locations as $location => $target)
+		foreach ($locations as $location => $target)
 		{
 			// By default all migrations go "up"
 			$migrations_to_apply[$location]['direction']  = TRUE;
@@ -350,7 +349,7 @@ class Model_Minion_Migration extends Model
 
 			// If this migration was auto-selected from the db then use the 
 			// default migration direction
-			if($target === $location)
+			if ($target === $location)
 			{
 				$target = is_bool($target_version) 
 					? $target_version 
@@ -359,10 +358,10 @@ class Model_Minion_Migration extends Model
 
 			// If the user is rolling this location to either extreme up or 
 			// extreme down
-			if(is_bool($target))
+			if (is_bool($target))
 			{
 				// We're "undoing" all applied migrations, i.e. rolling back
-				if($target === FALSE)
+				if ($target === FALSE)
 				{
 					$migrations_to_apply[$location]['direction'] = FALSE;
 					
@@ -388,7 +387,7 @@ class Model_Minion_Migration extends Model
 
 				// If the current version is the requested version then nothing 
 				// needs to be done
-				if($current_timestamp === $timestamp)
+				if ($current_timestamp === $timestamp)
 				{
 					continue;
 				}
@@ -396,14 +395,14 @@ class Model_Minion_Migration extends Model
 				// If they haven't applied any migrations for this location
 				// yet and are justwhere wanting to apply all migrations 
 				// (i.e. roll forward)
-				if($current_timestamp === NULL)
+				if ($current_timestamp === NULL)
 				{
 					$query
 						->and_where('timestamp', '<=', $timestamp)
 						->order_by('timestamp', 'ASC');
 				}
 				// If we need to move forward
-				elseif($timestamp > $current_timestamp)
+				elseif ($timestamp > $current_timestamp)
 				{
 					$query
 						->and_where('timestamp',  '<=', $timestamp)
@@ -411,7 +410,7 @@ class Model_Minion_Migration extends Model
 						->order_by('timestamp', 'ASC');
 				}
 				// If we want to roll back
-				elseif($timestamp < $current_timestamp)
+				elseif ($timestamp < $current_timestamp)
 				{
 					$query
 						->and_where('timestamp',  '<', $current_timestamp)

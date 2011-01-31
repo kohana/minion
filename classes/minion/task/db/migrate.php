@@ -125,20 +125,20 @@ class Minion_Task_Db_Migrate extends Minion_Task
 	 */
 	protected function _parse_locations($location)
 	{
-		if(is_array($location))
+		if (is_array($location))
 			return $location;
 
 		$location = trim($location);
 
-		if(empty($location))
+		if (empty($location))
 			return array();
 
 		$locations = array();
 		$location  = explode(',', trim($location, ','));
 
-		if( ! empty($location))
+		if ( ! empty($location))
 		{
-			foreach($location as $a_location)
+			foreach ($location as $a_location)
 			{
 				$locations[] = trim($a_location, '/');
 			}
@@ -163,21 +163,21 @@ class Minion_Task_Db_Migrate extends Minion_Task
 	 */
 	protected function _parse_target_versions($versions)
 	{
-		if(empty($versions))
+		if (empty($versions))
 			return array();
 
 		$targets = array();
 
-		if( ! is_array($versions))
+		if ( ! is_array($versions))
 		{
 			$versions = explode(',', trim($versions));
 		}
 
-		foreach($versions as $version)
+		foreach ($versions as $version)
 		{
 			$target = $this->_parse_version($version);
 
-			if(is_array($target))
+			if (is_array($target))
 			{
 				list($location, $version) = $target;
 
@@ -200,13 +200,13 @@ class Minion_Task_Db_Migrate extends Minion_Task
 	 */
 	protected function _parse_version($version)
 	{
-		if(is_bool($version))
+		if (is_bool($version))
 			return $version;
 
-		if($version === 'TRUE' OR $version == 'FALSE')
+		if ($version === 'TRUE' OR $version == 'FALSE')
 			return $version === 'TRUE';
 
-		if(strpos($version, ':') !== FALSE)
+		if (strpos($version, ':') !== FALSE)
 			return explode(':', $version);
 
 		throw new Kohana_Exception('Invalid target version :version', array(':version' => $version));

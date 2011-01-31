@@ -28,7 +28,7 @@ class Minion_Task_Cache_Purge extends Minion_Task
 	 */
 	public function execute(array $config)
 	{
-		if(empty($config['cache']))
+		if (empty($config['cache']))
 		{
 			return 'Please specify a set of cache configs.';
 		}
@@ -37,7 +37,7 @@ class Minion_Task_Cache_Purge extends Minion_Task
 
 		$caches = explode(',', $config['cache']);
 
-		foreach($caches as $cache)
+		foreach ($caches as $cache)
 		{
 			Cache::instance($cache)
 				->delete_all();

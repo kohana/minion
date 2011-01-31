@@ -3,7 +3,7 @@
 
 /**
  * Utility class for Minion
- **/
+ */
 class Minion_Util
 {
 	/**
@@ -68,15 +68,15 @@ class Minion_Util
 	{
 		$output = array();
 
-		foreach($files as $file => $path)
+		foreach ($files as $file => $path)
 		{
 			$file = substr($file, strrpos($file, '/') + 1);
 
-			if(is_array($path) AND count($path))
+			if (is_array($path) AND count($path))
 			{
 				$task = Minion_Util::compile_task_list($path, $prefix.$file.Minion_Util::$task_separator);
 
-				if($task)
+				if ($task)
 				{
 					$output = array_merge($output, $task);
 				}
@@ -100,7 +100,7 @@ class Minion_Util
 	{
 		$task = trim($task);
 
-		if(empty($task))
+		if (empty($task))
 			return '';
 
 		return 'Minion_Task_'.implode('_', array_map('ucfirst', explode(Minion_Util::$task_separator, $task)));
@@ -114,7 +114,7 @@ class Minion_Util
 	 */
 	public static function convert_class_to_task($class)
 	{
-		if(is_object($class))
+		if (is_object($class))
 		{
 			$class = get_class($class);
 		}

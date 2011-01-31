@@ -6,7 +6,7 @@
  * that need to be executed in order to reach a target version
  *
  * @author Matt Button <matthew@sigswitch.com>
- **/
+ */
 class Minion_Migration_Manager {
 
 	/**
@@ -47,7 +47,7 @@ class Minion_Migration_Manager {
 	 */
 	public function __construct(Kohana_Database $db, Model_Minion_Migration $model = NULL)
 	{
-		if($model === NULL)
+		if ($model === NULL)
 		{
 			$model = new Model_Minion_Migration($db);
 		}
@@ -154,15 +154,15 @@ class Minion_Migration_Manager {
 	{
 		$migrations = $this->_model->fetch_required_migrations($locations, $versions, $default_direction);
 
-		foreach($migrations as $path => $location)
+		foreach ($migrations as $path => $location)
 		{
 			$method = $location['direction'] ? 'up' : 'down';
 
-			foreach($location['migrations'] as $migration)
+			foreach ($location['migrations'] as $migration)
 			{
 				$filename  = Minion_Migration_Util::get_filename_from_migration($migration);
 
-				if( ! ($file  = Kohana::find_file('migrations', $filename, FALSE)))
+				if ( ! ($file  = Kohana::find_file('migrations', $filename, FALSE)))
 				{
 					throw new Kohana_Exception(
 						'Cannot load migration :migration (:file)', 
@@ -192,7 +192,7 @@ class Minion_Migration_Manager {
 				}
 
 
-				if($this->_dry_run)
+				if ($this->_dry_run)
 				{
 					$this->_dry_run_sql[$path][$migration['timestamp']] = $db->reset_query_stack();
 				}
@@ -221,26 +221,26 @@ class Minion_Migration_Manager {
 
 		$all_migrations = array_merge(array_keys($installed), array_keys($available));
 
-		foreach($all_migrations as $migration)
+		foreach ($all_migrations as $migration)
 		{
 			// If this migration has since been deleted
-			if(isset($installed[$migration]) AND ! isset($available[$migration]))
+			if (isset($installed[$migration]) AND ! isset($available[$migration]))
 			{
 				// We should only delete a record of this migration if it does 
 				// not exist in the "real world"
-				if($installed[$migration]['applied'] === '0')
+				if ($installed[$migration]['applied'] === '0')
 				{
 					$this->_model->delete_migration($installed[$migration]);
 				}
 			}
 			// If the migration has not yet been installed :D
-			elseif( ! isset($installed[$migration]) AND isset($available[$migration]))
+			elseif ( ! isset($installed[$migration]) AND isset($available[$migration]))
 			{
 				$this->_model->add_migration($available[$migration]);
 			}
 			// Somebody changed the description of the migration, make sure we 
 			// update it in the db as we use this to build the filename!
-			elseif($installed[$migration]['description'] !== $available[$migration]['description'])
+			elseif ($installed[$migration]['description'] !== $available[$migration]['description'])
 			{
 				$this->_model->update_migration($installed[$migration], $available[$migration]);
 			}
@@ -259,7 +259,7 @@ class Minion_Migration_Manager {
 	protected function _get_db_instance($db_group)
 	{
 		// If this isn't a dry run then just use a normal database connection
-		if( ! $this->_dry_run)
+		if ( ! $this->_dry_run)
 			return Database::instance($db_group);
 
 		return Minion_Migration_Database::faux_instance($db_group);
