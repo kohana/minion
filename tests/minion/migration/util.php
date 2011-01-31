@@ -75,7 +75,7 @@ class Minion_Migration_UtilTest extends Kohana_Unittest_TestCase {
 	 * correctly extracts information about the migration from its filename
 	 *
 	 * @test
-	 * @covers Minion_Migration_Util::extract_migration_info_from_filename
+	 * @covers Minion_Migration_Util::get_migration_from_filename
 	 * @dataProvider provider_get_migration_from_filename
 	 * @param array Expected output
 	 * @param string Input filename
@@ -114,7 +114,7 @@ class Minion_Migration_UtilTest extends Kohana_Unittest_TestCase {
 	 * accurate filenames when given a variety of migration information
 	 *
 	 * @test
-	 * @covers Minion_Migration_Util::convert_migration_to_filename
+	 * @covers Minion_Migration_Util::get_filename_from_migration
 	 * @dataProvider   provider_get_filename_from_migration
 	 * @param  string  Expected output
 	 * @param  mixed   Migration id
