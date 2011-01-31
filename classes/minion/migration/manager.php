@@ -96,7 +96,7 @@ class Minion_Migration_Manager {
 	}
 
 	/**
-	 * Ruturns a set of queries that would've been executed had dry run not been 
+	 * Returns a set of queries that would've been executed had dry run not been 
 	 * enabled.  If dry run was not enabled, this returns an empty array
 	 *
 	 * @return array SQL Queries
