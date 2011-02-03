@@ -9,7 +9,7 @@ from multiple locations (i.e. different modules).
 
 The system is inspired by ruckusing, which had a nice system for defining tasks but lacked the desired flexibility.
 
-**Please don't PM me with support / feature requests, instead create an issue in [the tracker](https://github.com/BRMatt/kohana-minion/issues).**
+**Please don't PM me with support / feature requests, instead create an issue in [the tracker](https://github.com/kohana-minion/core/issues).**
 
 ## Requirements
 
