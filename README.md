@@ -2,12 +2,10 @@
 
 *NOTE: Minion is currently in a beta state, please report any issues in the issue tracker*
 
-Minion is a module for running database migrations located in the Kohana cascading filesystem, but it also provides a useful framework for creating cli based tasks.
+Minion is a framework for running tasks via the CLI.  It was originally designed to be a database migrations system but it made more sense to refactor
+that functionality into a [separate module](https://github.com/kohana-minion/tasks-migrations/).
 
-The original "need" behind Minion was the lack of a good db migrations system, capable of selecting migrations
-from multiple locations (i.e. different modules).
-
-The system is inspired by ruckusing, which had a nice system for defining tasks but lacked the desired flexibility.
+The system is inspired by ruckusing, which had a nice system for defining tasks but lacked the desired flexibility for kohana integration.
 
 **Please don't PM me with support / feature requests, instead create an issue in [the tracker](https://github.com/kohana-minion/core/issues).**
 
@@ -17,7 +15,9 @@ The system is inspired by ruckusing, which had a nice system for defining tasks 
 
 ## Compatibility
 
-Minion should be compatible with both Kohana 3.0.x and 3.1.x
+At the moment minion is only compatible with K3.0, however as far as we know there's only a 1 line change needed to update it for K3.1.
+
+We should have separate branches for K3.0/K3.1 development soon.
 
 ## Getting Started
 
