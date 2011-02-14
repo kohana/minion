@@ -110,6 +110,42 @@ class Minion_CLI extends CLI {
 		// Read the input
 		return $input;
 	}
+	
+	/**
+	 * Experimental feature.
+	 * 
+	 * Reads hidden input from the user
+	 * 
+	 * Usage: 
+	 * 
+	 * $password = Minion_CLI::password('Enter your password : ');
+	 * 
+	 * @author Mathew Davies.
+	 * @return string
+	 */
+	public static function password($text = '')
+	{
+		if (Kohana::$is_windows)
+		{
+			$vbscript = sys_get_temp_dir().'Minion_CLI_Password.vbs';
+			
+			// Create temporary file
+			file_put_contents($vbscript, 'wscript.echo(InputBox("'.addslashes($text).'")');
+	    
+	    $password = shell_exec('cscript //nologo '.escapeshellarg($command));
+	    
+	    // Remove temporary file.
+	    unlink($vbscript);
+		}
+		else
+		{
+			$password = shell_exec('/usr/bin/env bash -c \'read -s -p "'.escapeshellcmd($text).'" var && echo $var\'');
+		}
+		
+		Minion_CLI::write();
+		
+		return trim($password);
+	}
 
 	/**
 	 * Outputs a string to the cli. If you send an array it will implode them
