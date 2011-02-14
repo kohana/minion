@@ -4,7 +4,8 @@
  * Test case for Minion_Util
  *
  * @group minion
- **/
+ * @group minion.core
+ */
 class Minion_UtilTest extends Kohana_Unittest_TestCase
 {
 	/**
