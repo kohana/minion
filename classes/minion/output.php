@@ -71,6 +71,8 @@ class Minion_Output
 	 */
 	public function write($output, $type = NULL)
 	{
+		$output = (string) $output;
+
 		if($type !== NULL)
 		{
 			$type = (int) $type;

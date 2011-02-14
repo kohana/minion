@@ -38,6 +38,25 @@ abstract class Minion_Task {
 	protected $_config = array();
 
 	/**
+	 * The output writer used to display output for this task
+	 * Use Minion_Task::write() to write output
+	 * @var Minion_Output
+	 */
+	private $_output = NULL;
+
+	/**
+	 * Constructs the minion task.
+	 *
+	 * Accepts a minion output object as its only parameter
+	 *
+	 * @param Minion_Output The output system to use
+	 */
+	public function __construct(Minion_Output $output = NULL)
+	{
+		$this->_output = $output === NULL ? Minion_Output::instance() : $output;
+	}
+
+	/**
 	 * Gets the task name for the task
 	 * 
 	 * @return string
@@ -70,4 +89,18 @@ abstract class Minion_Task {
 	 * @return boolean TRUE if task executed successfully, else FALSE
 	 */
 	abstract public function execute(array $config);
+
+	/**
+	 * Proxies output to the minion output manager
+	 *
+	 * @param string  The output
+	 * @param integer The output type (see Minion_Output)
+	 * @return Minion_Task $this
+	 */
+	public function write($output, $type = NULL)
+	{
+		$this->_output->write($output, $type);
+
+		return $this;
+	}
 }
