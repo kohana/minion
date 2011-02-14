@@ -130,7 +130,7 @@ class Minion_CLI extends CLI {
 			$vbscript = sys_get_temp_dir().'Minion_CLI_Password.vbs';
 			
 			// Create temporary file
-			file_put_contents($vbscript, 'wscript.echo(InputBox("'.addslashes($text).'")');
+			file_put_contents($vbscript, 'wscript.echo(InputBox("'.addslashes($text).'"))');
 	    
 	    $password = shell_exec('cscript //nologo '.escapeshellarg($command));
 	    
