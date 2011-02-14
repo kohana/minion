@@ -15,9 +15,7 @@ The system is inspired by ruckusing, which had a nice system for defining tasks 
 
 ## Compatibility
 
-At the moment minion is only compatible with K3.0, however as far as we know there's only a 1 line change needed to update it for K3.1.
-
-We should have separate branches for K3.0/K3.1 development soon.
+**K3.0/develop** contains a K3.0 compatible version of Minion and **K3.1/develop** contains a K3.1 compatible version.
 
 ## Getting Started
 
