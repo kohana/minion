@@ -14,6 +14,12 @@ class Controller_Minion extends Controller
 	protected $_task = NULL;
 
 	/**
+	 * The output manager
+	 * @var Minion_Output
+	 */
+	protected $_output = NULL;
+
+	/**
 	 * Prevent Minion from being run over http
 	 */
 	public function before()
@@ -36,6 +42,9 @@ class Controller_Minion extends Controller
 		{
 			$this->_task = $options['task'];
 		}
+
+		$this->_output = Minion_Output::instance()
+			->add_writer(new Minion_Output_Writer_CLI());
 
 		return parent::before();
 	}
@@ -61,8 +70,7 @@ class Controller_Minion extends Controller
 
 			if ( ! class_exists($class))
 			{
-				echo View::factory('minion/help/error')
-					->set('error', 'Task "'.$task.'" does not exist');
+				$this->_output->write('Task "'.$this->_task.'" does not exist', Minion_Output::ERROR);
 				
 				exit(1);
 			}
@@ -77,7 +85,7 @@ class Controller_Minion extends Controller
 				->set('task', $this->_task);
 		}
 
-		echo $view;
+		$this->_output->write($view);
 	}
 
 	/**
@@ -95,12 +103,11 @@ class Controller_Minion extends Controller
 
 		try 
 		{
-			$task = Minion_Task::factory($this->_task);
+			$task = Minion_Task::factory($this->_task, $this->_output);
 		}
 		catch(Exception $e)
 		{
-			echo View::factory('minion/help/error')
-				->set('error', 'Task "'.$this->_task.'" does not exist');
+			$this->_output->write('Task "'.$this->_task.'" does not exist', Minion_Output::ERROR);
 
 			exit(1);
 		}
@@ -111,9 +118,9 @@ class Controller_Minion extends Controller
 		if ( ! empty($options))
 		{
 			$options = $task->get_config_options();
-			$config = call_user_func_array(array('CLI', 'options'), $options);
+			$config  = call_user_func_array(array('CLI', 'options'), $options);
 		}
 
-		echo $task->execute($config);
+		$task->execute($config);
 	}
 }
