@@ -12,13 +12,13 @@ abstract class Minion_Task {
 	 * @param  string The task to load
 	 * @return Minion_Task The Minion task
 	 */
-	public static function factory($task)
+	public static function factory($task, $output = NULL)
 	{
 		if (is_string($task))
 		{
 			$class = Minion_Util::convert_task_to_class_name($task);
 
-			$task = new $class;
+			$task = new $class($output);
 		}
 
 		if ( ! $task instanceof Minion_Task)
