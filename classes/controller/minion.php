@@ -62,7 +62,7 @@ class Controller_Minion extends Kohana_Controller
 			if ( ! class_exists($class))
 			{
 				echo View::factory('minion/help/error')
-					->set('error', 'Task "'.$task.'" does not exist');
+					->set('error', 'Task "'.$this->_task.'" does not exist');
 				
 				exit(1);
 			}
