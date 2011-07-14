@@ -29,7 +29,7 @@ class Controller_Minion extends Kohana_Controller
 
 		if (array_key_exists('help', $options))
 		{
-			$this->request->action('help');
+			$this->request->action = 'help';
 		}
 
 		if ( ! empty($options['task']))
