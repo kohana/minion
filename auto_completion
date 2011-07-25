@@ -1,0 +1,62 @@
+#
+# Bash auto completion script for kohana-minion
+# https://github.com/kohana-minion
+#
+# To enable bash completion you need to complete the following steps:
+#
+# 1. Copy this file to /etc/bash_completion.d/minion
+#
+# 2. Enable bash completion in interactive shells you should copy the following
+# into your .bash_profile or .bash_rc file:
+#
+# if [ -f /etc/bash_completion ]; then
+#     . /etc/bash_completion
+# fi
+#
+# 3. Set up an alias for minion in your .bash_profile or .bash_rc file
+#
+# e.g. alias minion='php /path/to/minion'
+#
+# 4. Make you current shell aware of the changes by running one of the following:
+#
+# . ~/.bash_rc
+# or
+# . ~/.bash_profile
+#
+
+_minion()
+{
+	local cur prev opts
+	COMPREPLY=()
+	cur="${COMP_WORDS[COMP_CWORD]}"
+	prev="${COMP_WORDS[COMP_CWORD-1]}"
+	opts="--tasks --help"
+
+	case "${prev}" in
+		minion)
+			case "${cur}" in
+				-*)
+					# check the available options
+					COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+					return 0
+				;;
+				*)
+					# call minion to get a list of available tasks and check for matches
+					local tasks=$(for x in `minion --tasks | grep ^${cur}*` ; do echo ${x} ; done )
+					COMPREPLY=( $(compgen -W "${tasks}" -- ${cur}) )
+					return 0
+				;;
+			esac
+		;;
+		*)
+			case "${cur}" in
+				-*)
+					# check the available options
+					COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+					return 0
+				;;
+			esac
+		;;
+	esac
+}
+complete -F _minion minion

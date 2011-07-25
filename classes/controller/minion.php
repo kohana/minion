@@ -41,6 +41,19 @@ class Controller_Minion extends Kohana_Controller
 	}
 
 	/**
+	 * Returns a list of available tasks
+	 *
+	 */
+	public function action_tasks()
+	{
+		$tasks = Minion_Util::compile_task_list(Kohana::list_files('classes/minion/task'));
+		$view = new View('minion/help/tasks');
+
+		$view->tasks = $tasks;
+		echo $view;
+	}
+
+	/**
 	 * Prints out the help for a specific task
 	 *
 	 */
