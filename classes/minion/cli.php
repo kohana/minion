@@ -169,7 +169,22 @@ class Minion_CLI extends CLI {
 			$text = Minion_CLI::color($text, $foreground, $background);
 		}
 
-		fwrite(STDOUT, $text.PHP_EOL);
+		fwrite(STDOUT, PHP_EOL.$text);
+	}
+	
+	/**
+	 * Outputs a string to the cli, replacing the previous line.
+	 *
+	 * @param string|array $text the text to output, or array of lines
+	 */
+	public static function write_replace($text = '', $foreground = null, $background = null)
+	{
+		if ($foreground OR $background)
+		{
+			$text = Minion_CLI::color($text, $foreground, $background);
+		}
+
+		fwrite(STDOUT, "\r\033[K".$text);
 	}
 
 	/**
