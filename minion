@@ -1,5 +1,5 @@
 #!/bin/bash
-# 
+#
 # Usage: ./minion [task:name] [--option1=optval1 --option2=optval2]
 #
 # And so on.
@@ -21,6 +21,9 @@ then
 fi
 
 php index.php --uri=minion "$TASK" "$@"
+
+# Echo a new line because Minion_CLI::write() prepends them now
+echo -e "\n"
 
 # Pass the exit code back out
 exit $?
