@@ -43,6 +43,7 @@ function handle_SIGHUP()
 function handle_SIGTERM_SIGINT()
 {
 	echo "Shutting Down"
+	stop_daemon
 	exit $ecode
 }
 
