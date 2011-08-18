@@ -21,7 +21,7 @@ abstract class Minion_Task {
 
 		$class = Minion_Util::convert_task_to_class_name($task);
 
-		if ( ! class_exists($class) || ! in_array('Minion_Task', class_parents($class)))
+		if ( ! in_array('Minion_Task', class_parents($class)))
 		{
 			throw new Kohana_Exception(
 				"Task ':task' is not a valid minion task", 
