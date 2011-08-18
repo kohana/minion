@@ -76,10 +76,8 @@ class Controller_Minion extends Kohana_Controller
 			$view->tasks = $tasks;
 		}
 		else
-		{		
-			$task = $this->_retrieve_task();			
-
-			$inspector = new ReflectionClass($task);
+		{
+			$inspector = new ReflectionClass($this->_retrieve_task());
 
 			list($description, $tags) = Minion_Util::parse_doccomment($inspector->getDocComment());
 
