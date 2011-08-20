@@ -41,6 +41,26 @@ class Controller_Minion extends Kohana_Controller
 	}
 
 	/**
+	 * Retrieves the current minion task.
+	 * 
+	 * @return Minion_Task
+	 */
+	protected function _retrieve_task()
+	{
+		try 
+		{
+			return Minion_Task::factory($this->_task);
+		}
+		catch(Exception $e)
+		{
+			echo View::factory('minion/help/error')
+				->set('error', 'Task "'.$this->_task.'" does not exist');
+
+			exit(1);
+		}
+	}
+
+	/**
 	 * Prints out the help for a specific task
 	 *
 	 */
@@ -57,17 +77,7 @@ class Controller_Minion extends Kohana_Controller
 		}
 		else
 		{
-			$class = Minion_Util::convert_task_to_class_name($this->_task);
-
-			if ( ! class_exists($class))
-			{
-				echo View::factory('minion/help/error')
-					->set('error', 'Task "'.$this->_task.'" does not exist');
-				
-				exit(1);
-			}
-
-			$inspector = new ReflectionClass($class);
+			$inspector = new ReflectionClass($this->_retrieve_task());
 
 			list($description, $tags) = Minion_Util::parse_doccomment($inspector->getDocComment());
 
@@ -93,17 +103,7 @@ class Controller_Minion extends Kohana_Controller
 			return $this->action_help();
 		}
 
-		try 
-		{
-			$task = Minion_Task::factory($this->_task);
-		}
-		catch(Exception $e)
-		{
-			echo View::factory('minion/help/error')
-				->set('error', 'Task "'.$this->_task.'" does not exist');
-
-			exit(1);
-		}
+		$task = $this->_retrieve_task();
 
 		$config  = array();
 		$options = (array) $task->get_config_options();

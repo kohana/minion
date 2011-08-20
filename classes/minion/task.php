@@ -14,14 +14,14 @@ abstract class Minion_Task {
 	 */
 	public static function factory($task)
 	{
-		if (is_string($task))
+		if ( ! is_string($task))
 		{
-			$class = Minion_Util::convert_task_to_class_name($task);
-
-			$task = new $class;
+			throw new InvalidArgumentException;
 		}
 
-		if ( ! $task instanceof Minion_Task)
+		$class = Minion_Util::convert_task_to_class_name($task);
+
+		if ( ! in_array('Minion_Task', class_parents($class)))
 		{
 			throw new Kohana_Exception(
 				"Task ':task' is not a valid minion task", 
@@ -29,8 +29,9 @@ abstract class Minion_Task {
 			);
 		}
 
-		return $task;
+		return new $class;
 	}
+
 	/**
 	 * A set of config options that the task accepts on the command line
 	 * @var array
