@@ -24,7 +24,7 @@ abstract class Minion_Task {
 		if ( ! in_array('Minion_Task', class_parents($class)))
 		{
 			throw new Kohana_Exception(
-				"Task ':task' is not a valid minion task", 
+				"Task ':task' is not a valid minion task",
 				array(':task' => get_class($task))
 			);
 		}
@@ -39,8 +39,14 @@ abstract class Minion_Task {
 	protected $_config = array();
 
 	/**
+	 * The file that get's passes to Validation::errors() when validation fails
+	 * @var string|NULL
+	 */
+	protected $_errors_file = 'validation';
+
+	/**
 	 * Gets the task name for the task
-	 * 
+	 *
 	 * @return string
 	 */
 	public function __toString()
@@ -62,7 +68,34 @@ abstract class Minion_Task {
 	 */
 	public function get_config_options()
 	{
-		return $this->_config;
+		return (array) $this->_config;
+	}
+
+	/**
+	 * Adds any validation rules/labels for validation _config
+	 *
+	 *     public function build_validation(Validation $validation)
+	 *     {
+	 *         return parent::build_validation($validation)
+	 *             ->rule('paramname', 'not_empty'); // Require this param
+	 *     }
+	 *
+	 * @param  Validation   the validation object to add rules to
+	 * @return Validation
+	 */
+	public function build_validation(Validation $validation)
+	{
+		return $validation;
+	}
+
+	/**
+	 * Returns $_errors_file
+	 *
+	 * @return string|NULL
+	 */
+	public function get_errors_file()
+	{
+		return $this->_errors_file;
 	}
 
 	/**
