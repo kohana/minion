@@ -105,11 +105,21 @@ class Controller_Minion extends Kohana_Controller
 
 		$task = $this->_retrieve_task();
 
-		$options = $task->get_config_options();
+		$defaults = $task->get_config_options();
 
-		if ( ! empty($options))
+		if ( ! empty($defaults))
 		{
-			$config = call_user_func_array(array('CLI', 'options'), $options);
+			if (Arr::is_assoc($defaults))
+			{
+				$options = array_keys($defaults);
+				$options = call_user_func_array(array('CLI', 'options'), $options);
+				$config = Arr::merge($defaults, $options);
+			}
+			else
+			{
+				// Old behavior
+				$config = call_user_func_array(array('CLI', 'options'), $defaults);
+			}
 		}
 
 		echo $task->execute($config);
