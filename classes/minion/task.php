@@ -66,6 +66,23 @@ abstract class Minion_Task {
 	}
 
 	/**
+	 * Adds any validation rules/labels for validation _config
+	 *
+	 *     public function build_validation(Validation $validation)
+	 *     {
+	 *         return parent::build_validation($validation)
+	 *             ->rule('paramname', 'not_empty'); // Require this param
+	 *     }
+	 *
+	 * @param  Validation   the validation object to add rules to
+	 * @return Validation
+	 */
+	public function build_validation(Validation $validation)
+	{
+		return $validation;
+	}
+
+	/**
 	 * Execute the task with the specified set of config
 	 *
 	 * @return boolean TRUE if task executed successfully, else FALSE
