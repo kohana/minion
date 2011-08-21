@@ -121,7 +121,24 @@ class Controller_Minion extends Kohana_Controller
 				$config = call_user_func_array(array('CLI', 'options'), $defaults);
 			}
 		}
+		else
+		{
+			$config = array();
+		}
 
-		echo $task->execute($config);
+		// Validate $config
+		$validation = Validation::factory($config);
+		$validation = $task->build_validation($validation);
+
+		if ( ! $validation->check())
+		{
+			echo View::factory('minion/error/validation')
+				->set('errors', $validation->errors($task->get_errors_file()));
+		}
+		else
+		{
+			// Finally, run the task
+			echo $task->execute($config);
+		}
 	}
 }
