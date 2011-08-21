@@ -24,7 +24,7 @@ abstract class Minion_Task {
 		if ( ! in_array('Minion_Task', class_parents($class)))
 		{
 			throw new Kohana_Exception(
-				"Task ':task' is not a valid minion task", 
+				"Task ':task' is not a valid minion task",
 				array(':task' => get_class($task))
 			);
 		}
@@ -40,7 +40,7 @@ abstract class Minion_Task {
 
 	/**
 	 * Gets the task name for the task
-	 * 
+	 *
 	 * @return string
 	 */
 	public function __toString()
@@ -62,7 +62,7 @@ abstract class Minion_Task {
 	 */
 	public function get_config_options()
 	{
-		return $this->_config;
+		return (array) $this->_config;
 	}
 
 	/**

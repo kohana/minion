@@ -8,7 +8,7 @@
 class Controller_Minion extends Kohana_Controller
 {
 	/**
-	 * The task to be executed 
+	 * The task to be executed
 	 * @var string
 	 */
 	protected $_task = NULL;
@@ -42,12 +42,12 @@ class Controller_Minion extends Kohana_Controller
 
 	/**
 	 * Retrieves the current minion task.
-	 * 
+	 *
 	 * @return Minion_Task
 	 */
 	protected function _retrieve_task()
 	{
-		try 
+		try
 		{
 			return Minion_Task::factory($this->_task);
 		}
@@ -93,7 +93,7 @@ class Controller_Minion extends Kohana_Controller
 	/**
 	 * Handles the request to execute a task.
 	 *
-	 * Responsible for parsing the tasks to execute & also any config items that 
+	 * Responsible for parsing the tasks to execute & also any config items that
 	 * should be passed to the tasks
 	 */
 	public function action_execute()
@@ -105,12 +105,10 @@ class Controller_Minion extends Kohana_Controller
 
 		$task = $this->_retrieve_task();
 
-		$config  = array();
-		$options = (array) $task->get_config_options();
+		$options = $task->get_config_options();
 
 		if ( ! empty($options))
 		{
-			$options = $task->get_config_options();
 			$config = call_user_func_array(array('CLI', 'options'), $options);
 		}
 
