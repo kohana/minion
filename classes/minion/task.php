@@ -39,6 +39,12 @@ abstract class Minion_Task {
 	protected $_config = array();
 
 	/**
+	 * The file that get's passes to Validation::errors() when validation fails
+	 * @var string|NULL
+	 */
+	protected $_errors_file = 'validation';
+
+	/**
 	 * Gets the task name for the task
 	 *
 	 * @return string
@@ -80,6 +86,16 @@ abstract class Minion_Task {
 	public function build_validation(Validation $validation)
 	{
 		return $validation;
+	}
+
+	/**
+	 * Returns $_errors_file
+	 *
+	 * @return string|NULL
+	 */
+	public function get_errors_file()
+	{
+		return $this->_errors_file;
 	}
 
 	/**
