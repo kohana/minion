@@ -70,7 +70,7 @@ class Minion_Util
 
 		foreach ($files as $file => $path)
 		{
-			$file = substr($file, strrpos($file, '/') + 1);
+			$file = substr($file, strrpos($file, DIRECTORY_SEPARATOR) + 1);
 
 			if (is_array($path) AND count($path))
 			{
