@@ -125,7 +125,7 @@ class Minion_CLI extends CLI {
 	 */
 	public static function password($text = '')
 	{
-		$test .= ': ';
+		$text .= ': ';
 		
 		if (Kohana::$is_windows)
 		{
