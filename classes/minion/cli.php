@@ -118,13 +118,15 @@ class Minion_CLI extends CLI {
 	 * 
 	 * Usage: 
 	 * 
-	 * $password = Minion_CLI::password('Enter your password : ');
+	 * $password = Minion_CLI::password('Enter your password');
 	 * 
 	 * @author Mathew Davies.
 	 * @return string
 	 */
 	public static function password($text = '')
 	{
+		$test .= ': ';
+		
 		if (Kohana::$is_windows)
 		{
 			$vbscript = sys_get_temp_dir().'Minion_CLI_Password.vbs';
