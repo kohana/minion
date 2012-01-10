@@ -1,7 +1,12 @@
 <?php defined('SYSPATH') or die('No direct script access.');
-
 /**
  * Interface that all minion tasks must implement
+ *
+ * @package    Kohana
+ * @category   Helpers
+ * @author     Kohana Team
+ * @copyright  (c) 2009-2011 Kohana Team
+ * @license    http://kohanaframework.org/license
  */
 abstract class Kohana_Minion_Task {
 
