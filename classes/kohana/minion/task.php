@@ -139,8 +139,34 @@ abstract class Kohana_Minion_Task {
 	 */
 	public function execute()
 	{
-		$method = $this->_method;
-		$this->{$method}($this->_options);
+		$defaults = $this->get_config_options();
+
+		if ( ! empty($defaults))
+		{
+			$options = array_keys($defaults);
+			$options = call_user_func_array(array('CLI', 'options'), $options);
+			$config = Arr::merge($defaults, $options);
+		}
+		else
+		{
+			$config = array();
+		}
+
+		// Validate $config
+		$validation = Validation::factory($config);
+		$validation = $this->build_validation($validation);
+
+		if ( ! $validation->check())
+		{
+			echo View::factory('minion/error/validation')
+				->set('errors', $validation->errors($task->get_errors_file()));
+		}
+		else
+		{
+			// Finally, run the task
+			$method = $this->_method;
+			echo $this->{$method}($this->_options);
+		}
 	}
 
 	abstract protected function _execute(array $params);
