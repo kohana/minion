@@ -15,9 +15,9 @@ class Minion_Task_Demo extends Minion_Task
 	 *
 	 * @return 
 	 */
-	public function execute()
+	protected function _execute(array $params)
 	{
-		var_dump($this->_options);
+		var_dump($params);
 		echo 'foobar';
 	}
 }

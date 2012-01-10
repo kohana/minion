@@ -101,4 +101,4 @@ require APPPATH.'bootstrap'.EXT;
  */
 
 
-Minion_Task::factory(CLI::options('task'))->options(CLI::options())->execute();
+Minion_Task::factory(CLI::options())->execute();

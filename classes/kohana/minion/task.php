@@ -12,6 +12,8 @@ abstract class Kohana_Minion_Task {
 
 	protected $_options = array();
 
+	protected $_method = '_execute';
+
 	/**
 	 * Factory for loading minion tasks
 	 *
@@ -19,8 +21,11 @@ abstract class Kohana_Minion_Task {
 	 * @param  string The task to load
 	 * @return Minion_Task The Minion task
 	 */
-	public static function factory($task)
+	public static function factory($options)
 	{
+		$task = arr::get($options, 'task');
+		unset($options['task']);
+
 		// If we didn't get a valid task, generate the help
 		if ( ! is_string($task))
 		{
@@ -37,7 +42,16 @@ abstract class Kohana_Minion_Task {
 			);
 		}
 
-		return new $class;
+		$class = new $class;
+		$class->options($options);
+
+		// Show the help page for this task if requested
+		if (array_key_exists('help', $options))
+		{
+			$class->_method = '_help';
+		}
+
+		return $class;
 	}
 
 	/**
@@ -123,14 +137,20 @@ abstract class Kohana_Minion_Task {
 	 *
 	 * @return boolean TRUE if task executed successfully, else FALSE
 	 */
-	abstract public function execute();
+	public function execute()
+	{
+		$method = $this->_method;
+		$this->{$method}($this->_options);
+	}
+
+	abstract protected function _execute(array $params);
 
 	/**
 	 * Outputs help for this task
 	 *
 	 * @return null
 	 */
-	protected function help()
+	protected function _help(array $params)
 	{
 		$tasks = Minion_Util::compile_task_list(Kohana::list_files('classes/minion/task'));
 
@@ -141,7 +161,7 @@ abstract class Kohana_Minion_Task {
 		$view = View::factory('minion/help/task')
 			->set('description', $description)
 			->set('tags', (array) $tags)
-			->set('task', get_class($this));
+			->set('task', strtolower(str_replace('Minion_Task_', '', get_class($this))));
 
 		echo $view;
 	}
