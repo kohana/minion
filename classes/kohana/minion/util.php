@@ -3,7 +3,7 @@
  * Minion utility class
  *
  * @package    Kohana
- * @category   Helpers
+ * @category   Minion
  * @author     Kohana Team
  * @copyright  (c) 2009-2011 Kohana Team
  * @license    http://kohanaframework.org/license
