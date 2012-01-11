@@ -1,6 +1,10 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Demo task. Will delete this.
+ * This is a demo task.
+ * 
+ * It can accept the following options:
+ *  - foo: this parameter does something. It is required.
+ *  - bar: this parameter does something else. It should be numeric.
  *
  * @package    Kohana
  * @category   Helpers
