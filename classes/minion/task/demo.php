@@ -15,8 +15,8 @@
 class Minion_Task_Demo extends Minion_Task
 {
 	protected $_config = array(
-		'foo',
-		'bar',
+		'foo' => 'bar',
+		'bar' => NULL,
 	);
 
 	/**

@@ -169,7 +169,7 @@ abstract class Kohana_Minion_Task {
 		{
 			// Finally, run the task
 			$method = $this->_method;
-			echo $this->{$method}($this->_options);
+			echo $this->{$method}($config);
 		}
 	}
 
