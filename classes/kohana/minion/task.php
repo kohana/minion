@@ -45,7 +45,7 @@ abstract class Kohana_Minion_Task {
 		}
 
 		$class = new $class;
-		$class->options($options);
+		$class->set_config_options($options);
 
 		// Show the help page for this task if requested
 		if (array_key_exists('help', $options))
@@ -90,9 +90,9 @@ abstract class Kohana_Minion_Task {
 	 *
 	 * @return this
 	 */
-	public function options(array $options)
+	public function set_config_options(array $options = NULL)
 	{
-		$this->_options = $options;
+		$this->_options = arr::merge($options, $this->_defaults);
 
 		return $this;
 	}
@@ -104,7 +104,17 @@ abstract class Kohana_Minion_Task {
 	 */
 	public function get_config_options()
 	{
-		return (array) $this->_config;
+		return (array) $this->_options;
+	}
+
+	/**
+	 * Get a set of config options that this task can accept
+	 *
+	 * @return array
+	 */
+	public function get_config_defaults()
+	{
+		return (array) $this->_defaults;
 	}
 
 	/**
@@ -122,6 +132,12 @@ abstract class Kohana_Minion_Task {
 	 */
 	public function build_validation(Validation $validation)
 	{
+		// Add a rule to each key making sure it's in the task
+		foreach ($validation->as_array() as $key => $value)
+		{
+			$validation->rule($key, array('Minion_Valid', 'option'), array(':validation', ':field', $this));
+		}
+
 		return $validation;
 	}
 
@@ -147,8 +163,7 @@ abstract class Kohana_Minion_Task {
 		if ( ! empty($defaults))
 		{
 			$options = array_keys($defaults);
-			$options = call_user_func_array(array('CLI', 'options'), $options);
-			$config = Arr::merge($defaults, $options);
+			$config = Arr::merge($defaults, $this->_options);
 		}
 		else
 		{

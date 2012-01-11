@@ -6,9 +6,9 @@ Writing a task in minion is very easy. Simply create a new class called `Minion_
 
 	class Minion_Task_Demo extends Minion_Task
 	{
-		protected $_config = array(
-			'foo',
-			'bar',
+		protected $_defaults = array(
+			'foo' = 'bar',
+			'bar' => NULL,
 		);
 
 		/**
@@ -27,8 +27,12 @@ You'll notice a few things here:
 
  - You need a main `_execute()` method. It should take one array parameter.
    - This parameter contains any command line options passed to the task.
-   - For example, if you call a task with `./minion --task=demo --foo=foobar` then `$params` will contain: `array('foo' => 'bar')`
- - It can optionally have a `protected $_config` array. This is a list of parameters you want to accept for this task. More on this below.
+   - For example, if you call the task above with `./minion --task=demo --foo=foobar` then `$params` will contain: `array('foo' => 'foobar', 'bar' => NULL)`
+ - It needs to have a `protected $_defaults` array. This is a list of parameters you want to accept for this task. Any parameters passed to the task not in this list will be rejected.
+
+## Namespacing Tasks
+
+You can "namespace" tasks by placing them all in a subdirectory: `classes/minion/task/database/generate.php`. This task will be named `database:generate` and can be called with this task name.
 
 # Parameter Validations
 

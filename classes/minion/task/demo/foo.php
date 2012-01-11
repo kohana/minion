@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * This is a demo task.
+ * This is a demo task.....
  * 
  * It can accept the following options:
  *  - foo: this parameter does something. It is required.
@@ -12,11 +12,11 @@
  * @copyright  (c) 2009-2011 Kohana Team
  * @license    http://kohanaframework.org/license
  */
-class Minion_Task_Demo extends Minion_Task
+class Minion_Task_Demo_Foo extends Minion_Task
 {
-	protected $_defaults = array(
-		'foo' => 'bar',
-		'bar' => NULL,
+	protected $_config = array(
+		'foo',
+		'bar',
 	);
 
 	/**
@@ -26,7 +26,7 @@ class Minion_Task_Demo extends Minion_Task
 	 */
 	protected function _execute(array $params)
 	{
-		// var_dump(valid::email('mcnama1_patr@bentley.edu'));
+		var_dump(valid::email('mcnama1_patr@bentley.edu'));
 		var_dump($params);
 		echo 'foobar';
 	}
