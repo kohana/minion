@@ -16,9 +16,11 @@ abstract class Kohana_Minion_Task {
 
 	/**
 	 * Factory for loading minion tasks
+	 * 
+	 * @param  array An array of command line options. It should contain the 'task' key
 	 *
 	 * @throws Kohana_Exception
-	 * @param  string The task to load
+	 * 
 	 * @return Minion_Task The Minion task
 	 */
 	public static function factory($options)
@@ -115,6 +117,7 @@ abstract class Kohana_Minion_Task {
 	 *     }
 	 *
 	 * @param  Validation   the validation object to add rules to
+	 * 
 	 * @return Validation
 	 */
 	public function build_validation(Validation $validation)
@@ -125,7 +128,7 @@ abstract class Kohana_Minion_Task {
 	/**
 	 * Returns $_errors_file
 	 *
-	 * @return string|NULL
+	 * @return string
 	 */
 	public function get_errors_file()
 	{
@@ -135,7 +138,7 @@ abstract class Kohana_Minion_Task {
 	/**
 	 * Execute the task with the specified set of config
 	 *
-	 * @return boolean TRUE if task executed successfully, else FALSE
+	 * @return null
 	 */
 	public function execute()
 	{
@@ -159,7 +162,7 @@ abstract class Kohana_Minion_Task {
 		if ( $this->_method != '_help' AND ! $validation->check())
 		{
 			echo View::factory('minion/error/validation')
-				->set('task', strtolower(str_replace('Minion_Task_', '', get_class($this))))
+				->set('task', Minion_Util::convert_class_to_task($this))
 				->set('errors', $validation->errors($this->get_errors_file()));
 		}
 		else
@@ -188,7 +191,7 @@ abstract class Kohana_Minion_Task {
 		$view = View::factory('minion/help/task')
 			->set('description', $description)
 			->set('tags', (array) $tags)
-			->set('task', strtolower(str_replace('Minion_Task_', '', get_class($this))));
+			->set('task', Minion_Util::convert_class_to_task($this));
 
 		echo $view;
 	}
