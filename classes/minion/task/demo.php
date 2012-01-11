@@ -22,7 +22,15 @@ class Minion_Task_Demo extends Minion_Task
 	 */
 	protected function _execute(array $params)
 	{
+		var_dump(valid::email('mcnama1_patr@bentley.edu'));
 		var_dump($params);
 		echo 'foobar';
+	}
+
+	public function build_validation(Validation $validation)
+	{
+		return parent::build_validation($validation)
+			->rule('foo', 'not_empty') // Require this param
+			->rule('bar', 'numeric');
 	}
 }

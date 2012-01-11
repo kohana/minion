@@ -156,10 +156,11 @@ abstract class Kohana_Minion_Task {
 		$validation = Validation::factory($config);
 		$validation = $this->build_validation($validation);
 
-		if ( ! $validation->check())
+		if ( $this->_method != '_help' AND ! $validation->check())
 		{
 			echo View::factory('minion/error/validation')
-				->set('errors', $validation->errors($task->get_errors_file()));
+				->set('task', strtolower(str_replace('Minion_Task_', '', get_class($this))))
+				->set('errors', $validation->errors($this->get_errors_file()));
 		}
 		else
 		{
