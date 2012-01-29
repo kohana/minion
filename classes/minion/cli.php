@@ -206,7 +206,7 @@ class Minion_CLI {
 			$text = Minion_CLI::color($text, $foreground, $background);
 		}
 
-		fwrite(STDOUT, PHP_EOL.$text);
+		fwrite(STDOUT, $text.PHP_EOL);
 	}
 	
 	/**
