@@ -116,64 +116,30 @@ class Minion_CLI {
 	 * // Will only accept the options in the array
 	 * $ready = CLI::read('Are you ready?', array('y','n'));
 	 *
-	 * @author     Fuel Development Team
-	 * @license    MIT License
-	 * @copyright  2010 - 2011 Fuel Development Team
-	 * @link       http://fuelphp.com
-	 * @return string the user input
+	 * @param  string  $text    text to show user before waiting for input
+	 * @param  array   $options array of options the user is shown
+	 * @return string  the user input
 	 */
-	public static function read()
+	public static function read($text = '', array $options = NULL)
 	{
-		$args = func_get_args();
-
-		// Ask question with options
-		if (count($args) == 2)
-		{
-			list($output, $options) = $args;
-		}
-
-		// No question (probably been asked already) so just show options
-		elseif (count($args) == 1 && is_array($args[0]))
-		{
-			$output = '';
-			$options = $args[0];
-		}
-
-		// Question without options
-		elseif (count($args) == 1 && is_string($args[0]))
-		{
-			$output = $args[0];
-			$options = array();
-		}
-
-		// Run out of ideas, EPIC FAIL!
-		else
-		{
-			$output = '';
-			$options = array();
-		}
-
 		// If a question has been asked with the read
-		if (!empty($output))
+		$options_output = '';
+		if ( ! empty($options))
 		{
-			$options_output = '';
-			if (!empty($options))
-			{
-				$options_output = ' [ '.implode(', ', $options).' ]';
-			}
-
-			fwrite(STDOUT, $output.$options_output.': ');
+			$options_output = ' [ '.implode(', ', $options).' ]';
 		}
+
+		fwrite(STDOUT, $text.$options_output.': ');
 
 		// Read the input from keyboard.
 		$input = trim(fgets(STDIN));
 
 		// If options are provided and the choice is not in the array, tell them to try again
-		if (!empty($options) && !in_array($input, $options))
+		if ( ! empty($options) && ! in_array($input, $options))
 		{
-			Minion_CLI::write('This is not a valid option. Please try again.'.PHP_EOL);
+			CLI::write('This is not a valid option. Please try again.');
 
-			$input = Minion_CLI::read($output, $options);
+			$input = Minion_CLI::read($text, $options);
 		}
 
 		// Read the input
