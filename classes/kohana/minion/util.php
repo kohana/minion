@@ -123,6 +123,6 @@ class Kohana_Minion_Util
 			$class = get_class($class);
 		}
 
-		return strtolower(str_replace('_', Minion_Util::$task_separator, substr($class, 12)));
+		return strtolower(str_replace('_', Minion_Util::$task_separator, substr($class, 5)));
 	}
 }
