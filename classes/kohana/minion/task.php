@@ -197,7 +197,7 @@ abstract class Kohana_Minion_Task {
 	 */
 	protected function _help(array $params)
 	{
-		$tasks = Minion_Util::compile_task_list(Kohana::list_files('classes/minion/task'));
+		$tasks = Minion_Util::compile_task_list(Kohana::list_files('classes/task'));
 
 		$inspector = new ReflectionClass($this);
 

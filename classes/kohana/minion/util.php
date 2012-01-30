@@ -107,7 +107,7 @@ class Kohana_Minion_Util
 		if (empty($task))
 			return '';
 
-		return 'Minion_Task_'.implode('_', array_map('ucfirst', explode(Minion_Util::$task_separator, $task)));
+		return 'Task_'.implode('_', array_map('ucfirst', explode(Minion_Util::$task_separator, $task)));
 	}
 
 	/**

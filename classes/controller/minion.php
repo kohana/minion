@@ -61,7 +61,7 @@ class Controller_Minion extends Kohana_Controller
 	 */
 	public function action_help()
 	{
-		$tasks = Minion_Util::compile_task_list(Kohana::list_files('classes/minion/task'));
+		$tasks = Minion_Util::compile_task_list(Kohana::list_files('classes/task'));
 		$view  = NULL;
 
 		if (empty($this->_task))

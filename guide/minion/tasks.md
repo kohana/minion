@@ -1,10 +1,10 @@
 # Writing Tasks
 
-Writing a task in minion is very easy. Simply create a new class called `Minion_Task_<Taskname>` and put it inside `classes/minion/task/<taskname>.php`.
+Writing a task in minion is very easy. Simply create a new class called `Task_<Taskname>` and put it inside `classes/task/<taskname>.php`.
 
 	<?php defined('SYSPATH') or die('No direct script access.');
 
-	class Minion_Task_Demo extends Minion_Task
+	class Task_Demo extends Minion_Task
 	{
 		protected $_defaults = array(
 			'foo' = 'bar',
@@ -32,7 +32,7 @@ You'll notice a few things here:
 
 ## Namespacing Tasks
 
-You can "namespace" tasks by placing them all in a subdirectory: `classes/minion/task/database/generate.php`. This task will be named `database:generate` and can be called with this task name.
+You can "namespace" tasks by placing them all in a subdirectory: `classes/task/database/generate.php`. This task will be named `database:generate` and can be called with this task name.
 
 # Parameter Validations
 
