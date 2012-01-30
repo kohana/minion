@@ -188,25 +188,21 @@ class Minion_CLI {
 	 * Outputs a string to the cli. If you send an array it will implode them
 	 * with a line break.
 	 *
-	 * @author     Fuel Development Team
-	 * @license    MIT License
-	 * @copyright  2010 - 2011 Fuel Development Team
-	 * @link       http://fuelphp.com
 	 * @param string|array $text the text to output, or array of lines
 	 */
-	public static function write($text = '', $foreground = null, $background = null)
+	public static function write($text = '')
 	{
 		if (is_array($text))
 		{
-			$text = implode(PHP_EOL, $text);
+			foreach ($text as $line)
+			{
+				CLI::write($line);
+			}
 		}
-
-		if ($foreground OR $background)
+		else
 		{
-			$text = Minion_CLI::color($text, $foreground, $background);
+			fwrite(STDOUT, $text.PHP_EOL);
 		}
-
-		fwrite(STDOUT, $text.PHP_EOL);
 	}
 	
 	/**
@@ -214,7 +210,7 @@ class Minion_CLI {
 	 *
 	 * @param string|array $text the text to output, or array of lines
 	 */
-	public static function write_replace($text = '', $foreground = null, $background = null)
+	public static function write_replace($text = '', )
 	{
 		if ($foreground OR $background)
 		{
