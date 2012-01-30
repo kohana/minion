@@ -139,7 +139,7 @@ class Minion_CLI {
 		{
 			CLI::write('This is not a valid option. Please try again.');
 
-			$input = Minion_CLI::read($text, $options);
+			$input = CLI::read($text, $options);
 		}
 
 		// Read the input
@@ -153,7 +153,7 @@ class Minion_CLI {
 	 *
 	 * Usage:
 	 *
-	 * $password = Minion_CLI::password('Enter your password');
+	 * $password = CLI::password('Enter your password');
 	 *
 	 * @author Mathew Davies.
 	 * @return string
@@ -179,7 +179,7 @@ class Minion_CLI {
 			$password = shell_exec('/usr/bin/env bash -c \'read -s -p "'.escapeshellcmd($text).'" var && echo $var\'');
 		}
 
-		Minion_CLI::write();
+		CLI::write();
 
 		return trim($password);
 	}
@@ -251,7 +251,7 @@ class Minion_CLI {
 				$time--;
 			}
 
-			Minion_CLI::write();
+			CLI::write();
 		}
 		else
 		{
@@ -261,8 +261,8 @@ class Minion_CLI {
 			}
 			else
 			{
-				Minion_CLI::write(Minion_CLI::$wait_msg);
-				Minion_CLI::read();
+				CLI::write(CLI::$wait_msg);
+				CLI::read();
 			}
 		}
 	}
@@ -288,21 +288,21 @@ class Minion_CLI {
 			return $text;
 		}
 
-		if (!array_key_exists($foreground, Minion_CLI::$foreground_colors))
+		if (!array_key_exists($foreground, CLI::$foreground_colors))
 		{
 			throw new Kohana_Exception('Invalid CLI foreground color: '.$foreground);
 		}
 
-		if ($background !== null and !array_key_exists($background, Minion_CLI::$background_colors))
+		if ($background !== null and !array_key_exists($background, CLI::$background_colors))
 		{
 			throw new Kohana_Exception('Invalid CLI background color: '.$background);
 		}
 
-		$string = "\033[".Minion_CLI::$foreground_colors[$foreground]."m";
+		$string = "\033[".CLI::$foreground_colors[$foreground]."m";
 
 		if ($background !== null)
 		{
-			$string .= "\033[".Minion_CLI::$background_colors[$background]."m";
+			$string .= "\033[".CLI::$background_colors[$background]."m";
 		}
 
 		$string .= $text."\033[0m";
