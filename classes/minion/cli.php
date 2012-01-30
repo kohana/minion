@@ -206,17 +206,24 @@ class Minion_CLI {
 	}
 	
 	/**
-	 * Outputs a string to the cli, replacing the previous line.
+	 * Outputs a replacable line to the cli. You can continue replacing the
+	 * line until `TRUE` is passed as the second parameter in order to indicate
+	 * you are done modifying the line.
+	 *
+	 *     // Sample progress indicator
+	 *     CLI::write_replace('0%');
+	 *     CLI::write_replace('25%');
+	 *     CLI::write_replace('50%');
+	 *     CLI::write_replace('75%');
+	 *     // Done writing this line
+	 *     CLI::write_replace('100%', TRUE);
 	 *
 	 * @param string|array $text the text to output, or array of lines
 	 */
-	public static function write_replace($text = '', )
+	public static function write_replace($text = '', $end_line = FALSE)
 	{
-		if ($foreground OR $background)
-		{
-			$text = Minion_CLI::color($text, $foreground, $background);
-		}
-
+		// Append a newline if $end_line is TRUE
+		$text = $end_line ? $text.PHP_OEL : $text;
 		fwrite(STDOUT, "\r\033[K".$text);
 	}
 
