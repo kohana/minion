@@ -223,7 +223,7 @@ class Minion_CLI {
 	public static function write_replace($text = '', $end_line = FALSE)
 	{
 		// Append a newline if $end_line is TRUE
-		$text = $end_line ? $text.PHP_OEL : $text;
+		$text = $end_line ? $text.PHP_EOL : $text;
 		fwrite(STDOUT, "\r\033[K".$text);
 	}
 
