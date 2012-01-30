@@ -218,7 +218,8 @@ class Minion_CLI {
 	 *     // Done writing this line
 	 *     CLI::write_replace('100%', TRUE);
 	 *
-	 * @param string|array $text the text to output, or array of lines
+	 * @param string  $text      the text to output
+	 * @param boolean $end_line  whether the line is done being replaced
 	 */
 	public static function write_replace($text = '', $end_line = FALSE)
 	{
