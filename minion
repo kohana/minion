@@ -22,8 +22,5 @@ fi
 
 php index.php --uri=minion "$TASK" "$@"
 
-# Echo a new line because Minion_CLI::write() prepends them now
-echo -e "\n"
-
 # Pass the exit code back out
 exit $?

@@ -47,7 +47,7 @@ examples with
 
 ## Writing your own tasks
 
-All minion tasks must be located in `classes/minion/task/`.  They can be in any module, thus allowing you to 
+All minion tasks must be located in `classes/task/`.  They can be in any module, thus allowing you to 
 ship custom minion tasks with your own module / product.
 
 Each task must extend the abstract class `Minion_Task` and implement `Minion_Task::execute()`.

@@ -2,7 +2,7 @@ Minion is a cli tool for performing tasks
 
 Usage 
 
-    php index.php --uri=minion/{task}
+    php minion.php --task={task}
 
 Where {task} is one of the following:
 
@@ -13,5 +13,5 @@ Where {task} is one of the following:
 
 For more information on what a task does and usage details execute 
 
-    php index.php --uri=minion/help/{task}
+    php minion.php --task={task} --help
 

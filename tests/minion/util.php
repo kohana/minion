@@ -56,9 +56,9 @@ class Minion_UtilTest extends Kohana_Unittest_TestCase
 					'db:status',
 				),
 				array (
-					'classes/minion/task/db' => array (
-						'classes/minion/task/db/migrate.php' => '/var/www/memberful/memberful-core/modules/kohana-minion/classes/minion/task/db/migrate.php',
-						'classes/minion/task/db/status.php' => '/var/www/memberful/memberful-core/modules/kohana-minion/classes/minion/task/db/status.php',
+					'classes/task/db' => array (
+						'classes/task/db/migrate.php' => '/var/www/memberful/memberful-core/modules/kohana-minion/classes/task/db/migrate.php',
+						'classes/task/db/status.php' => '/var/www/memberful/memberful-core/modules/kohana-minion/classes/task/db/status.php',
 					),
 				),
 			),
@@ -89,8 +89,8 @@ class Minion_UtilTest extends Kohana_Unittest_TestCase
 	public function provider_convert_task_to_class_name()
 	{
 		return array(
-			array('Minion_Task_Db_Migrate', 'db:migrate'),
-			array('Minion_Task_Db_Status',  'db:status'),
+			array('Task_Db_Migrate', 'db:migrate'),
+			array('Task_Db_Status',  'db:status'),
 			array('', ''),
 		);
 	}
@@ -117,7 +117,7 @@ class Minion_UtilTest extends Kohana_Unittest_TestCase
 	public function provider_convert_class_to_task()
 	{
 		return array(
-			array('db:migrate', 'Minion_Task_Db_Migrate'),
+			array('db:migrate', 'Task_Db_Migrate'),
 		);
 	}
 

@@ -18,11 +18,6 @@ class Controller_Minion extends Kohana_Controller
 	 */
 	public function before()
 	{
-		if ( ! Kohana::$is_cli)
-		{
-			throw new Kohana_Exception("Minion can only be ran from the cli");
-		}
-
 		$this->_task = $this->request->param('task');
 
 		$options = CLI::options('help', 'task');
@@ -66,7 +61,7 @@ class Controller_Minion extends Kohana_Controller
 	 */
 	public function action_help()
 	{
-		$tasks = Minion_Util::compile_task_list(Kohana::list_files('classes/minion/task'));
+		$tasks = Minion_Util::compile_task_list(Kohana::list_files('classes/task'));
 		$view  = NULL;
 
 		if (empty($this->_task))

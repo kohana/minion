@@ -1,37 +1,106 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 
-class Minion_CLI extends CLI {
+class Minion_CLI {
 
 	public static $wait_msg = 'Press any key to continue...';
 
 	protected static $foreground_colors = array(
-		'black' => '0;30',
-		'dark_gray' => '1;30',
-		'blue' => '0;34',
-		'light_blue' => '1;34',
-		'green' => '0;32',
-		'light_green' => '1;32',
-		'cyan' => '0;36',
-		'light_cyan' => '1;36',
-		'red' => '0;31',
-		'light_red' => '1;31',
-		'purple' => '0;35',
+		'black'        => '0;30',
+		'dark_gray'    => '1;30',
+		'blue'         => '0;34',
+		'light_blue'   => '1;34',
+		'green'        => '0;32',
+		'light_green'  => '1;32',
+		'cyan'         => '0;36',
+		'light_cyan'   => '1;36',
+		'red'          => '0;31',
+		'light_red'    => '1;31',
+		'purple'       => '0;35',
 		'light_purple' => '1;35',
-		'brown' => '0;33',
-		'yellow' => '1;33',
-		'light_gray' => '0;37',
-		'white' => '1;37',
+		'brown'        => '0;33',
+		'yellow'       => '1;33',
+		'light_gray'   => '0;37',
+		'white'        => '1;37',
 	);
 	protected static $background_colors = array(
-		'black' => '40',
-		'red' => '41',
-		'green' => '42',
-		'yellow' => '43',
-		'blue' => '44',
-		'magenta' => '45',
-		'cyan' => '46',
+		'black'      => '40',
+		'red'        => '41',
+		'green'      => '42',
+		'yellow'     => '43',
+		'blue'       => '44',
+		'magenta'    => '45',
+		'cyan'       => '46',
 		'light_gray' => '47',
 	);
+
+	/**
+	 * Returns one or more command-line options. Options are specified using
+	 * standard CLI syntax:
+	 *
+	 *     php index.php --username=john.smith --password=secret --var="some value with spaces"
+	 *
+	 *     // Get the values of "username" and "password"
+	 *     $auth = CLI::options('username', 'password');
+	 *
+	 * @param   string  $options,...    option name
+	 * @return  array
+	 */
+	public static function options($options = NULL)
+	{
+		// Get all of the requested options
+		$options = func_get_args();
+
+		// Found option values
+		$values = array();
+
+		// Skip the first option, it is always the file executed
+		for ($i = 1; $i < $_SERVER['argc']; $i++)
+		{
+			if ( ! isset($_SERVER['argv'][$i]))
+			{
+				// No more args left
+				break;
+			}
+
+			// Get the option
+			$opt = $_SERVER['argv'][$i];
+
+			if (substr($opt, 0, 2) !== '--')
+			{
+				// This is not an option argument
+				continue;
+			}
+
+			// Remove the "--" prefix
+			$opt = substr($opt, 2);
+
+			if (strpos($opt, '='))
+			{
+				// Separate the name and value
+				list ($opt, $value) = explode('=', $opt, 2);
+			}
+			else
+			{
+				$value = NULL;
+			}
+
+			$values[$opt] = $value;
+		}
+
+		if ($options)
+		{
+			foreach ($values as $opt => $value)
+			{
+				if ( ! in_array($opt, $options))
+				{
+					// Set the given value
+					unset($values[$opt]);
+				}
+			}
+		}
+
+		return count($options) == 1 ? array_pop($values) : $values;
+	}
 
 	/**
 	 * Reads input from the user. This can have either 1 or 2 arguments.
@@ -47,64 +116,30 @@ class Minion_CLI extends CLI {
 	 * // Will only accept the options in the array
 	 * $ready = CLI::read('Are you ready?', array('y','n'));
 	 *
-	 * @author     Fuel Development Team
-	 * @license    MIT License
-	 * @copyright  2010 - 2011 Fuel Development Team
-	 * @link       http://fuelphp.com
-	 * @return string the user input
+	 * @param  string  $text    text to show user before waiting for input
+	 * @param  array   $options array of options the user is shown
+	 * @return string  the user input
 	 */
-	public static function read()
+	public static function read($text = '', array $options = NULL)
 	{
-		$args = func_get_args();
-
-		// Ask question with options
-		if (count($args) == 2)
-		{
-			list($output, $options) = $args;
-		}
-
-		// No question (probably been asked already) so just show options
-		elseif (count($args) == 1 && is_array($args[0]))
-		{
-			$output = '';
-			$options = $args[0];
-		}
-
-		// Question without options
-		elseif (count($args) == 1 && is_string($args[0]))
-		{
-			$output = $args[0];
-			$options = array();
-		}
-
-		// Run out of ideas, EPIC FAIL!
-		else
-		{
-			$output = '';
-			$options = array();
-		}
-
 		// If a question has been asked with the read
-		if (!empty($output))
+		$options_output = '';
+		if ( ! empty($options))
 		{
-			$options_output = '';
-			if (!empty($options))
-			{
-				$options_output = ' [ '.implode(', ', $options).' ]';
-			}
-
-			fwrite(STDOUT, $output.$options_output.': ');
+			$options_output = ' [ '.implode(', ', $options).' ]';
 		}
+
+		fwrite(STDOUT, $text.$options_output.': ');
 
 		// Read the input from keyboard.
 		$input = trim(fgets(STDIN));
 
 		// If options are provided and the choice is not in the array, tell them to try again
-		if (!empty($options) && !in_array($input, $options))
+		if ( ! empty($options) && ! in_array($input, $options))
 		{
-			Minion_CLI::write('This is not a valid option. Please try again.'.PHP_EOL);
+			CLI::write('This is not a valid option. Please try again.');
 
-			$input = Minion_CLI::read($output, $options);
+			$input = CLI::read($text, $options);
 		}
 
 		// Read the input
@@ -113,13 +148,13 @@ class Minion_CLI extends CLI {
 	
 	/**
 	 * Experimental feature.
-	 * 
+	 *
 	 * Reads hidden input from the user
-	 * 
-	 * Usage: 
-	 * 
-	 * $password = Minion_CLI::password('Enter your password');
-	 * 
+	 *
+	 * Usage:
+	 *
+	 * $password = CLI::password('Enter your password');
+	 *
 	 * @author Mathew Davies.
 	 * @return string
 	 */
@@ -130,22 +165,22 @@ class Minion_CLI extends CLI {
 		if (Kohana::$is_windows)
 		{
 			$vbscript = sys_get_temp_dir().'Minion_CLI_Password.vbs';
-			
+
 			// Create temporary file
 			file_put_contents($vbscript, 'wscript.echo(InputBox("'.addslashes($text).'"))');
-	    
-	    $password = shell_exec('cscript //nologo '.escapeshellarg($command));
-	    
-	    // Remove temporary file.
-	    unlink($vbscript);
+
+			$password = shell_exec('cscript //nologo '.escapeshellarg($command));
+
+			// Remove temporary file.
+			unlink($vbscript);
 		}
 		else
 		{
 			$password = shell_exec('/usr/bin/env bash -c \'read -s -p "'.escapeshellcmd($text).'" var && echo $var\'');
 		}
-		
-		Minion_CLI::write();
-		
+
+		CLI::write();
+
 		return trim($password);
 	}
 
@@ -153,39 +188,43 @@ class Minion_CLI extends CLI {
 	 * Outputs a string to the cli. If you send an array it will implode them
 	 * with a line break.
 	 *
-	 * @author     Fuel Development Team
-	 * @license    MIT License
-	 * @copyright  2010 - 2011 Fuel Development Team
-	 * @link       http://fuelphp.com
 	 * @param string|array $text the text to output, or array of lines
 	 */
-	public static function write($text = '', $foreground = null, $background = null)
+	public static function write($text = '')
 	{
 		if (is_array($text))
 		{
-			$text = implode(PHP_EOL, $text);
+			foreach ($text as $line)
+			{
+				CLI::write($line);
+			}
 		}
-
-		if ($foreground OR $background)
+		else
 		{
-			$text = Minion_CLI::color($text, $foreground, $background);
+			fwrite(STDOUT, $text.PHP_EOL);
 		}
-
-		fwrite(STDOUT, PHP_EOL.$text);
 	}
 	
 	/**
-	 * Outputs a string to the cli, replacing the previous line.
+	 * Outputs a replacable line to the cli. You can continue replacing the
+	 * line until `TRUE` is passed as the second parameter in order to indicate
+	 * you are done modifying the line.
 	 *
-	 * @param string|array $text the text to output, or array of lines
+	 *     // Sample progress indicator
+	 *     CLI::write_replace('0%');
+	 *     CLI::write_replace('25%');
+	 *     CLI::write_replace('50%');
+	 *     CLI::write_replace('75%');
+	 *     // Done writing this line
+	 *     CLI::write_replace('100%', TRUE);
+	 *
+	 * @param string  $text      the text to output
+	 * @param boolean $end_line  whether the line is done being replaced
 	 */
-	public static function write_replace($text = '', $foreground = null, $background = null)
+	public static function write_replace($text = '', $end_line = FALSE)
 	{
-		if ($foreground OR $background)
-		{
-			$text = Minion_CLI::color($text, $foreground, $background);
-		}
-
+		// Append a newline if $end_line is TRUE
+		$text = $end_line ? $text.PHP_EOL : $text;
 		fwrite(STDOUT, "\r\033[K".$text);
 	}
 
@@ -213,7 +252,7 @@ class Minion_CLI extends CLI {
 				$time--;
 			}
 
-			Minion_CLI::write();
+			CLI::write();
 		}
 		else
 		{
@@ -223,8 +262,8 @@ class Minion_CLI extends CLI {
 			}
 			else
 			{
-				Minion_CLI::write(Minion_CLI::$wait_msg);
-				Minion_CLI::read();
+				CLI::write(CLI::$wait_msg);
+				CLI::read();
 			}
 		}
 	}
@@ -250,21 +289,21 @@ class Minion_CLI extends CLI {
 			return $text;
 		}
 
-		if (!array_key_exists($foreground, Minion_CLI::$foreground_colors))
+		if (!array_key_exists($foreground, CLI::$foreground_colors))
 		{
 			throw new Kohana_Exception('Invalid CLI foreground color: '.$foreground);
 		}
 
-		if ($background !== null and !array_key_exists($background, Minion_CLI::$background_colors))
+		if ($background !== null and !array_key_exists($background, CLI::$background_colors))
 		{
 			throw new Kohana_Exception('Invalid CLI background color: '.$background);
 		}
 
-		$string = "\033[".Minion_CLI::$foreground_colors[$foreground]."m";
+		$string = "\033[".CLI::$foreground_colors[$foreground]."m";
 
 		if ($background !== null)
 		{
-			$string .= "\033[".Minion_CLI::$background_colors[$background]."m";
+			$string .= "\033[".CLI::$background_colors[$background]."m";
 		}
 
 		$string .= $text."\033[0m";

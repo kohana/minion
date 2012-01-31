@@ -4,6 +4,6 @@
 /**
  * Utility class for Minion
  */
-class Minion_Util extends Kohana_Minion_Util {
+class Minion_Valid extends Kohana_Minion_Valid {
 	
 }
