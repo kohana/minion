@@ -12,6 +12,8 @@ abstract class Kohana_Minion_Task {
 
 	protected $_options = array();
 
+	protected $_defaults = array();
+
 	protected $_method = '_execute';
 
 	/**
