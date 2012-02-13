@@ -3,9 +3,15 @@
 /**
  * Test case for Minion_Util
  *
- * @group minion
- * @group minion.core
+ * @package    Kohana/Minion
+ * @group      kohana
+ * @group      kohana.minion
+ * @category   Test
+ * @author     Kohana Team
+ * @copyright  (c) 2009-2012 Kohana Team
+ * @license    http://kohanaframework.org/license
  */
+
 class Minion_UtilTest extends Kohana_Unittest_TestCase
 {
 	/**
