@@ -2,7 +2,7 @@ Minion is a cli tool for performing tasks
 
 Usage 
 
-    php minion.php --task={task}
+    <?php echo $_SERVER['argv'][0]; ?> {task} --task=[options]
 
 Where {task} is one of the following:
 
@@ -13,5 +13,5 @@ Where {task} is one of the following:
 
 For more information on what a task does and usage details execute 
 
-    php minion.php --task={task} --help
+    <?php echo $_SERVER['argv'][0]; ?> --task={task} --help
 
