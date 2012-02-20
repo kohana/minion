@@ -27,7 +27,7 @@ abstract class Kohana_Minion_Task {
 	 */
 	public static function factory($options)
 	{
-		$task = arr::get($options, 'task');
+		$task = Arr::get($options, 'task');
 		unset($options['task']);
 
 		// If we didn't get a valid task, generate the help
@@ -94,7 +94,7 @@ abstract class Kohana_Minion_Task {
 	 */
 	public function set_config_options(array $options = NULL)
 	{
-		$this->_options = arr::merge($options, $this->_defaults);
+		$this->_options = Arr::merge($options, $this->_defaults);
 
 		return $this;
 	}

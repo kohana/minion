@@ -17,7 +17,7 @@ class Task_Help extends Minion_Task
 	 */
 	protected function _execute(array $params)
 	{
-		$tasks = Minion_Util::compile_task_list(Kohana::list_files('classes/task'));
+		$tasks = Minion_Util::compile_task_list(Kohana::list_files('classes/Task'));
 
 		$view = new View('minion/help/list');
 
