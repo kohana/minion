@@ -15,7 +15,7 @@ To use minion, you'll need to make a small change to your index.php file:
 	+       class_exists('Minion_Task') OR die('minion required!');
 	+       set_exception_handler(array('Kohana_Minion_Exception_Handler', 'handler'));
 	+
-	+       Minion_Task::factory(CLI::options())->execute();
+	+       Minion_Task::factory(Minion_CLI::options())->execute();
 	+}
 	+else
 	+{
