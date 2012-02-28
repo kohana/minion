@@ -49,28 +49,6 @@ abstract class Kohana_Minion_Task {
 	}
 
 	/**
-	 * The list of options this task accepts and their default values.
-	 *
-	 *     protected $_options = array(
-	 *         'limit' => 4,
-	 *         'table' => NULL,
-	 *     );
-	 *
-	 * @var array
-	 */
-	protected $_options = array();
-
-	/**
-	 * Populated with the accepted options for this task.
-	 * This array is automatically populated based on $_options.
-	 *
-	 * @var array
-	 */
-	protected $_accepted_options = array();
-
-	protected $_method = '_execute';
-
-	/**
 	 * Factory for loading minion tasks
 	 *
 	 * @param  array An array of command line options. It should contain the 'task' key
@@ -111,6 +89,28 @@ abstract class Kohana_Minion_Task {
 
 		return $class;
 	}
+
+	/**
+	 * The list of options this task accepts and their default values.
+	 *
+	 *     protected $_options = array(
+	 *         'limit' => 4,
+	 *         'table' => NULL,
+	 *     );
+	 *
+	 * @var array
+	 */
+	protected $_options = array();
+
+	/**
+	 * Populated with the accepted options for this task.
+	 * This array is automatically populated based on $_options.
+	 *
+	 * @var array
+	 */
+	protected $_accepted_options = array();
+
+	protected $_method = '_execute';
 
 	protected function __construct()
 	{
