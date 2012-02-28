@@ -63,7 +63,7 @@ abstract class Kohana_Minion_Task {
 		}
 
 		$class = new $class;
-		$class->set_config_options($options);
+		$class->set_options($options);
 
 		// Show the help page for this task if requested
 		if (array_key_exists('help', $options))
@@ -79,12 +79,6 @@ abstract class Kohana_Minion_Task {
 		// Populate $_accepted_options based on keys from $_options
 		$this->_accepted_options = array_keys($this->_options);
 	}
-
-	/**
-	 * A set of config options that the task accepts on the command line
-	 * @var array
-	 */
-	protected $_config = array();
 
 	/**
 	 * The file that get's passes to Validation::errors() when validation fails
@@ -115,7 +109,7 @@ abstract class Kohana_Minion_Task {
 	 * $param  array  the array of options to set
 	 * @return this
 	 */
-	public function set_config_options(array $options)
+	public function set_options(array $options)
 	{
 		foreach ($options as $key => $value)
 		{
@@ -126,17 +120,17 @@ abstract class Kohana_Minion_Task {
 	}
 
 	/**
-	 * Get a set of config options that this task can accept
+	 * Get the options that were passed into this task with their defaults
 	 *
 	 * @return array
 	 */
-	public function get_config_options()
+	public function get_options()
 	{
 		return (array) $this->_options;
 	}
 
 	/**
-	 * Get a set of config options that this task can accept
+	 * Get a set of options that this task can accept
 	 *
 	 * @return array
 	 */
@@ -146,7 +140,7 @@ abstract class Kohana_Minion_Task {
 	}
 
 	/**
-	 * Adds any validation rules/labels for validation _config
+	 * Adds any validation rules/labels for validating _options
 	 *
 	 *     public function build_validation(Validation $validation)
 	 *     {
@@ -186,7 +180,7 @@ abstract class Kohana_Minion_Task {
 	 */
 	public function execute()
 	{
-		$options = $this->get_config_options();
+		$options = $this->get_options();
 
 		// Validate $options
 		$validation = Validation::factory($options);
