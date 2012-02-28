@@ -157,7 +157,7 @@ abstract class Kohana_Minion_Task {
 		// Add a rule to each key making sure it's in the task
 		foreach ($validation->as_array() as $key => $value)
 		{
-			$validation->rule($key, array('Minion_Valid', 'option'), array(':validation', ':field', $this));
+			$validation->rule($key, array($this, 'valid_option'), array(':validation', ':field'));
 		}
 
 		return $validation;
@@ -221,5 +221,14 @@ abstract class Kohana_Minion_Task {
 			->set('task', Minion_Util::convert_class_to_task($this));
 
 		echo $view;
+	}
+
+
+	public function valid_option(Validation $validation, $option)
+	{
+		if ( ! in_array($option, $this->_accepted_options))
+		{
+			$validation->error($key, 'minion_option');
+		}
 	}
 }
