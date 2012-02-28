@@ -17,7 +17,7 @@ class Kohana_Minion_Valid
 	 */
 	public static function option(Validation $v, $key, Minion_Task $task)
 	{
-		if ( ! array_key_exists($key, $task->get_config_defaults()))
+		if ( ! array_key_exists($key, $task->get_accepted_options()))
 		{
 			$v->error($key, 'minion_option');
 		}

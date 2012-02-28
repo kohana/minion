@@ -10,19 +10,35 @@
  */
 abstract class Kohana_Minion_Task {
 
+	/**
+	 * The list of options this task accepts and their default values.
+	 *
+	 *     protected $_options = array(
+	 *         'limit' => 4,
+	 *         'table' => NULL,
+	 *     );
+	 *
+	 * @var array
+	 */
 	protected $_options = array();
 
-	protected $_defaults = array();
+	/**
+	 * Populated with the accepted options for this task.
+	 * This array is automatically populated based on $_options.
+	 *
+	 * @var array
+	 */
+	protected $_accepted_options = array();
 
 	protected $_method = '_execute';
 
 	/**
 	 * Factory for loading minion tasks
-	 * 
+	 *
 	 * @param  array An array of command line options. It should contain the 'task' key
 	 *
 	 * @throws Kohana_Exception
-	 * 
+	 *
 	 * @return Minion_Task The Minion task
 	 */
 	public static function factory($options)
@@ -58,6 +74,12 @@ abstract class Kohana_Minion_Task {
 		return $class;
 	}
 
+	protected function __construct()
+	{
+		// Populate $_accepted_options based on keys from $_options
+		$this->_accepted_options = array_keys($this->_options);
+	}
+
 	/**
 	 * A set of config options that the task accepts on the command line
 	 * @var array
@@ -90,11 +112,15 @@ abstract class Kohana_Minion_Task {
 	/**
 	 * Sets options for this task
 	 *
+	 * $param  array  the array of options to set
 	 * @return this
 	 */
-	public function set_config_options(array $options = NULL)
+	public function set_config_options(array $options)
 	{
-		$this->_options = Arr::merge($options, $this->_defaults);
+		foreach ($options as $key => $value)
+		{
+			$this->_options[$key] = $value;
+		}
 
 		return $this;
 	}
@@ -114,9 +140,9 @@ abstract class Kohana_Minion_Task {
 	 *
 	 * @return array
 	 */
-	public function get_config_defaults()
+	public function get_accepted_options()
 	{
-		return (array) $this->_defaults;
+		return (array) $this->_accepted_options;
 	}
 
 	/**
@@ -129,7 +155,7 @@ abstract class Kohana_Minion_Task {
 	 *     }
 	 *
 	 * @param  Validation   the validation object to add rules to
-	 * 
+	 *
 	 * @return Validation
 	 */
 	public function build_validation(Validation $validation)
@@ -154,26 +180,16 @@ abstract class Kohana_Minion_Task {
 	}
 
 	/**
-	 * Execute the task with the specified set of config
+	 * Execute the task with the specified set of options
 	 *
 	 * @return null
 	 */
 	public function execute()
 	{
-		$defaults = $this->get_config_options();
+		$options = $this->get_config_options();
 
-		if ( ! empty($defaults))
-		{
-			$options = array_keys($defaults);
-			$config = Arr::merge($defaults, $this->_options);
-		}
-		else
-		{
-			$config = array();
-		}
-
-		// Validate $config
-		$validation = Validation::factory($config);
+		// Validate $options
+		$validation = Validation::factory($options);
 		$validation = $this->build_validation($validation);
 
 		if ( $this->_method != '_help' AND ! $validation->check())
@@ -186,7 +202,7 @@ abstract class Kohana_Minion_Task {
 		{
 			// Finally, run the task
 			$method = $this->_method;
-			echo $this->{$method}($config);
+			echo $this->{$method}($options);
 		}
 	}
 
