@@ -266,7 +266,7 @@ abstract class Kohana_Minion_Task {
 	{
 		if ( ! in_array($option, $this->_accepted_options))
 		{
-			$validation->error($key, 'minion_option');
+			$validation->error($option, 'minion_option');
 		}
 	}
 
