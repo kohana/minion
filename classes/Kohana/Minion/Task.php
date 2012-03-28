@@ -74,7 +74,7 @@ abstract class Kohana_Minion_Task {
 		{
 			throw new Kohana_Exception(
 				"Task ':task' is not a valid minion task",
-				array(':task' => get_class($task))
+				array(':task' => $class)
 			);
 		}
 
