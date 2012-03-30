@@ -67,7 +67,8 @@ class Kohana_Minion_CLI {
 
 			if (substr($opt, 0, 2) !== '--')
 			{
-				// This is not an option argument
+				// This is a positional argument
+				$values[] = $opt;
 				continue;
 			}
 

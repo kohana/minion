@@ -59,12 +59,18 @@ abstract class Kohana_Minion_Task {
 	 */
 	public static function factory($options)
 	{
-		$task = Arr::get($options, 'task');
-		unset($options['task']);
-
-		// If we didn't get a valid task, generate the help
-		if ( ! is_string($task))
+		if (($task = Arr::get($options, 'task')) !== NULL)
 		{
+			unset($options['task']);
+		}
+		else if (($task = Arr::get($options, 0)) !== NULL)
+		{
+			// The first positional argument (aka 0) may be the task name
+			unset($options[0]);
+		}
+		else
+		{
+			// If we didn't get a valid task, generate the help
 			$task = 'help';
 		}
 
