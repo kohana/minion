@@ -25,7 +25,14 @@ class Kohana_Minion_Exception extends Kohana_Exception {
 	{
 		try
 		{
-			echo $e->format_for_cli();
+			if ($e instanceof Minion_Exception)
+			{
+				echo $e->format_for_cli();
+			}
+			else
+			{
+				echo Kohana_Exception::text($e);
+			}
 			
 			$exit_code = $e->getCode();
 
