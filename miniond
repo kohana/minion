@@ -22,7 +22,7 @@
 function start_daemon()
 {
 	echo "Starting"
-	php index.php --uri=minion "$TASK" $ARGS &
+	php index.php $ARGS &
 	pid=$! # Store pid (globally) for later use..
 }
 
@@ -51,13 +51,7 @@ function handle_SIGTERM_SIGINT()
 trap handle_SIGHUP SIGHUP
 trap handle_SIGTERM_SIGINT SIGTERM SIGINT
 
-# Parse arguements
-if [[ $# > 0 && $1 != --* ]]
-then
-	TASK="--task=$1"
-	shift 1
-	ARGS=$@
-fi
+ARGS=$@
 
 start_daemon
 
