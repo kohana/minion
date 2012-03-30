@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Handles CLI exceptions
+ * Minipn exception
  *
  * @package    Kohana
  * @category   Minion
@@ -8,8 +8,7 @@
  * @copyright  (c) 2009-2011 Kohana Team
  * @license    http://kohanaframework.org/license
  */
-class Kohana_Minion_Exception_Handler extends Kohana_Kohana_Exception {
-
+class Kohana_Minion_Exception extends Kohana_Exception {
 	/**
 	 * Inline exception handler, displays the error message, source of the
 	 * exception, and the stack trace of the error.
@@ -26,8 +25,17 @@ class Kohana_Minion_Exception_Handler extends Kohana_Kohana_Exception {
 	{
 		try
 		{
-			echo Kohana_Exception::text($e);
-			exit($e->getCode());
+			echo $e->format_for_cli();
+			
+			$exit_code = $e->getCode();
+
+			// Never exit "0" after an exception.
+			if ($exit_code == 0)
+			{
+				$exit_code = 1;
+			}
+
+			exit($exit_code);
 		}
 		catch (Exception $e)
 		{
@@ -40,5 +48,10 @@ class Kohana_Minion_Exception_Handler extends Kohana_Kohana_Exception {
 			// Exit with an error status
 			exit(1);
 		}
+	}
+
+	public function format_for_cli()
+	{
+		return Kohana_Exception::text($e);
 	}
 }
