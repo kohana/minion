@@ -6,7 +6,7 @@ Writing a task in minion is very easy. Simply create a new class called `Task_<T
 
 	class Task_Demo extends Minion_Task
 	{
-		protected $_defaults = array(
+		protected $_options = array(
 			'foo' = 'bar',
 			'bar' => NULL,
 		);
