@@ -60,5 +60,3 @@ Feel free to contribute tests(!), they can be found in the `tests/minion` direct
 ## License
 
 This is licensed under the [same license as Kohana](http://kohanaframework.org/license).
-
-This project is not endorsed by the Kohana Framework project.
