@@ -22,7 +22,7 @@
 function start_daemon()
 {
 	echo "Starting"
-	php index.php $ARGS &
+	./minion $ARGS & # This assumes miniond is sitting next to minion
 	pid=$! # Store pid (globally) for later use..
 }
 
