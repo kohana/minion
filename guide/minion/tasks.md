@@ -1,14 +1,14 @@
 # Writing Tasks
 
-Writing a task in minion is very easy. Simply create a new class called `Task_<Taskname>` and put it inside `classes/task/<taskname>.php`.
+Writing a task in minion is very easy. Simply create a new class called `Task_<Taskname>` and put it inside `classes/Task/<Taskname>.php`.
 
 	<?php defined('SYSPATH') or die('No direct script access.');
 
 	class Task_Demo extends Minion_Task
 	{
-		protected $_defaults = array(
-			'foo' = 'bar',
-			'bar' => NULL,
+		protected $_options = array(
+			'limit' => '4',
+			'color' => NULL,
 		);
 
 		/**
@@ -26,9 +26,9 @@ Writing a task in minion is very easy. Simply create a new class called `Task_<T
 You'll notice a few things here:
 
  - You need a main `_execute()` method. It should take one array parameter.
-   - This parameter contains any command line options passed to the task.
-   - For example, if you call the task above with `./minion --task=demo --foo=foobar` then `$params` will contain: `array('foo' => 'foobar', 'bar' => NULL)`
- - It needs to have a `protected $_defaults` array. This is a list of parameters you want to accept for this task. Any parameters passed to the task not in this list will be rejected.
+   - This parameter contains any command line options passed to the task and they must be defined in $_options.
+   - For example, if you call the task above with `./index.php demo --color=blue` then `$params` will contain: `array('limit' => 4, 'color' => 'blue')`
+ - It needs to have a `protected $_options` array. This is a list of parameters you want to accept for this task. Any parameters passed to the task not in this list will be rejected.
 
 ## Namespacing Tasks
 
