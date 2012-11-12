@@ -13,7 +13,7 @@ To use minion, you'll need to make a small change to your index.php file:
 	+if (PHP_SAPI == 'cli') // Try and load minion
 	+{
 	+       class_exists('Minion_Task') OR die('minion required!');
-	+       set_exception_handler(array('Kohana_Minion_Exception_Handler', 'handler'));
+	+       set_exception_handler(array('Kohana_Minion_Exception', 'handler'));
 	+
 	+       Minion_Task::factory(Minion_CLI::options())->execute();
 	+}
