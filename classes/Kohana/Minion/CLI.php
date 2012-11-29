@@ -312,4 +312,85 @@ class Kohana_Minion_CLI {
 		return $string;
 	}
 
+	/**
+	 * Iterate through the items one by one, executing the callback function, and display a progress bar
+	 * that fills up as it progresses through the array. Show also percentage, elapesed time and ETA.
+	 *
+	 * Any Kohana_Exceptions will be catched and displayed at the end of the progress. 
+	 * While its running it also displays how many exceptions have occured.
+	 *
+	 * The callback function recieves the current item, index and items count as arguments
+	 * 
+	 * @param  array|Iterateable $iteratable    iteratable object, array, etc...
+	 * @param  callable $callback
+	 * @author Ivan Kerin
+	 */
+	public static function progress($iteratable, $callback)
+	{
+		$count = count($iteratable);
+		$average = 0;
+		$initial_time = microtime(TRUE);
+		$update_eta = 0;
+		$eta = 0;
+
+		$exceptions = array();
+
+		// Write a line so we don't overwrite the previous one
+		Minion_CLI::write("");
+
+		foreach ($iteratable as $i => $item) 
+		{
+			// Detirmine the viewport width
+			$width = Kohana::$is_windows ? getenv('COLUMNS') : exec('tput cols');
+			if ( ! $width)
+			{
+				$width = 80;
+			}
+
+			$progress_width = $width - 36;
+
+			try
+			{
+				call_user_func($callback, $item, $i, $count);
+			}
+			catch (Kohana_Exception $exception)
+			{
+				$exceptions[$i] = Debug::path($exception->getFile()).':'.$exception->getLine().' -> '.$exception->getMessage();
+			}
+
+			$end = microtime(TRUE);
+			
+			$average = ($end - $initial_time) / ($i+1);
+
+			$elapsed = gmdate('H:i:s', ($end - $initial_time));
+
+			if ($update_eta < ($end - $initial_time))
+			{
+				$eta = ($average * ($count - $i));
+				$update_eta = ($end - $initial_time) + 1;
+			}
+
+			$progress = str_pad(str_pad('>', ceil((($i + 1) / $count) * $progress_width), '=', STR_PAD_LEFT), $progress_width, ' ');
+			$percent = ceil((($i + 1) / $count) * 100);
+			$eta_string = gmdate('H:i:s', $eta);
+			$errors_count = str_pad(min(count($exceptions), 999), 3, '0');
+
+			Minion_CLI::write_replace("[{$progress}] {$percent}% {$elapsed} ETA:{$eta_string} ERR:{$errors_count}");
+		}
+
+		if ( ! $exceptions)
+		{
+			Minion_CLI::write('Done.');
+		}
+		else
+		{
+			Minion_CLI::write('Done. but with Errors ('.count($exceptions).'):');	
+
+			foreach ($exceptions as $id => $message) 
+			{
+				Minion_CLI::write($id.': '.$message);
+			}
+		}
+	}
+
 }
