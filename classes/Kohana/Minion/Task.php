@@ -57,19 +57,27 @@ abstract class Kohana_Minion_Task {
 	 */
 	public static function factory($options)
 	{
-		if (($task = Arr::get($options, 'task')) !== NULL)
+		if (is_array($options))
 		{
-			unset($options['task']);
-		}
-		else if (($task = Arr::get($options, 0)) !== NULL)
-		{
-			// The first positional argument (aka 0) may be the task name
-			unset($options[0]);
+			if (($task = Arr::get($options, 'task')) !== NULL)
+			{
+				unset($options['task']);
+			}
+			else if (($task = Arr::get($options, 0)) !== NULL)
+			{
+				// The first positional argument (aka 0) may be the task name
+				unset($options[0]);
+			}
+			else
+			{
+				// If we didn't get a valid task, generate the help
+				$task = 'help';
+			}
 		}
 		else
 		{
-			// If we didn't get a valid task, generate the help
-			$task = 'help';
+			// If task called as Minion_Task::factory("task:name")
+			$task = $options;
 		}
 
 		$class = Minion_Task::convert_task_to_class_name($task);
@@ -92,12 +100,15 @@ abstract class Kohana_Minion_Task {
 			);
 		}
 
-		$class->set_options($options);
-
-		// Show the help page for this task if requested
-		if (array_key_exists('help', $options))
+		if (is_array($options))
 		{
-			$class->_method = '_help';
+			$class->set_options($options);
+
+			// Show the help page for this task if requested
+			if (array_key_exists('help', $options))
+			{
+				$class->_method = '_help';
+			}
 		}
 
 		return $class;
