@@ -285,7 +285,7 @@ class Kohana_Minion_CLI {
 	public static function color($text, $foreground, $background = null)
 	{
 
-		if (Kohana::$is_windows)
+		if ( ! Minion_CLI::supports_ansi())
 		{
 			return $text;
 		}
@@ -310,6 +310,26 @@ class Kohana_Minion_CLI {
 		$string .= $text."\033[0m";
 
 		return $string;
+	}
+
+	/**
+	 * Checks whether ANSI escape sequences are supported by the console.
+	 *
+	 * Windows ANSICON and tty consoles support ANSI escape sequences.
+	 * @link http://adoxa.110mb.com/ansicon/
+	 *
+	 * Adapted from Symfony's Console Component:
+	 * @author     Fabien Potencier
+	 * @copyright  (c) Fabien Potencier <fabien@symfony.com>
+	 * @link       https://github.com/symfony/Console
+	 * @return bool
+	 */
+	public static function supports_ansi()
+	{
+		if (Kohana::$is_windows AND getenv('ANSICON'))
+			return TRUE;
+
+		return (function_exists('posix_isatty') AND @posix_isatty(STDOUT));
 	}
 
 }
