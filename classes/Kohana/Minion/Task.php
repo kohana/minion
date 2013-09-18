@@ -264,7 +264,14 @@ abstract class Kohana_Minion_Task {
 
 		$inspector = new ReflectionClass($this);
 
-		list($description, $tags) = $this->_parse_doccomment($inspector->getDocComment());
+		do
+		{
+			$doc_comment = $inspector->getDocComment();
+			$inspector = $inspector->getParentClass();
+		}
+		while (empty($doc_comment) && is_object($inspector));
+
+		list($description, $tags) = $this->_parse_doccomment($doc_comment);
 
 		$view = View::factory('minion/help/task')
 			->set('description', $description)
