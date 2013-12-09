@@ -19,7 +19,7 @@ class Task_Help extends Minion_Task
 	{
 		$tasks = $this->_compile_task_list(Kohana::list_files('classes/Task'));
 
-		$view = new View('minion/help/list');
+		$view = View::factory('minion/help/list');
 
 		$view->tasks = $tasks;
 
