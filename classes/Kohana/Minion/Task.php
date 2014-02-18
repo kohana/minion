@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php defined('SYSPATH') OR die('No direct script access.');
 /**
  * Interface that all minion tasks must implement
  *
@@ -27,7 +27,7 @@ abstract class Kohana_Minion_Task {
 		$task = trim($task);
 
 		if (empty($task))
-			return '';
+			return;
 
 		return 'Task_'.implode('_', array_map('ucfirst', explode(Minion_Task::$task_separator, $task)));
 	}
@@ -260,8 +260,6 @@ abstract class Kohana_Minion_Task {
 	 */
 	protected function _help(array $params)
 	{
-		$tasks = $this->_compile_task_list(Kohana::list_files('classes/task'));
-
 		$inspector = new ReflectionClass($this);
 
 		list($description, $tags) = $this->_parse_doccomment($inspector->getDocComment());
