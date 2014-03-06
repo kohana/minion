@@ -1,23 +1,22 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php defined('SYSPATH') OR die('No direct script access.');
 /**
- * Interface that all minion tasks must implement
+ * Abstract minion task, parent class for all tasks.
  *
- * @package    Kohana
- * @category   Minion
+ * @package    Kohana/Minion
+ * @category   Task
  * @author     Kohana Team
- * @copyright  (c) 2009-2011 Kohana Team
+ * @copyright  (c) 2009-2014 Kohana Team
  * @license    http://kohanaframework.org/license
  */
 abstract class Kohana_Minion_Task {
 
 	/**
-	 * The separator used to separate different levels of tasks
-	 * @var string
+	 * @var string The separator used to separate different levels of tasks
 	 */
 	public static $task_separator = ':';
 
 	/**
-	 * Converts a task (e.g. db:migrate to a class name)
+	 * Converts a task (e.g. 'db:migrate' to a class name)
 	 *
 	 * @param string  Task name
 	 * @return string Class name
@@ -26,17 +25,20 @@ abstract class Kohana_Minion_Task {
 	{
 		$task = trim($task);
 
-		if (empty($task))
-			return '';
-
-		return 'Task_'.implode('_', array_map('ucfirst', explode(Minion_Task::$task_separator, $task)));
+		if ( ! empty($task))
+		{
+			$task = explode(Minion_Task::$task_separator, $task);
+			$task = array_map('ucfirst', $task);
+			$task = implode('_', $task);
+			return 'Task_'.$task;
+		}
 	}
 
 	/**
-	 * Gets the task name of a task class / task object
+	 * Gets the task name of a task class or object extended [Minion_Task].
 	 *
-	 * @param  string|Minion_Task The task class / object
-	 * @return string             The task name
+	 * @param  string|object Task class or object
+	 * @return string Task name
 	 */
 	public static function convert_class_to_task($class)
 	{
@@ -45,13 +47,15 @@ abstract class Kohana_Minion_Task {
 			$class = get_class($class);
 		}
 
-		return strtolower(str_replace('_', Minion_Task::$task_separator, substr($class, 5)));
+		$class = substr($class, 5);
+		$class = str_replace('_', Minion_Task::$task_separator, $class);
+		return strtolower($class);
 	}
 
 	/**
-	 * Factory for loading minion tasks
+	 * Factory for loading minion tasks.
 	 *
-	 * @param  array An array of command line options. It should contain the 'task' key
+	 * @param  array $options An array of command line options. It should contain the 'task' key.
 	 * @throws Minion_Exception_InvalidTask
 	 * @return Minion_Task The Minion task
 	 */
@@ -61,7 +65,7 @@ abstract class Kohana_Minion_Task {
 		{
 			unset($options['task']);
 		}
-		else if (($task = Arr::get($options, 0)) !== NULL)
+		elseif (($task = Arr::get($options, 0)) !== NULL)
 		{
 			// The first positional argument (aka 0) may be the task name
 			unset($options[0]);
@@ -117,47 +121,56 @@ abstract class Kohana_Minion_Task {
 
 	/**
 	 * Populated with the accepted options for this task.
-	 * This array is automatically populated based on $_options.
+	 * This array is automatically populated based on [Minion_Task::$_options].
 	 *
 	 * @var array
 	 */
 	protected $_accepted_options = array();
 
+	/**
+	 * @var string Default name of task method to execute.
+	 */
 	protected $_method = '_execute';
 
+	/**
+	 * Populate [Minion_Task::$_accepted_options] based on keys from [Minion_Task::$_options].
+	 *
+	 * @return void
+	 */
 	protected function __construct()
 	{
-		// Populate $_accepted_options based on keys from $_options
 		$this->_accepted_options = array_keys($this->_options);
 	}
 
 	/**
-	 * The file that get's passes to Validation::errors() when validation fails
-	 * @var string|NULL
+	 * @var string|NULL The file that get's passes to [Validation::errors()] when validation fails.
 	 */
 	protected $_errors_file = 'validation';
 
 	/**
-	 * Gets the task name for the task
+	 * @var string Task name
+	 */
+	protected $_task_name = '';
+
+	/**
+	 * Gets the task name for the task.
 	 *
 	 * @return string
 	 */
 	public function __toString()
 	{
-		static $task_name = NULL;
-
-		if ($task_name === NULL)
+		if (empty($this->_task_name))
 		{
-			$task_name = Minion_Task::convert_class_to_task($this);
+			$this->_task_name = Minion_Task::convert_class_to_task($this);
 		}
 
-		return $task_name;
+		return (string) $this->_task_name;
 	}
 
 	/**
-	 * Sets options for this task
+	 * Sets options for this task.
 	 *
-	 * $param  array  the array of options to set
+	 * $param  array $options The array of options to set
 	 * @return this
 	 */
 	public function set_options(array $options)
@@ -171,7 +184,7 @@ abstract class Kohana_Minion_Task {
 	}
 
 	/**
-	 * Get the options that were passed into this task with their defaults
+	 * Get the options that were passed into this task with their defaults.
 	 *
 	 * @return array
 	 */
@@ -181,7 +194,7 @@ abstract class Kohana_Minion_Task {
 	}
 
 	/**
-	 * Get a set of options that this task can accept
+	 * Get a set of options that this task can accept.
 	 *
 	 * @return array
 	 */
@@ -191,7 +204,7 @@ abstract class Kohana_Minion_Task {
 	}
 
 	/**
-	 * Adds any validation rules/labels for validating _options
+	 * Adds any validation rules/labels for validating [Minion_Task::$_options].
 	 *
 	 *     public function build_validation(Validation $validation)
 	 *     {
@@ -199,8 +212,7 @@ abstract class Kohana_Minion_Task {
 	 *             ->rule('paramname', 'not_empty'); // Require this param
 	 *     }
 	 *
-	 * @param  Validation   the validation object to add rules to
-	 *
+	 * @param  Validation $validation The validation object to add rules to
 	 * @return Validation
 	 */
 	public function build_validation(Validation $validation)
@@ -215,7 +227,7 @@ abstract class Kohana_Minion_Task {
 	}
 
 	/**
-	 * Returns $_errors_file
+	 * Returns [Minion_Task::$_errors_file].
 	 *
 	 * @return string
 	 */
@@ -225,9 +237,9 @@ abstract class Kohana_Minion_Task {
 	}
 
 	/**
-	 * Execute the task with the specified set of options
+	 * Execute the task with the specified set of options.
 	 *
-	 * @return null
+	 * @return void
 	 */
 	public function execute()
 	{
@@ -239,29 +251,39 @@ abstract class Kohana_Minion_Task {
 
 		if ( $this->_method != '_help' AND ! $validation->check())
 		{
-			echo View::factory('minion/error/validation')
+			$error = View::factory('minion/error/validation')
 				->set('task', Minion_Task::convert_class_to_task($this))
 				->set('errors', $validation->errors($this->get_errors_file()));
+
+			Minion_CLI::write($error);
 		}
 		else
 		{
 			// Finally, run the task
-			$method = $this->_method;
-			echo $this->{$method}($options);
+			if ($result = $this->{$this->_method}($options))
+			{
+				Minion_CLI::write($result);
+			}
 		}
 	}
 
+	/**
+	 * Task action.
+	 * 
+	 * [!!] Override this method in current task.
+	 *
+	 * @param array $params
+	 * @return void
+	 */
 	abstract protected function _execute(array $params);
 
 	/**
-	 * Outputs help for this task
-	 *
-	 * @return null
+	 * Outputs help for this task.
+	 * 
+	 * @return void
 	 */
-	protected function _help(array $params)
+	protected function _help()
 	{
-		$tasks = $this->_compile_task_list(Kohana::list_files('classes/task'));
-
 		$inspector = new ReflectionClass($this);
 
 		list($description, $tags) = $this->_parse_doccomment($inspector->getDocComment());
@@ -271,10 +293,16 @@ abstract class Kohana_Minion_Task {
 			->set('tags', (array) $tags)
 			->set('task', Minion_Task::convert_class_to_task($this));
 
-		echo $view;
+		Minion_CLI::write($view);
 	}
 
-
+	/**
+	 * Validate option.
+	 *
+	 * @param  object $validation The [Validation] object
+	 * @param  string $option     The option name
+	 * @return void
+	 */
 	public function valid_option(Validation $validation, $option)
 	{
 		if ( ! in_array($option, $this->_accepted_options))
@@ -284,11 +312,9 @@ abstract class Kohana_Minion_Task {
 	}
 
 	/**
-	 * Parses a doccomment, extracting both the comment and any tags associated
+	 * Parses a doccomment, extracting both the comment and any tags associated.
 	 *
-	 * Based on the code in Kodoc::parse()
-	 *
-	 * @param string The comment to parse
+	 * @param string $comment The comment to parse
 	 * @return array First element is the comment, second is an array of tags
 	 */
 	protected function _parse_doccomment($comment)
@@ -300,7 +326,7 @@ abstract class Kohana_Minion_Task {
 		$comment = array_slice(explode("\n", $comment), 1, -1);
 
 		// Tag content
-		$tags        = array();
+		$tags = array();
 
 		foreach ($comment as $i => $line)
 		{
@@ -330,10 +356,10 @@ abstract class Kohana_Minion_Task {
 	}
 
 	/**
-	 * Compiles a list of available tasks from a directory structure
+	 * Compiles a list of available tasks from a directory structure.
 	 *
-	 * @param  array Directory structure of tasks
-	 * @param  string prefix
+	 * @param  array  $files  Directory structure of tasks
+	 * @param  string $prefix Task prefix
 	 * @return array Compiled tasks
 	 */
 	protected function _compile_task_list(array $files, $prefix = '')
@@ -344,7 +370,7 @@ abstract class Kohana_Minion_Task {
 		{
 			$file = substr($file, strrpos($file, DIRECTORY_SEPARATOR) + 1);
 
-			if (is_array($path) AND count($path))
+			if (is_array($path) AND count($path) > 0)
 			{
 				$task = $this->_compile_task_list($path, $prefix.$file.Minion_Task::$task_separator);
 
@@ -361,4 +387,5 @@ abstract class Kohana_Minion_Task {
 
 		return $output;
 	}
+
 }
