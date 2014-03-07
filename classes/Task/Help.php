@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php defined('SYSPATH') OR die('No direct script access.');
 /**
  * Help task to display general instructons and list all tasks
  *
@@ -8,8 +8,7 @@
  * @copyright  (c) 2009-2011 Kohana Team
  * @license    http://kohanaframework.org/license
  */
-class Task_Help extends Minion_Task
-{
+class Task_Help extends Minion_Task {
 	/**
 	 * Generates a help list for all tasks
 	 *
@@ -19,10 +18,10 @@ class Task_Help extends Minion_Task
 	{
 		$tasks = $this->_compile_task_list(Kohana::list_files('classes/Task'));
 
-		$view = new View('minion/help/list');
+		$view = View::factory('minion/help/list');
 
 		$view->tasks = $tasks;
 
-		echo $view;
+		Minion_CLI::write($view);
 	}
 }
