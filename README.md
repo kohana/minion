@@ -1,6 +1,6 @@
 # Minion
 
-Minion is a Kohana module for running tasks via the CLI.
+Minion is a [Kohana](http://github.com/kohana) module for running tasks via the CLI.
 
 The system is inspired by ruckusing, which had a nice system for defining tasks 
 but lacked the desired flexibility for kohana integration.
@@ -32,7 +32,7 @@ Attempting to access it over http will cause a `Kohana_Exception` to be thrown.
 If you're unable to use the binary file for whatever reason then simply 
 replace `./minion --task=<name>` in the above examples with:
 
-	php index.php --task=<task> --uri=minion --text="text string"
+	php index.php --task=<name> --uri=minion --text="text string"
 
 ## Writing your own tasks
 
@@ -57,7 +57,7 @@ i.e.
 
 	phpunit --group minion
 
-Feel free to contribute tests(!), they can be found in the `tests/minion` directory. :)
+Feel free to contribute tests(!), they can be found in the `tests/minion` directory.
 
 ## License
 
