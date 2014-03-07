@@ -206,7 +206,7 @@ abstract class Kohana_Minion_Task {
 	public function build_validation(Validation $validation)
 	{
 		// Add a rule to each key making sure it's in the task
-		foreach ($validation->as_array() as $key => $value)
+		foreach ($validation->data() as $key => $value)
 		{
 			$validation->rule($key, array($this, 'valid_option'), array(':validation', ':field'));
 		}
