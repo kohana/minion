@@ -1,17 +1,15 @@
+<?php defined('SYSPATH') OR die('No direct script access.') ?>
 
-Usage
-=======
-php minion.php --task=<?php echo $task; ?> [--option1=value1] [--option2=value2]
+<?php echo __('Usage') ?>:
 
-Details
-=======
+    php <?php echo $_SERVER['argv'][0] ?> --task=<?php echo $task ?> [--option=value]
+
+<?php echo __('Details') ?>:
+
 <?php foreach($tags as $tag_name => $tag_content): ?>
-<?php echo ucfirst($tag_name) ?>: <?php echo $tag_content ?>
+    <?php echo ucfirst($tag_name).': '.$tag_content.PHP_EOL ?>
+<?php endforeach ?>
 
-<?php endforeach; ?>
+<?php echo __('Description') ?>:
 
-Description
-===========
-<?php echo $description; ?>
-
-
+    <?php echo $description ?>

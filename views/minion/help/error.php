@@ -1,7 +1,7 @@
-<?php echo $error; ?>
+<?php defined('SYSPATH') OR die('No direct script access.') ?>
 
-Run 
+<?php echo $error ?>
 
-    index.php --uri=minion
+<?php echo __('For more help, run') ?>:
 
-for more help
+    php <?php echo $_SERVER['argv'][0] ?> --task=<?php echo $task ?> --help
