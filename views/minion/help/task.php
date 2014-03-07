@@ -2,7 +2,7 @@
 
 <?php echo __('Usage') ?>:
 
-    php <?php echo $_SERVER['argv'][0] ?> --task=<?php echo $task ?> [--option=value]
+    php <?php echo $_SERVER['argv'][0] ?> --task=<?php echo $task ?> [--option=<value>] [--option2=<value2>]
 
 <?php echo __('Details') ?>:
 

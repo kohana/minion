@@ -13,7 +13,7 @@
 # You cannot use this script for tasks that require user input because of the
 # PHP process running in the background.
 #
-# Usage: ./miniond [task:name] [--option1=optval1 --option2=optval2]
+# Usage: ./miniond --task=<name> [--option1=<optval1>] [--option2=<optval2>]
 #
 # And so on.
 #

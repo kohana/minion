@@ -4,7 +4,7 @@
 
 <?php echo __('Usage') ?>:
 
-    php <?php echo $_SERVER['argv'][0] ?> --task={task} [--option=value]
+    php <?php echo $_SERVER['argv'][0] ?> --task=<task> [--option=<value>] [--option2=<value2>]
 
 <?php echo __('Where {task} is one of the following') ?>:
 
@@ -14,4 +14,4 @@
 
 <?php echo __('For more information on what a task does and usage details execute') ?>:
 
-    php <?php echo $_SERVER['argv'][0] ?> --task={task} --help
+    php <?php echo $_SERVER['argv'][0] ?> --task=<task> --help
