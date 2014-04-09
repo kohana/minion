@@ -14,34 +14,6 @@
 abstract class Kohana_Log_CLI extends Log_Writer {
 
 	/**
-	 * @var  resource  Output stream
-	 */
-	protected $_stream;
-
-	/** 
-	 * Sets output stream.
-	 *
-	 *     $writer = new Log_CLI(STDOUT);
-	 *
-	 * @param   resource|null  $stream  STDOUT or STDERR by default
-	 * @return  void
-	 */
-	public function __construct($stream = NULL)
-	{
-		if ($stream === NULL)
-		{
-			$stream = STDERR;
-		}
-		elseif ($stream !== STDOUT AND $stream !== STDERR)
-		{
-			throw new Minion_Exception('Class Log_CLI: invalid stream, use STDERR/STDOUT');
-		}
-
-		// Determine the stream
-		$this->_stream = $stream;
-	}
-
-	/**
 	 * Writes each of the messages to output stream.
 	 *
 	 *     $writer->write($messages);
@@ -53,8 +25,9 @@ abstract class Kohana_Log_CLI extends Log_Writer {
 	{
 		foreach ($messages as $message)
 		{
+			$stream = ( ! isset($message['level']) OR $message['level'] < Log::NOTICE) ? STDERR : STDOUT;
 			// Writes out each message
-			fwrite($this->_stream, $this->format_message($message).PHP_EOL);
+			fwrite($stream, $this->format_message($message).PHP_EOL);
 		}
 	}
 
