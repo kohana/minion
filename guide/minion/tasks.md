@@ -1,7 +1,7 @@
 # Writing Tasks
 
 Writing a minion tasks is very easy. 
-Simply create a new class extended [Minion_Task] and called `Task_<Taskname>` in `classes/Task/` directory.
+Simply create a new class extending [Minion_Task] and call `Task_<Taskname>` in `classes/Task/` directory.
 
 	class Task_Demo extends Minion_Task {
 
