@@ -25,7 +25,7 @@ abstract class Kohana_Log_CLI extends Log_Writer {
 	{
 		foreach ($messages as $message)
 		{
-			$stream = ( ! isset($message['level']) OR $message['level'] < Log::NOTICE) ? STDERR : STDOUT;
+			$stream = $message['level'] < Log::NOTICE ? STDERR : STDOUT;
 			// Writes out each message
 			fwrite($stream, $this->format_message($message).PHP_EOL);
 		}
