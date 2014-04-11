@@ -1,17 +1,17 @@
-Minion is a cli tool for performing tasks
+<?php defined('SYSPATH') OR die('No direct script access.') ?>
 
-Usage 
+<?php echo __('Minion is a CLI tool for performing tasks.') ?>
 
-    <?php echo $_SERVER['argv'][0]; ?> {task} --task=[options]
+<?php echo __('Usage') ?>:
 
-Where {task} is one of the following:
+    php index.php --task=<task> [--option=<value>] [--option2=<value2>]
+
+<?php echo __('Where {task} is one of the following') ?>:
 
 <?php foreach($tasks as $task): ?>
-  * <?php echo $task; ?>
+    <?php echo $task.PHP_EOL ?>
+<?php endforeach ?>
 
-<?php endforeach; ?>
+<?php echo __('For more information on what a task does and usage details execute') ?>:
 
-For more information on what a task does and usage details execute 
-
-    <?php echo $_SERVER['argv'][0]; ?> --task={task} --help
-
+    php index.php --task=<task> --help
