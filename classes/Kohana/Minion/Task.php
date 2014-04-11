@@ -102,7 +102,7 @@ abstract class Kohana_Minion_Task {
 		if (isset($options['task']) OR isset($options[0]))
 		{
 			// The first positional argument (aka 0) may be the task name
-			$task = isset($options['task']) ? $options['task'] : $options[0];
+			$task = Arr::get($options, 'task', $options[0]);
 
 			unset($options['task'], $options[0]);
 		}

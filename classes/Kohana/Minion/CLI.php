@@ -11,8 +11,8 @@
 abstract class Kohana_Minion_CLI {
 
 	/**
-	* @var array colour designations of the text
-	*/
+	 * @var array colour designations of the text
+	 */
 	protected static $_foreground_colors = array(
 		'black'        => '0;30',
 		'dark_gray'    => '1;30',

@@ -15,14 +15,14 @@ abstract class Kohana_Minion_Exception extends Kohana_Exception {
 	 * source of the exception, and the stack trace of the error.
 	 *
 	 * @param  Exception $e
-	 * @return boolean
+	 * @return bool
 	 */
 	public static function handler(Exception $e)
 	{
 		try
 		{
-			$text = ($e instanceof Minion_Exception) ? $e->_cli_format() : parent::text($e);
-			fwrite(STDERR, $text);
+			$text = $e instanceof Minion_Exception ? $e->_cli_format() : parent::text($e);
+			fwrite(STDERR, $text.PHP_EOL);
 
 			$exit_code = $e->getCode();
 
@@ -37,7 +37,7 @@ abstract class Kohana_Minion_Exception extends Kohana_Exception {
 		catch (Exception $e)
 		{
 			// Display the exception text
-			fwrite(STDERR, parent::text($e));
+			fwrite(STDERR, parent::text($e).PHP_EOL);
 
 			// Exit with an error status
 			exit(1);
