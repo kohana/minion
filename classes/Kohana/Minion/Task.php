@@ -121,7 +121,7 @@ abstract class Kohana_Minion_Task {
 				array(':class' => $class)
 			);
 		}
-		elseif ( ! is_subclass_of($class, Minion_Task))
+		elseif ( ! is_subclass_of($class, 'Minion_Task'))
 		{
 			throw new Minion_Task_Exception(
 				'Class `:class` is not a valid minion task', 
