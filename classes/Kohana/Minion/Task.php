@@ -99,10 +99,10 @@ abstract class Kohana_Minion_Task {
 	 */
 	public static function factory(array $options = array())
 	{
-		if (isset($options['task']) OR isset($options[0]))
+		if (isset($options['task']) OR count($options))
 		{
 			// The first positional argument (aka 0) may be the task name
-			$task = Arr::get($options, 'task', $options[0]);
+			$task = Arr::get($options, 'task', reset($options));
 
 			unset($options['task'], $options[0]);
 		}
