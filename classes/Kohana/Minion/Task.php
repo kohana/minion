@@ -287,9 +287,10 @@ abstract class Kohana_Minion_Task {
 	 * 
 	 * [!!] Override this method in current task.
 	 * 
+	 * @param  array  $params  Option values
 	 * @return void
 	 */
-	abstract protected function _execute();
+	abstract protected function _execute(array $params);
 
 	/**
 	 * Outputs help for this task.
