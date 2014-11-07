@@ -1,11 +1,11 @@
 <?php defined('SYSPATH') or die('No direct script access.');
  
 /**
- * Minion Help Task.
+ * This is a demo task.
  * 
- * It can be invoked by passing --help to any other task
- * 
- * Its usage information will be displayed
+ * It can accept the following options:
+ *  - foo: this parameter does something. It is required.
+ *  - bar: this parameter does something else. It should be numeric.
  *
  * @package Kohana
  * @category   Helpers
@@ -13,4 +13,4 @@
  * @copyright  (c) 2009-2011 Kohana Team
  * @license    http://kohanaframework.org/license
  */
-class Task_Help extends Kohana_Task_Help {}
+class Task_Noop extends Kohana_Task_Noop {}

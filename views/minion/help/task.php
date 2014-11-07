@@ -2,7 +2,7 @@
 
 <?php echo __('Usage') ?>:
 
-    php index.php --task=<?php echo $task ?> [--option=<value>] [--option2=<value2>]
+    php index.php --task=<?= $task ?> <?php foreach ($options as $key => $value){echo "[--{$key}=<{$value}>]";}?>
 
 <?php echo __('Details') ?>:
 
@@ -12,4 +12,4 @@
 
 <?php echo __('Description') ?>:
 
-    <?php echo $description ?>
+    <?php echo $description.PHP_EOL ?>
