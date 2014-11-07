@@ -22,7 +22,7 @@ Simply create a new class extending [Minion_Task] and call `Task_<Taskname>` in 
 			{
 				$params['bar'] = Minion_CLI::read('Enter bar value');
 			}
-			Minion_CLI::write('Bar: '.$params['bar']);
+			$this->output->write('Bar: '.$params['bar']);
 		}
 
 	}
@@ -80,3 +80,38 @@ Tasks can have built-in help. Minion will read class docblocks that you specify:
 
 The `@` tags in the class comments will also be displayed in a human readable format. 
 When writing your task comments, you should specify how to use it, and any parameters it accepts.
+
+# Adding to index.php
+
+Tasks are run by the CLI_Command class, which loads and runs them.
+
+
+        // Bootstrap the application
+        require APPPATH.'bootstrap'.EXT;
+
+        // If PHP build's server API is CLI
+        if (PHP_SAPI == 'cli')
+        {
+                /**
+                 * Attempt to load and execute minion.
+                 */
+                class_exists('CLI_Command') OR die('Please enable the Minion module for CLI support.');
+                set_exception_handler(array('Minion_Exception', 'handler'));
+
+                CLI_Command::factory()->execute();
+        }
+        else
+        // Request
+        {
+
+By default the the factory will use command line inputs, but you can override that by passing 
+custom $params to the factory.
+
+        $task = 'noop';
+        $params = ['foo' => 'bar'];
+
+        CLI_Command::factory($task)->execute($params);
+
+
+This will instantiate a new Task with the given $task name, and will execute with $params.
+When $params is provided, command line values are not loaded into the task.

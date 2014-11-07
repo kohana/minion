@@ -34,6 +34,12 @@ abstract class Kohana_Minion_Task {
 	 * @var string The file that get's passes to [Validation::errors()] when validation fails.
 	 */
 	protected $_errors_file = 'minion/validation';
+	
+	/**
+	 *
+	 * @var Mininon_CLI_Output 
+	 */
+	protected $output;
 
 	/**
 	 * Converts a task to class name.
@@ -89,59 +95,71 @@ abstract class Kohana_Minion_Task {
 	}
 
 	/**
-	 * Factory for create minion tasks.
 	 * 
-	 *     $task = Minion_Task::factory(array('task' => 'db:migrate'));
-	 * 
-	 * @param  array $options An array of command line options. It should contain the 'task' key.
-	 * @return Instance of [Minion_Task]
-	 * @throws Minion_Task_Exception
+	 * @param CLI_Output $output
+	 * @return Minion_Task
 	 */
-	public static function factory(array $options = array())
+	public function set_output(CLI_Output $output = NULL)
 	{
-		if (isset($options['task']) OR count($options))
+		if(is_a($output, 'CLI_Output'))
 		{
-			// The first positional argument (aka 0) may be the task name
-			$task = Arr::get($options, 'task', reset($options));
-
-			unset($options['task'], $options[0]);
+			$this->output = $output;
 		}
 		else
 		{
-			// If we didn't get a valid task, generate the help.
-			$task = 'help';
+			$this->output = CLI::factory('Output');
 		}
+		
+		return $this;
+	}
 
-		$class = Minion_Task::convert_task_to_class_name($task);
-
-		if ( ! class_exists($class))
+	/**
+	 * Factory for create minion tasks.
+	 * 
+	 *     $task = Minion_Task::factory('db:migrate');
+	 * 
+	 * @param  string      $name    Name of the Task to create
+	 * @param  CLI_Options $options Command line options
+	 * @param  CLI_Output  $output  CLI output interface
+	 * @return Instance of [Minion_Task]
+	 * @throws Minion_Task_Exception
+	 */
+	public static function factory($name, CLI_Output $output = NULL)
+	{
+		$name = Minion_Task::convert_task_to_class_name($name);
+		if ( ! class_exists($name))
 		{
 			throw new Minion_Task_Exception(
 				'Task class `:class` not exists', 
-				array(':class' => $class)
+				array(':class' => $name)
 			);
 		}
-		elseif ( ! is_subclass_of($class, 'Minion_Task'))
+		elseif ( ! is_subclass_of($name, 'Minion_Task'))
 		{
 			throw new Minion_Task_Exception(
 				'Class `:class` is not a valid minion task', 
-				array(':class' => $class)
+				array(':class' => $name)
+			);
+		}
+		
+		// Load the task using reflection
+		$class = new ReflectionClass($name);
+
+		if ($class->isAbstract())
+		{
+			throw new Kohana_Exception(
+				'Cannot create instances of abstract :task',
+				array(':task' => $name)
 			);
 		}
 
-		$class = new $class;
-
-		// Show the help page for this task if requested
-		if (array_key_exists('help', $options))
-		{
-			$class->_method = '_help';
-
-			unset($options['help']);
-		}
-
-		$class->set_options($options);
-
-		return $class;
+		// Create a new instance of the task
+		$task = new $name;
+		
+		// Set the Stdout interface
+		$task->set_output();
+		
+		return $task;
 	}
 
 	/**
@@ -162,19 +180,6 @@ abstract class Kohana_Minion_Task {
 	public function __toString()
 	{
 		return Minion_Task::convert_class_to_task($this);
-	}
-
-	/**
-	 * Sets options for this task.
-	 *
-	 * $param  array $options An array of option values
-	 * @return this
-	 */
-	public function set_options(array $options)
-	{
-		$this->_options = array_merge($this->_options, $options);
-
-		return $this;
 	}
 
 	/**
@@ -251,35 +256,88 @@ abstract class Kohana_Minion_Task {
 	}
 
 	/**
-	 * Execute the task with the specified set of options.
-	 *
+	 * Show the help page for this task if requested
+	 * 
+	 * @return array
+	 */
+	public function check_help($options)
+	{
+		if (array_key_exists('help', $options))
+		{
+			$this->_method = '_help';
+
+			unset($options['help']);
+		}
+		
+		return $options;
+	}
+	
+	/**
+	 * 
+	 * @return string
+	 */
+	public function method()
+	{
+		return $this->_method;
+	}
+	
+	/**
+	 * 
+	 * @return bool
+	 */
+	public function is_help()
+	{
+		return (bool)($this->method() == '_help');
+	}	
+	
+	/**
+	 * Execute the task.
+	 * 
+	 * @param  array $params Input values
 	 * @return void
 	 * @uses   Validation::factory
 	 * @uses   View::factory
-	 * @uses   Minion_CLI::write
+	 * @uses   CLI_Output::write
 	 */
-	public function execute()
+	public function execute(array $params)
 	{
-		$options = $this->get_options();
+		// Merge runtime params with defaults
+		$options = array_merge($this->_options, $params);
+
+		// Run the help method?
+		$options = $this->check_help($options);
 
 		// Validate options
 		$validation = Validation::factory($options);
 		$validation = $this->build_validation($validation);
 
-		if ($this->_method != '_help' AND ! $validation->check())
+		if ( ! $this->is_help() AND ! $validation->check())
 		{
 			// Display error
 			$view = View::factory('minion/error/validation')
 				->set('task', Minion_Task::convert_class_to_task($this))
 				->set('errors', $validation->errors($this->_errors_file));
 
-			Minion_CLI::write($view);
+			$this->output->write($view);
+
+			return CLI_Command::FAIL;
 		}
 		else
 		{
-			// Finally, run the task
-			$this->{$this->_method}($options);
+			try
+			{
+				// Finally, run the task
+				$this->{$this->_method}($options);
+			} 
+			catch (Exception $e) 
+			{
+				echo $e->getMessage();
+
+				return CLI_Command::FAIL;
+			}
 		}
+		
+		return CLI_Command::SUCCESS;
 	}
 
 	/**
@@ -297,7 +355,7 @@ abstract class Kohana_Minion_Task {
 	 * 
 	 * @return void
 	 * @uses   View::factory
-	 * @uses   Minion_CLI::write
+	 * @uses   CLI_Output::write
 	 */
 	protected function _help()
 	{
@@ -308,9 +366,10 @@ abstract class Kohana_Minion_Task {
 		$view = View::factory('minion/help/task')
 			->set('description', $description)
 			->set('tags', (array) $tags)
+			->set('options', $this->_options)
 			->set('task', Minion_Task::convert_class_to_task($this));
 
-		Minion_CLI::write($view);
+		$this->output->write($view);
 	}
 
 	/**
@@ -338,7 +397,7 @@ abstract class Kohana_Minion_Task {
 			// Search this line for a tag
 			if (preg_match('/^@(\S+)(?:\s*(.+))?$/', $line, $matches))
 			{
-				$tags[$matches[1]] = Arr::get(2, $matches, '');
+				$tags[$matches[1]] = isset($matches[2]) ? $matches[2] : '';
 				unset($comment[$i]);
 			}
 			else

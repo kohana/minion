@@ -9,17 +9,7 @@
 * @license   http://kohanaframework.org/license
 */
 class Kohana_CLI_Output extends Kohana_CLI implements Kohana_CLI_Stream_STDOUT {
-	
-	/**
-	 * Outputs the body when cast to string
-	 *
-	 * @return string
-	 */
-	public function __toString()
-	{
-		return $this->_body;
-	}
-	
+
 	/**
 	 * Outputs a string to the CLI. 
 	 * If you send an array it will implode them with a line break.

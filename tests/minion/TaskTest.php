@@ -19,12 +19,12 @@ class Minion_TaskTest extends Kohana_Unittest_TestCase {
 	 */
 	public function provider_convert_task_to_class_name()
 	{
-		return array(
-			array('Task_Sitemap', 'sitemap'),
-			array('Task_Db_Migrate', 'db:migrate'),
-			array('Task_Db_Status', 'db:status'),
-			array('', ''),
-		);
+		return [
+			['Task_Sitemap', 'sitemap'],
+			['Task_Db_Migrate', 'db:migrate'],
+			['Task_Db_Status', 'db:status'],
+			['', ''],
+		];
 	}
 
 	/**
@@ -48,10 +48,10 @@ class Minion_TaskTest extends Kohana_Unittest_TestCase {
 	 */
 	public function provider_convert_class_to_task()
 	{
-		return array(
-			array('sitemap', 'Task_Sitemap'),
-			array('db:migrate', 'Task_Db_Migrate'),
-		);
+		return [
+			['sitemap', 'Task_Sitemap'],
+			['db:migrate', 'Task_Db_Migrate'],
+		];
 	}
 
 	/**
@@ -67,5 +67,60 @@ class Minion_TaskTest extends Kohana_Unittest_TestCase {
 	{
 		$this->assertSame($expected, Minion_Task::convert_class_to_task($class));
 	}
+
+	/**
+	 * Provides test data for test_factory().
+	 *
+	 * @return array
+	 */
+	public function provider_factory()
+	{
+		$output = CLI::factory('Output');
+
+		return [
+			['Task_Help', 'help', $output ],
+			['Task_Help', 'help', NULL],
+			['Task_Noop', 'noop', $output],
+			['Task_Noop', 'noop', NULL],
+		];
+	}
+
+	/**
+	 * Tests that the factory can instantiate with or without the $output paramter
+	 * and is of the expected type.
+	 *
+	 * @test
+	 * @covers Minion_Task::factory
+	 * @dataProvider provider_factory
+	 * @param array Options as would be returned from Minion_CLI::options
+	 */
+	public function test_factory($expected, $name, $output)
+	{
+		$this->assertInstanceOf($expected, Minion_Task::factory($name, $output));
+	}
+
+	/**
+	 * Task name is required in the factory
+	 *
+	 * @test
+	 * @covers Minion_Task::factory
+	 * @expectedException PHPUnit_Framework_Error_Warning
+	 */
+	public function test_factory_no_name()
+	{
+		Minion_Task::factory();
+	}
+	
+	/**
+	 * Testing failure with blank task name
+	 *
+	 * @test
+	 * @covers Minion_Task::factory
+	 * @expectedException Minion_Task_Exception
+	 */
+	public function test_factory_blank_name()
+	{
+		Minion_Task::factory('');
+	}	
 
 }
