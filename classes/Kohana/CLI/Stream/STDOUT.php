@@ -1,0 +1,16 @@
+<?php defined('SYSPATH') OR die('No direct script access.');
+/**
+* STDOUT interface
+*
+* @package   Kohana/Minion
+* @category  CLI
+* @author    Kohana Team
+* @copyright (c) 2009-2014 Kohana Team
+* @license   http://kohanaframework.org/license
+*/
+interface Kohana_CLI_Stream_STDOUT
+{
+	public function write($text = '');
+	
+	public function write_replace($text = '', $end_line = FALSE);
+}
