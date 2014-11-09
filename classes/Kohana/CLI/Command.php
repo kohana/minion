@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php
 /**
  * Command. Uses the [Options] class to determine what
  * [Task] to send the request to.

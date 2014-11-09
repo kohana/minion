@@ -1,3 +1,3 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php
 
 class CLI_CLImate extends Kohana_CLI_CLImate {}

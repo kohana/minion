@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php
 /**
  * Command Client. Processes a [Command]. Will echo any output and 
  * return the exit status of the command unless an unexpected error occurs.

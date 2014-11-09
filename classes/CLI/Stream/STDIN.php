@@ -1,3 +1,3 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php
 
 interface CLI_Stream_STDIN extends Kohana_CLI_Stream_STDIN {}
