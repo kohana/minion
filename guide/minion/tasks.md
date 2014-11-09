@@ -107,7 +107,7 @@ Tasks are run by the CLI_Command class, which loads and runs them.
 By default the the factory will use command line inputs, but you can override that by passing 
 custom $params to the factory.
 
-        $task = 'noop';
+        $task = 'example';
         $params = ['foo' => 'bar'];
 
         CLI_Command::factory($task)->execute($params);

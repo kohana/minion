@@ -80,8 +80,8 @@ class Minion_TaskTest extends Kohana_Unittest_TestCase {
 		return [
 			['Task_Help', 'help', $output ],
 			['Task_Help', 'help', NULL],
-			['Task_Noop', 'noop', $output],
-			['Task_Noop', 'noop', NULL],
+			['Task_Example', 'example', $output],
+			['Task_Example', 'example', NULL],
 		];
 	}
 

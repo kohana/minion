@@ -9,8 +9,8 @@
  * @copyright  (c) 2008-2012 Kohana Team
  * @license    http://kohanaframework.org/license
  */
-class Kohana_CLI_Command
-{
+class Kohana_CLI_Command {
+
 	/**
 	 * Unix command exit status
 	 * @link http://php.net/manual/en/function.exit.php
@@ -31,6 +31,7 @@ class Kohana_CLI_Command
 	protected $_task;
 
 	/**
+	 * Constructs a CLI_Command with the given task name and params.
 	 * 
 	 * @param string $task
 	 * @param array  $params
@@ -40,16 +41,16 @@ class Kohana_CLI_Command
 	{
 		$options = CLI::factory('Options');
 		
+		// Autodetect task name?
 		if ($task===TRUE)
 		{
 			$task = $options->task();
 		}
 		
+		// Use provided parameters, or read from input
 		$params = count($params) ? $params : $options->params();
 		
-		$command = new CLI_Command($task, $params);
-		
-		return $command;
+		return new CLI_Command($task, $params);
 	}
 	
 	/**
@@ -75,7 +76,10 @@ class Kohana_CLI_Command
 	}
 	
 	/**
-	 * 
+	 * Executes the CLI_Command by calling its client. Unix exit status
+	 * is collected from the Task execution. Since this is the last
+	 * method in the chain, we exit with $status to indicate success
+	 * or failiure of the command.
 	 */
 	public function execute()
 	{

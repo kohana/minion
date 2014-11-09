@@ -8,7 +8,7 @@
  * @copyright  (c) 2009-2014 Kohana Team
  * @license    http://kohanaframework.org/license
  */
-abstract class Kohana_Minion_Task {
+abstract class Kohana_Minion_Task implements Kohana_Task {
 
 	/**
 	 * @var string Separate different levels of tasks.
@@ -96,10 +96,10 @@ abstract class Kohana_Minion_Task {
 
 	/**
 	 * 
-	 * @param CLI_Output $output
+	 * @param CLI_Stream_STDOUT $output
 	 * @return Minion_Task
 	 */
-	public function set_output(CLI_Output $output = NULL)
+	public function set_output(CLI_Stream_STDOUT $output = NULL)
 	{
 		if(is_a($output, 'CLI_Output'))
 		{
@@ -107,7 +107,7 @@ abstract class Kohana_Minion_Task {
 		}
 		else
 		{
-			$this->output = CLI::factory('Output');
+			$this->output = CLI::factory('CLImate');
 		}
 		
 		return $this;
@@ -118,9 +118,8 @@ abstract class Kohana_Minion_Task {
 	 * 
 	 *     $task = Minion_Task::factory('db:migrate');
 	 * 
-	 * @param  string      $name    Name of the Task to create
-	 * @param  CLI_Options $options Command line options
-	 * @param  CLI_Output  $output  CLI output interface
+	 * @param  string             $name    Name of the Task to create
+	 * @param  CLI_Stream_STDOUT  $output  CLI output interface
 	 * @return Instance of [Minion_Task]
 	 * @throws Minion_Task_Exception
 	 */

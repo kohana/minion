@@ -13,4 +13,4 @@
  * @copyright  (c) 2009-2011 Kohana Team
  * @license    http://kohanaframework.org/license
  */
-class Task_Noop extends Kohana_Task_Noop {}
+class Task_Example extends Kohana_Task_Example {}

@@ -11,6 +11,4 @@
 interface Kohana_CLI_Stream_STDOUT
 {
 	public function write($text = '');
-	
-	public function write_replace($text = '', $end_line = FALSE);
 }
