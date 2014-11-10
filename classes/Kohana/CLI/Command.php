@@ -12,15 +12,9 @@
 class Kohana_CLI_Command {
 
 	/**
-	 * Trait STDIO
+	 * Traits
 	 */
-	use STDIO;
-
-	/**
-	 *
-	 * @var string
-	 */
-	protected $task_name;
+	use STDIO, Builders;
 
 	/**
 	 * Constructs a CLI_Command with the given task name and params.
@@ -52,10 +46,15 @@ class Kohana_CLI_Command {
 		$this->task_name($task);
 
 		/**
-		 * STDIO Trait
+		 * STDIO trait
 		 */
 		$this->set_options($options);
 		$this->set_output($output);
+
+		/**
+		 * Builders trait
+		 */
+		$this->load_builders();
 	}
 
 	/**
@@ -73,6 +72,14 @@ class Kohana_CLI_Command {
 	}
 
 	/**
+	 * Loads builders from config file
+	 */
+	protected function load_builders()
+	{
+		$this->builders = require DOCROOT.'vendor/kohana/minion/config/builders.php';
+	}
+
+	/**
 	 * Inject dependencies into Task
 	 *
 	 * @return Minion_Task
@@ -80,27 +87,19 @@ class Kohana_CLI_Command {
 	protected function prepare()
 	{
 		// Create a new instance of the task
-		$task = Minion_Task::factory($this->task_name);
-
-		// Set CLI_Options
-		$task->set_options($this->get_options());
-
-		// Set CLI_Stream_STDOUT
-		$task->set_output($this->get_output());
+		$task = $this->call_builder('task', [$this->task_name]);
 
 		// Set View Closure
-		$view = function($file=NULL, $data=NULL)
-		{
-			return View::factory($file, $data);
-		};
-		$task->set_view_builder($view);
+		$task->set_builder('view', $this->builders['view']);
 
 		// Set Validation Closure
-		$validation = function($array = [])
-		{
-			return Validation::factory($array);
-		};
-		$task->set_validation_builder($validation);
+		$task->set_builder('validation', $this->builders['validation']);
+
+		// Set CLI_Options
+		$task->set_options($this->options);
+
+		// Set CLI_Stream_STDOUT
+		$task->set_output($this->output);
 
 		return $task;
 	}

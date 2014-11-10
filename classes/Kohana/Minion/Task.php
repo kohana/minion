@@ -11,9 +11,9 @@
 abstract class Kohana_Minion_Task implements Kohana_Task {
 
 	/**
-	 * Trait STDIO
+	 * Traits
 	 */
-	use STDIO;
+	use STDIO, Builders;
 
 	/**
 	 * @var string Separate different levels of tasks.
@@ -187,15 +187,6 @@ abstract class Kohana_Minion_Task implements Kohana_Task {
 	}
 
 	/**
-	 *
-	 * @param Closure $closure
-	 */
-	public function set_view_builder(Closure $closure)
-	{
-		$this->view_builder = $closure;
-	}
-
-	/**
 	 * Uses the injected closure to get a View capable class
 	 *
 	 * @param string $file
@@ -204,16 +195,7 @@ abstract class Kohana_Minion_Task implements Kohana_Task {
 	 */
 	public function view($file = NULL, array $data = NULL)
 	{
-		return $this->view_builder->__invoke($file, $data);
-	}
-
-	/**
-	 *
-	 * @param Closure $closure
-	 */
-	public function set_validation_builder(Closure $closure)
-	{
-		$this->validation_builder = $closure;
+		return $this->call_builder('view', [$file, $data]);
 	}
 
 	/**
@@ -224,7 +206,7 @@ abstract class Kohana_Minion_Task implements Kohana_Task {
 	 */
 	protected function validation($options)
 	{
-		return $this->validation_builder->__invoke($options);
+		return $this->call_builder('validation', [$options]);
 	}
 
 	/**
