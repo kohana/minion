@@ -15,8 +15,6 @@ class Kohana_Minion_Exception extends Kohana_Exception {
 	 *
 	 * Should this display a stack trace? It's useful.
 	 *
-	 * Should this still log? Maybe not as useful since we'll see the error on the screen.
-	 *
 	 * @uses    Kohana_Exception::text
 	 * @param   Exception   $e
 	 * @return  boolean
@@ -25,6 +23,9 @@ class Kohana_Minion_Exception extends Kohana_Exception {
 	{
 		try
 		{
+			// Log the exception
+			Kohana_Exception::log($e);
+
 			if ($e instanceof Minion_Exception)
 			{
 				echo $e->format_for_cli();
