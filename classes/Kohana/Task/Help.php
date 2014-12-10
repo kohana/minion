@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php
 /**
  * Help task to display general instructons and list all tasks.
  *
@@ -15,7 +15,7 @@ abstract class Kohana_Task_Help extends Minion_Task {
 	 *
 	 * @return void
 	 */
-	protected function _execute()
+	protected function _execute(array $params)
 	{
 		// Get tasks
 		$tasks = Kohana::list_files('classes/Task');
@@ -25,7 +25,7 @@ abstract class Kohana_Task_Help extends Minion_Task {
 		$view = View::factory('minion/help/list', array('tasks' => $tasks));
 
 		// Render and display template
-		Minion_CLI::write($view);
+		$this->output->write($view);
 	}
 
 }

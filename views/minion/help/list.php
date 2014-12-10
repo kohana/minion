@@ -1,5 +1,3 @@
-<?php defined('SYSPATH') OR die('No direct script access.') ?>
-
 <?php echo __('Minion is a CLI tool for performing tasks.') ?>
 
 <?php echo __('Usage') ?>:

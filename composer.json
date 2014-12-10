@@ -22,7 +22,8 @@
 	"require": {
 		"composer/installers": "~1.0",
 		"kohana/core":         ">=3.4",
-		"php":                 ">=5.4.0"
+		"php":                 ">=5.4.0",
+		"league/climate": "~2.5"
 	},
     "require-dev": {
         "kohana/core":         "3.4.*@dev",
