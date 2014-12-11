@@ -4,3 +4,6 @@ Icon?
 nbproject
 Thumbs.db
 *.komodoproject
+composer.lock
+vendor/*
+koharness_bootstrap.php
