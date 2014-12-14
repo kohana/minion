@@ -1,3 +1,2 @@
 ## [Minion]()
- - [Setup](setup)
- - [Writing a Task](tasks)
+  - [Writing a Task](tasks)
