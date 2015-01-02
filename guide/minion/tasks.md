@@ -61,7 +61,7 @@ These validations will run for every task call unless `--help` is passed to the 
 
 Tasks can have built-in help. Minion will read class docblocks that you specify:
 
-	<?php defined('SYSPATH') OR die('No direct script access.');
+	<?php
 	/**
 	 * This is a demo task.
 	 * 
