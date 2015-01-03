@@ -1,5 +1,3 @@
-<?php defined('SYSPATH') OR die('No direct script access.') ?>
-
 <?php echo __('Parameter errors') ?>:
 
 <?php foreach ($errors as $parameter => $error): ?>

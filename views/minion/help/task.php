@@ -1,5 +1,3 @@
-<?php defined('SYSPATH') OR die('No direct script access.') ?>
-
 <?php echo __('Usage') ?>:
 
     php index.php --task=<?php echo $task ?> [--option=<value>] [--option2=<value2>]
