@@ -148,7 +148,7 @@ abstract class Kohana_Minion_CLI {
 		// If options are provided and the choice is not in the array, tell them to try again
 		if ( ! empty($options) AND ! in_array($input, $options))
 		{
-			Minion_CLI::write(__('Invalid option value. Please try again.'));
+			Minion_CLI::write(I18n::translate('Invalid option value. Please try again.'));
 
 			$input = Minion_CLI::read($text, $options);
 		}
@@ -239,7 +239,7 @@ abstract class Kohana_Minion_CLI {
 			}
 			else
 			{
-				Minion_CLI::write(__('Press any key to continue...'));
+				Minion_CLI::write(I18n::translate('Press any key to continue...'));
 				Minion_CLI::read();
 			}
 		}

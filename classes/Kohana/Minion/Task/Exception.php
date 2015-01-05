@@ -17,7 +17,7 @@ abstract class Kohana_Minion_Task_Exception extends Minion_Exception {
 	*/
 	protected function _cli_format()
 	{
-		return __('Task error').':'.PHP_EOL.$this->getMessage().PHP_EOL;
+		return I18n::translate('Task error').':'.PHP_EOL.$this->getMessage().PHP_EOL;
 	}
 
 }
