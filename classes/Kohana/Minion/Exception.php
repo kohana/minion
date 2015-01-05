@@ -1,6 +1,6 @@
 <?php defined('SYSPATH') or die('No direct script access.');
 /**
- * Minipn exception
+ * Minion exception
  *
  * @package    Kohana
  * @category   Minion
