@@ -278,7 +278,7 @@ class Kohana_Minion_CLI {
 	 * @copyright  2010 - 2011 Fuel Development Team
 	 * @link       http://fuelphp.com
 	 * @param string $text the text to color
-	 * @param atring $foreground the foreground color
+	 * @param string $foreground the foreground color
 	 * @param string $background the background color
 	 * @return string the color coded string
 	 */
