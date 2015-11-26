@@ -255,7 +255,7 @@ abstract class Kohana_Minion_CLI {
 	 * @link      http://fuelphp.com
 	 * 
 	 * @param  string $text the text to color
-	 * @param  atring $foreground the foreground color, uses [Minion_CLI::$_foreground_colors]
+	 * @param  string $foreground the foreground color, uses [Minion_CLI::$_foreground_colors]
 	 * @param  string $background the background color, uses [Minion_CLI::$_background_colors]
 	 * @return string the color coded string
 	 * @throws Minion_Exception

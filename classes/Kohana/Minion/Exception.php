@@ -21,6 +21,9 @@ abstract class Kohana_Minion_Exception extends Kohana_Exception {
 	{
 		try
 		{
+			// Log the exception
+			Kohana_Exception::log($e);
+
 			$text = $e instanceof Minion_Exception ? $e->_cli_format() : parent::text($e);
 			fwrite(STDERR, $text.PHP_EOL);
 
