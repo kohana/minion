@@ -14,10 +14,10 @@ abstract class Kohana_Minion_Exception extends Kohana_Exception {
 	 * Inline exception handler, displays the error message, 
 	 * source of the exception, and the stack trace of the error.
 	 *
-	 * @param  Exception $e
+	 * @param  mixed $e
 	 * @return bool
 	 */
-	public static function handler(Exception $e)
+	public static function handler($e)
 	{
 		try
 		{
