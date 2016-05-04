@@ -34,6 +34,16 @@ class Kohana_Minion_CLI {
 	);
 
 	/**
+	 * @var  resource  The configured output stream
+	 */
+	protected static $_stdout = STDOUT;
+
+	/**
+	 * @var  resource  The configured input stream
+	 */
+	protected static $_stdin = STDIN;
+
+	/**
 	 * Returns one or more command-line options. Options are specified using
 	 * standard CLI syntax:
 	 *
@@ -130,10 +140,10 @@ class Kohana_Minion_CLI {
 			$options_output = ' [ '.implode(', ', $options).' ]';
 		}
 
-		fwrite(STDOUT, $text.$options_output.': ');
+		fwrite(Minion_CLI::$_stdout, $text.$options_output.': ');
 
 		// Read the input from keyboard.
-		$input = trim(fgets(STDIN));
+		$input = trim(fgets(Minion_CLI::$_stdin));
 
 		// If options are provided and the choice is not in the array, tell them to try again
 		if ( ! empty($options) && ! in_array($input, $options))
@@ -202,7 +212,7 @@ class Kohana_Minion_CLI {
 		}
 		else
 		{
-			fwrite(STDOUT, $text.PHP_EOL);
+			fwrite(Minion_CLI::$_stdout, $text.PHP_EOL);
 		}
 	}
 
@@ -226,7 +236,7 @@ class Kohana_Minion_CLI {
 	{
 		// Append a newline if $end_line is TRUE
 		$text = $end_line ? $text.PHP_EOL : $text;
-		fwrite(STDOUT, "\r\033[K".$text);
+		fwrite(Minion_CLI::$_stdout, "\r\033[K".$text);
 	}
 
 	/**
@@ -248,7 +258,7 @@ class Kohana_Minion_CLI {
 
 			while ($time > 0)
 			{
-				fwrite(STDOUT, $time.'... ');
+				fwrite(Minion_CLI::$_stdout, $time.'... ');
 				sleep(1);
 				$time--;
 			}
@@ -312,4 +322,37 @@ class Kohana_Minion_CLI {
 		return $string;
 	}
 
+	/**
+	 * Sets the output stream.
+	 *
+	 * @param   resource  $stream  the output stream
+	 * @return  bool      true if the stream was set successfully
+	 */
+	public static function set_stdout($stream)
+	{
+		if (is_resource($stream) AND get_resource_type($stream) == 'stream')
+		{
+			Minion_CLI::$_stdout = $stream;
+			return TRUE;
+		}
+
+		return FALSE;
+	}
+
+	/**
+	 * Sets the input stream.
+	 *
+	 * @param   resource  $stream  the input stream
+	 * @return  bool      true if the stream was set successfully
+	 */
+	public static function set_stdin($stream)
+	{
+		if (is_resource($stream) AND get_resource_type($stream) == 'stream')
+		{
+			Minion_CLI::$_stdin = $stream;
+			return TRUE;
+		}
+
+		return FALSE;
+	}
 }
