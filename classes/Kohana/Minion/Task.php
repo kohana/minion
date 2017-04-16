@@ -287,9 +287,10 @@ abstract class Kohana_Minion_Task {
 	 * 
 	 * [!!] Override this method in current task.
 	 * 
+	 * @param  array $params The validated parameters passed from CLI
 	 * @return void
 	 */
-	abstract protected function _execute();
+	abstract protected function _execute(array $params);
 
 	/**
 	 * Outputs help for this task.

@@ -12,16 +12,17 @@ Simply create a new class extending [Minion_Task] and call `Task_<Taskname>` in 
 
 		/**
 		 * This is a demo task.
-		 *
+		 * 
+		 * @param array $params Contains parameters passed from CLI
 		 * @return void
 		 */
-		protected function _execute()
+		protected function _execute(array $params)
 		{
-			if (empty($this->_options['bar']))
+			if (empty($params['bar']))
 			{
-				$this->_options['bar'] = Minion_CLI::read('Enter bar value');
+				$params['bar'] = Minion_CLI::read('Enter bar value');
 			}
-			Minion_CLI::write('Bar: '.$this->_options['bar']);
+			Minion_CLI::write('Bar: '.$params['bar']);
 		}
 
 	}
